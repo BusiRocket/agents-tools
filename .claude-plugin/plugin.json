@@ -1,0 +1,10 @@
+{
+  "name": "busirocket-agents-tools",
+  "description": "Agent workflow engine + rules/skills orchestrator that enforces planning, testing, and review to consistently produce high-quality code across IDEs.",
+  "version": "1.0.0",
+  "author": {
+    "name": "cristiandeluxe"
+  },
+  "repository": "https://github.com/BusiRocket/busirocket-agents-tools",
+  "license": "MIT"
+}

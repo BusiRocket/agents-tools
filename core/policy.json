@@ -1,0 +1,64 @@
+{
+  "version": "1.0.0",
+  "precedence": {
+    "order": ["task", "project", "stack", "global"],
+    "description": "Task-specific rules override project rules, which override stack rules, which override global rules. Higher precedence wins on conflict."
+  },
+  "stackDetection": {
+    "next": {
+      "signals": ["next.config.*", "next-env.d.ts", "app/layout.tsx", "app/layout.jsx", "pages/"],
+      "ruleset": "nextjs"
+    },
+    "react": {
+      "signals": ["vite.config.*", "src/App.tsx", "src/App.jsx"],
+      "ruleset": "react",
+      "note": "Only if next signals are absent"
+    },
+    "rust": {
+      "signals": ["Cargo.toml", "src/main.rs", "src/lib.rs"],
+      "ruleset": "rust"
+    },
+    "php": {
+      "signals": ["composer.json", "*.php", "artisan"],
+      "ruleset": "php"
+    },
+    "python": {
+      "signals": ["pyproject.toml", "requirements.txt", "setup.py", "*.py"],
+      "ruleset": "python"
+    },
+    "bash": {
+      "signals": ["*.sh", "scripts/"],
+      "ruleset": "bash"
+    },
+    "go": {
+      "signals": ["go.mod", "go.sum", "*.go"],
+      "ruleset": "go"
+    }
+  },
+  "intentToSkillChain": {
+    "create": ["brp-plan", "brp-implement", "brp-test", "brp-review"],
+    "fix": ["brp-fix", "brp-test", "brp-review"],
+    "refactor": ["brp-refactor", "brp-test", "brp-review"],
+    "review": ["brp-review"],
+    "test": ["brp-test"],
+    "debug": ["brp-debug", "brp-fix", "brp-test"],
+    "migrate": ["brp-plan", "brp-implement", "brp-test", "brp-review"],
+    "docs": ["brp-docs"]
+  },
+  "skillSelectionLimits": {
+    "maxSkillsInContext": 8,
+    "alwaysInclude": ["brp-plan", "brp-review"],
+    "selectionOrder": [
+      "core skills (always)",
+      "stack skills (if detected)",
+      "allowlist skills (if match)",
+      "index search (fallback, top 3)"
+    ]
+  },
+  "qualityGates": {
+    "planRequired": true,
+    "validationCommandsRequired": true,
+    "selfCheckRequired": true,
+    "noTodosInDeliveredCode": true
+  }
+}

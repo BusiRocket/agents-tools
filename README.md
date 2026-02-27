@@ -7,10 +7,10 @@ consistently produce high-quality code across IDEs.
 
 BRP consolidates rules, skills, and an orchestration protocol into a single project that works as:
 
-- A **Claude Code plugin** (`claude --plugin-dir .`)
-- A **Cursor rules source** (compiled via `pnpm rules:compile`)
-- A **multi-IDE exporter** (Claude, Codex, Antigravity/Gemini, Windsurf)
-- An **AgentSkills-compatible** skill collection
+- A **Cursor plugin** (`dist/plugins/cursor/.cursor-plugin/plugin.json`)
+- A **Claude Code plugin** (`dist/plugins/claude/.claude-plugin/plugin.json`)
+- A **multi-IDE rules exporter** (Cursor, Claude, Codex, Antigravity/Gemini, Windsurf)
+- An **AgentSkills-compatible** skill collection (19 validated skills)
 
 ## Quick Start
 
@@ -20,32 +20,39 @@ git clone https://github.com/BusiRocket/busirocket-agents-tools.git
 cd busirocket-agents-tools
 pnpm install
 
-# Compile rules for all IDEs
-pnpm rules:compile
+# Build (compile rules for all IDEs)
+pnpm build
+
+# Validate everything
+pnpm check:all
 
 # Link rules globally (optional)
 pnpm rules:link:all
 ```
 
+### As a Cursor Plugin
+
+Install from the plugin directory or point Cursor to `dist/plugins/cursor/`.
+
 ### As a Claude Code Plugin
 
 ```bash
 claude --plugin-dir /path/to/busirocket-agents-tools
-# Then use: /busirocket-agents-tools:brp-plan
+# Then use: /brp-plan, /brp-fix, etc.
 ```
 
-## Commands
+## Workflow Commands
 
-| Command         | What it does                                           |
-| --------------- | ------------------------------------------------------ |
-| `/brp-create`   | Plan → Implement → Test → Review                       |
-| `/brp-fix`      | Reproduce → Hypothesize → Fix → Verify                 |
-| `/brp-refactor` | Assess → Plan → Execute → Quality check                |
-| `/brp-review`   | Self-check + PR review (security/perf/maintainability) |
-| `/brp-test`     | Generate tests + validation commands                   |
-| `/brp-debug`    | Symptoms → Hypotheses → Isolation → Resolution         |
-| `/brp-migrate`  | Plan → Implement → Test → Review (for upgrades)        |
-| `/brp-docs`     | README, API docs, ADRs, specs                          |
+| Command          | What it does                                           |
+| ---------------- | ------------------------------------------------------ |
+| `/brp-plan`      | Plan → Define milestones → Risk assessment             |
+| `/brp-implement` | Minimal diffs → Incremental changes                    |
+| `/brp-fix`       | Reproduce → Hypothesize → Fix → Verify                 |
+| `/brp-refactor`  | Assess → Plan → Execute → Quality check                |
+| `/brp-review`    | Self-check + PR review (security/perf/maintainability) |
+| `/brp-test`      | Generate tests + validation commands                   |
+| `/brp-debug`     | Symptoms → Hypotheses → Isolation → Resolution         |
+| `/brp-docs`      | README, API docs, ADRs, specs                          |
 
 ## Workflow Protocol (Non-Negotiable)
 
@@ -64,43 +71,125 @@ Every task follows 6 steps:
 
 ```
 busirocket-agents-tools/
-├── .claude-plugin/          # Claude Code plugin manifest
-│   └── plugin.json
-├── core/
-│   ├── protocol.md          # 6-step workflow contract
-│   └── policy.json          # Routing, precedence, stack detection
-├── rules/
-│   └── source/              # Canonical rules (.mdc, IDE-agnostic)
-│       ├── core/            # Code quality, boundaries, naming
-│       ├── react/           # React patterns
-│       ├── nextjs/          # Next.js App Router
-│       ├── rust/            # Rust standards
-│       └── ...              # php, python, bash, go, etc.
-├── skills/
-│   ├── core/                # 8 BRP workflow skills
-│   │   ├── brp-plan/
-│   │   ├── brp-implement/
-│   │   ├── brp-test/
-│   │   ├── brp-review/
-│   │   ├── brp-fix/
-│   │   ├── brp-refactor/
-│   │   ├── brp-debug/
-│   │   └── brp-docs/
-│   ├── stacks/              # Stack-specific skills
-│   │   ├── busirocket-core-conventions/
-│   │   ├── busirocket-react/
-│   │   ├── busirocket-nextjs/
+├── src/                         # Source (canonical content)
+│   ├── rules/                   # Canonical rules (.mdc, IDE-agnostic)
+│   │   ├── core/                # Code quality, boundaries, naming
+│   │   ├── react/               # React patterns
+│   │   ├── nextjs/              # Next.js App Router
+│   │   ├── rust/                # Rust standards
+│   │   ├── typescript/          # TypeScript conventions
+│   │   ├── php/                 # PHP / Laravel / WordPress
+│   │   ├── python/              # Python / Django
+│   │   ├── go/                  # Go microservices
+│   │   ├── bash/                # Shell scripting
+│   │   ├── styling/             # Tailwind, Bootstrap
+│   │   ├── deploy/              # CI/CD, security
+│   │   ├── integrations/        # Supabase, Stripe, n8n, etc.
 │   │   └── ...
-│   └── orchestrator/        # Command router
-│       └── brp/
-├── scripts/                 # Build, lint, compile, validate
-│   ├── compile-rules.mjs
-│   ├── validate-skills.mjs
-│   └── lib/
-└── docs/
-    ├── architecture.md
-    └── ide-setup.md
+│   ├── skills/                  # Agent skills
+│   │   ├── core/                # 8 BRP workflow skills
+│   │   │   ├── brp-plan/
+│   │   │   ├── brp-implement/
+│   │   │   ├── brp-test/
+│   │   │   ├── brp-review/
+│   │   │   ├── brp-fix/
+│   │   │   ├── brp-refactor/
+│   │   │   ├── brp-debug/
+│   │   │   └── brp-docs/
+│   │   ├── stacks/              # Stack-specific skills (10)
+│   │   │   ├── busirocket-core-conventions/
+│   │   │   ├── busirocket-react/
+│   │   │   ├── busirocket-nextjs/
+│   │   │   ├── busirocket-typescript-standards/
+│   │   │   ├── busirocket-tailwind/
+│   │   │   ├── busirocket-rust/
+│   │   │   ├── busirocket-tauri/
+│   │   │   ├── busirocket-supabase/
+│   │   │   ├── busirocket-refactor-workflow/
+│   │   │   └── busirocket-validation/
+│   │   └── orchestrator/        # Command router
+│   │       └── brp/
+│   └── core/                    # Protocol & policy
+│       ├── protocol.md          # 6-step workflow contract
+│       └── policy.json          # Routing, precedence, stack detection
+│
+├── dist/                        # Compiled output (generated, gitignored)
+│   ├── global/                  # Per-IDE compiled rules
+│   │   ├── .cursor/rules/
+│   │   ├── .claude/rules/
+│   │   ├── .agent/rules/        # Antigravity (Gemini)
+│   │   ├── .windsurf/rules/
+│   │   └── codex/
+│   ├── markdown/                # Monolithic markdown exports
+│   │   ├── CLAUDE.md
+│   │   ├── AGENTS.md
+│   │   ├── GEMINI.md
+│   │   └── WINDSURF.md
+│   └── plugins/                 # Plugin manifests
+│       ├── cursor/.cursor-plugin/plugin.json
+│       └── claude/.claude-plugin/plugin.json
+│
+├── scripts/                     # Build, lint, compile, validate
+├── docs/                        # Project documentation
+│   ├── architecture.md
+│   └── ide-setup.md
+└── package.json
 ```
+
+## Skills (19 validated)
+
+### Core Workflow Skills (8)
+
+| Skill           | Purpose                                             |
+| --------------- | --------------------------------------------------- |
+| `brp-plan`      | Structured planning with milestones and risks       |
+| `brp-implement` | Incremental implementation with minimal diffs       |
+| `brp-fix`       | Bug reproduction, hypothesis, fix, verification     |
+| `brp-refactor`  | Code assessment, planning, execution, quality check |
+| `brp-review`    | Security, performance, maintainability review       |
+| `brp-test`      | Test generation and validation                      |
+| `brp-debug`     | Symptom analysis, hypothesis, isolation, resolution |
+| `brp-docs`      | Documentation generation (README, API, ADR)         |
+
+### Stack Skills (10)
+
+| Skill                             | Coverage                                        |
+| --------------------------------- | ----------------------------------------------- |
+| `busirocket-core-conventions`     | Code quality, boundaries, naming, anti-patterns |
+| `busirocket-react`                | React patterns, hooks, Zustand, accessibility   |
+| `busirocket-nextjs`               | App Router, caching, route handlers, validation |
+| `busirocket-typescript-standards` | Types, strictness, one-thing-per-file           |
+| `busirocket-tailwind`             | Tailwind setup, class strategy, ordering        |
+| `busirocket-rust`                 | Rust boundaries, modules, validation            |
+| `busirocket-tauri`                | Tauri commands, project structure               |
+| `busirocket-supabase`             | Supabase access rule, service usage             |
+| `busirocket-refactor-workflow`    | File refactoring workflow, split heuristics     |
+| `busirocket-validation`           | Validation boundaries, Zod, guard helpers       |
+
+### Orchestrator (1)
+
+| Skill | Purpose                                       |
+| ----- | --------------------------------------------- |
+| `brp` | Routes commands to the appropriate core skill |
+
+## Rule Categories
+
+| Category       | Topics                                                       |
+| -------------- | ------------------------------------------------------------ |
+| `core`         | Code quality, boundaries, naming, anti-patterns, security    |
+| `react`        | Component patterns, hooks, state, performance, accessibility |
+| `nextjs`       | App Router, route handlers, caching, server actions          |
+| `typescript`   | Standards, types, refactoring, debug                         |
+| `styling`      | Tailwind v4, Bootstrap                                       |
+| `rust`         | Language style, modules, async, Tauri                        |
+| `php`          | Laravel, WordPress, WooCommerce, Drupal                      |
+| `python`       | Django, REST API                                             |
+| `go`           | Microservices                                                |
+| `bash`         | Shell scripting standards                                    |
+| `javascript`   | Chrome extensions, SvelteKit, Vue, HTMX, Shopify             |
+| `deploy`       | GitHub security, Sonnet                                      |
+| `integrations` | Supabase, Stripe, Payload CMS, n8n                           |
+| `monorepo`     | Turborepo                                                    |
 
 ## Rule Precedence
 
@@ -111,42 +200,50 @@ Task > Project > Stack > Global
 - **Global**: Personal invariants (few lines)
 - **Stack**: Next.js, React, Rust, PHP, Bash, etc.
 - **Project**: Repo-specific overrides
-- **Task**: create, fix, refactor, review, debug, migrate
-
-## IDE Exports
-
-```bash
-# Compile canonical rules → IDE-specific formats
-pnpm rules:compile
-
-# Link to specific IDEs globally
-pnpm rules:link:codex
-pnpm rules:link:claude
-pnpm rules:link:antigravity
-pnpm rules:link:windsurf
-pnpm rules:link:all
-```
-
-Generated files: `CLAUDE.md`, `AGENTS.md`, `GEMINI.md`, `WINDSURF.md`, `.cursor/rules/`,
-`.claude/rules/`, `.agent/rules/`, `.windsurf/rules/`.
+- **Task**: plan, fix, refactor, review, debug
 
 ## Scripts
 
-| Script                 | Description                                        |
-| ---------------------- | -------------------------------------------------- |
-| `pnpm build`           | Full pipeline (format + lint + compile + validate) |
-| `pnpm check`           | CI-friendly check-all                              |
-| `pnpm rules:compile`   | Compile canonical rules for all IDEs               |
-| `pnpm rules:check`     | Verify compiled output is current                  |
-| `pnpm skills:validate` | Validate skills with AgentSkills spec              |
-| `pnpm skills:llms`     | Generate `llms.txt` for skill discovery            |
-| `pnpm format`          | Format all files with Prettier                     |
-| `pnpm lint`            | ESLint check                                       |
+| Script                        | Description                                              |
+| ----------------------------- | -------------------------------------------------------- |
+| `pnpm build`                  | Compile canonical rules for all IDEs                     |
+| `pnpm check:all`              | Format + lint + rules:check + skills:validate            |
+| `pnpm check`                  | Alias for `check:all`                                    |
+| `pnpm rules:compile`          | Compile `src/rules/` → `dist/global/` + `dist/markdown/` |
+| `pnpm rules:check`            | Verify compiled output is current                        |
+| `pnpm rules:link:all`         | Link rules globally for all IDEs                         |
+| `pnpm rules:link:claude`      | Link to `~/.claude/`                                     |
+| `pnpm rules:link:codex`       | Link to `~/.codex/`                                      |
+| `pnpm rules:link:antigravity` | Link to `~/.gemini/`                                     |
+| `pnpm rules:link:windsurf`    | Link to `~/.windsurf/`                                   |
+| `pnpm skills:validate`        | Validate all 19 skills against AgentSkills spec          |
+| `pnpm skills:llms`            | Generate `llms.txt` for skill discovery                  |
+| `pnpm skills:prompt`          | Generate XML prompt with all skills                      |
+| `pnpm skills:prompt:file`     | Write prompt to `available_skills.xml`                   |
+| `pnpm skills:version:check`   | Check skill version consistency                          |
+| `pnpm validate:install`       | Install Python venv for skills validation                |
+| `pnpm format`                 | Format all files with Prettier                           |
+| `pnpm format:check`           | Check formatting without writing                         |
+| `pnpm lint`                   | ESLint check                                             |
+| `pnpm lint:fix`               | ESLint auto-fix                                          |
+
+## Plugins
+
+### Cursor Plugin
+
+Location: `dist/plugins/cursor/.cursor-plugin/plugin.json`
+
+Bundles all rules and skills as a single Cursor plugin named **BusiRocket Agents**.
+
+### Claude Code Plugin
+
+Location: `dist/plugins/claude/.claude-plugin/plugin.json`
+
+Use with: `claude --plugin-dir /path/to/busirocket-agents-tools`
 
 ## Roadmap
 
-- **Phase 1 (MVP)** ✅ — Orchestrator, 8 core skills, canonical rules, IDE exports, Claude Code
-  plugin
+- **Phase 1 (MVP)** ✅ — Orchestrator, 8 core skills, canonical rules, IDE exports, plugins
 - **Phase 2** — Registry: index 8000+ skills, allowlists per stack, scoring
 - **Phase 3** — Auto-evolution: success/failure tracking, allowlist reordering
 

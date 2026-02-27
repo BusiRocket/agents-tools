@@ -10,7 +10,7 @@ import { join } from "path"
 
 const require = createRequire(import.meta.url)
 const ROOT = process.cwd()
-const SKILLS_DIR = join(ROOT, "skills")
+const SKILLS_DIR = join(ROOT, "src", "skills")
 const PACKAGE_JSON = join(ROOT, "package.json")
 
 function getSkillDirs() {

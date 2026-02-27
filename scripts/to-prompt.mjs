@@ -12,7 +12,7 @@ import { existsSync, readdirSync } from "fs"
 import { join } from "path"
 
 const ROOT = process.cwd()
-const SKILLS_DIR = join(ROOT, "skills")
+const SKILLS_DIR = join(ROOT, "src", "skills")
 const VENV_DIR = join(ROOT, ".venv-validate")
 const VENV_BIN = join(VENV_DIR, process.platform === "win32" ? "Scripts" : "bin")
 const VENV_CLI = join(VENV_BIN, process.platform === "win32" ? "agentskills.exe" : "agentskills")

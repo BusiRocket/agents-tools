@@ -7,30 +7,30 @@ import { promises as fs } from "node:fs"
 import path from "node:path"
 import { listFilesRecursive } from "./lib/fs/listFilesRecursive.mjs"
 import { readIfExists } from "./lib/fs/readIfExists.mjs"
+import { checkAntigravityRules } from "./lib/rules/checkAntigravityRules.mjs"
 import { checkClaudeRules } from "./lib/rules/checkClaudeRules.mjs"
 import { checkCursorRules } from "./lib/rules/checkCursorRules.mjs"
-import { checkAntigravityRules } from "./lib/rules/checkAntigravityRules.mjs"
 import { checkWindsurfRules } from "./lib/rules/checkWindsurfRules.mjs"
 import { generateBundle } from "./lib/rules/generateBundle.mjs"
 import { renderAgents } from "./lib/rules/renderAgents.mjs"
-import { renderClaude } from "./lib/rules/renderClaude.mjs"
 import { renderAntigravity } from "./lib/rules/renderAntigravity.mjs"
+import { renderClaude } from "./lib/rules/renderClaude.mjs"
 import { renderWindsurf } from "./lib/rules/renderWindsurf.mjs"
+import { syncAntigravityRules } from "./lib/rules/syncAntigravityRules.mjs"
 import { syncClaudeRules } from "./lib/rules/syncClaudeRules.mjs"
 import { syncCursorRules } from "./lib/rules/syncCursorRules.mjs"
-import { syncAntigravityRules } from "./lib/rules/syncAntigravityRules.mjs"
 import { syncWindsurfRules } from "./lib/rules/syncWindsurfRules.mjs"
 
 const ROOT = process.cwd()
-const SOURCE_DIR = path.join(ROOT, "rules", "source")
-const CURSOR_DIR = path.join(ROOT, ".cursor", "rules")
-const CLAUDE_RULES_DIR = path.join(ROOT, ".claude", "rules")
-const ANTIGRAVITY_DIR = path.join(ROOT, ".agent", "rules")
-const WINDSURF_DIR = path.join(ROOT, ".windsurf", "rules")
-const CLAUDE_PATH = path.join(ROOT, "CLAUDE.md")
-const AGENTS_PATH = path.join(ROOT, "AGENTS.md")
-const GEMINI_PATH = path.join(ROOT, "GEMINI.md")
-const WINDSURF_PATH = path.join(ROOT, "WINDSURF.md")
+const SOURCE_DIR = path.join(ROOT, "src", "rules")
+const CURSOR_DIR = path.join(ROOT, "dist", "global", ".cursor", "rules")
+const CLAUDE_RULES_DIR = path.join(ROOT, "dist", "global", ".claude", "rules")
+const ANTIGRAVITY_DIR = path.join(ROOT, "dist", "global", ".agent", "rules")
+const WINDSURF_DIR = path.join(ROOT, "dist", "global", ".windsurf", "rules")
+const CLAUDE_PATH = path.join(ROOT, "dist", "markdown", "CLAUDE.md")
+const AGENTS_PATH = path.join(ROOT, "dist", "markdown", "AGENTS.md")
+const GEMINI_PATH = path.join(ROOT, "dist", "markdown", "GEMINI.md")
+const WINDSURF_PATH = path.join(ROOT, "dist", "markdown", "WINDSURF.md")
 
 const main = async () => {
   const checkOnly = process.argv.includes("--check")

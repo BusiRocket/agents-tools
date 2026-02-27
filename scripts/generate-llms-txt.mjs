@@ -9,7 +9,7 @@ import { existsSync, readdirSync, readFileSync, writeFileSync } from "fs"
 import { join, relative } from "path"
 
 const ROOT = process.cwd()
-const SKILLS_DIR = join(ROOT, "skills")
+const SKILLS_DIR = join(ROOT, "src", "skills")
 const LLMS_TXT = join(ROOT, "llms.txt")
 
 function getSkillDirs() {

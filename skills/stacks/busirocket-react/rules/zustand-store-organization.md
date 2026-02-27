@@ -8,8 +8,7 @@ Organize Zustand stores for maintainability and performance.
 
 - One store per domain: `uiStore`, `workspaceStore`, `statusLogStore`, etc.
 - Keep stores focused; split when they grow too large
-- Use selectors to minimize re-renders:
-  `useStore((state) => state.specificValue)`
+- Use selectors to minimize re-renders: `useStore((state) => state.specificValue)`
 - Actions should be defined in the store, not in components
 
 ## Examples

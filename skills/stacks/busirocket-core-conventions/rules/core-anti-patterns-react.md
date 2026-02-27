@@ -14,10 +14,8 @@ Avoid React patterns that reduce maintainability and performance.
 ## Rules
 
 - **Fetching/DB calls inside components**.
-- **Helpers inside components/hooks** (formatting, parsing, mapping) instead of
-  `utils/`.
-- Marking a whole subtree `'use client'` just to use one hook; prefer smaller
-  client islands.
+- **Helpers inside components/hooks** (formatting, parsing, mapping) instead of `utils/`.
+- Marking a whole subtree `'use client'` just to use one hook; prefer smaller client islands.
 
 ## Examples
 

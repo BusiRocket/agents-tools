@@ -2,13 +2,11 @@
 
 ## Goal
 
-Avoid adding unnecessary dependencies that increase bundle size and maintenance
-burden.
+Avoid adding unnecessary dependencies that increase bundle size and maintenance burden.
 
 ## Dependency Anti-Pattern
 
-- Adding libraries for trivial helpers (date formatting, string utils) without
-  explicit approval.
+- Adding libraries for trivial helpers (date formatting, string utils) without explicit approval.
 
 ## Examples
 

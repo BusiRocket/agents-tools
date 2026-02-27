@@ -12,8 +12,7 @@ Maintain clean, navigable repository structure.
 
 ## Quality Gate
 
-Always run the project's standard checks after meaningful changes (e.g.
-`yarn check:all`).
+Always run the project's standard checks after meaningful changes (e.g. `yarn check:all`).
 
 ## Examples
 

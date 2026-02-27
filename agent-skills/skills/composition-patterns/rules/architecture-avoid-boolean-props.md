@@ -7,9 +7,9 @@ tags: composition, props, architecture
 
 ## Avoid Boolean Prop Proliferation
 
-Don't add boolean props like `isThread`, `isEditing`, `isDMThread` to customize
-component behavior. Each boolean doubles possible states and creates
-unmaintainable conditional logic. Use composition instead.
+Don't add boolean props like `isThread`, `isEditing`, `isDMThread` to customize component behavior.
+Each boolean doubles possible states and creates unmaintainable conditional logic. Use composition
+instead.
 
 **Incorrect (boolean props create exponential complexity):**
 
@@ -32,13 +32,7 @@ function Composer({
       ) : isThread ? (
         <AlsoSendToChannelField id={channelId} />
       ) : null}
-      {isEditing ? (
-        <EditActions />
-      ) : isForwarding ? (
-        <ForwardActions />
-      ) : (
-        <DefaultActions />
-      )}
+      {isEditing ? <EditActions /> : isForwarding ? <ForwardActions /> : <DefaultActions />}
       <Footer onSubmit={onSubmit} />
     </form>
   )
@@ -96,5 +90,5 @@ function EditComposer() {
 }
 ```
 
-Each variant is explicit about what it renders. We can share internals without
-sharing a single monolithic parent.
+Each variant is explicit about what it renders. We can share internals without sharing a single
+monolithic parent.

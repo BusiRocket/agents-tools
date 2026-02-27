@@ -7,8 +7,7 @@ Enforce strict helper discipline.
 ## Rule
 
 - Do not keep helper functions inside components/hooks.
-- If a helper is needed, extract it to `utils/<area>/SomeHelper.ts` (one
-  function per file).
+- If a helper is needed, extract it to `utils/<area>/SomeHelper.ts` (one function per file).
 
 ## Examples
 
@@ -64,8 +63,8 @@ import { formatAmount } from "utils/invoices/formatAmount"
 
 ## Coercion for dynamic inputs
 
-- For inputs that may be `string | string[] | unknown`, use a coercion helper
-  instead of casting (e.g. `coerceFirstString(val: unknown): string | null`).
+- For inputs that may be `string | string[] | unknown`, use a coercion helper instead of casting
+  (e.g. `coerceFirstString(val: unknown): string | null`).
 
 ## Best Practices
 

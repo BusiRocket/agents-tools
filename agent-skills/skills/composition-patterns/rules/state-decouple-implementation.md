@@ -7,9 +7,9 @@ tags: composition, state, architecture
 
 ## Decouple State Management from UI
 
-The provider component should be the only place that knows how state is managed.
-UI components consume the context interface—they don't know if state comes from
-useState, Zustand, or a server sync.
+The provider component should be the only place that knows how state is managed. UI components
+consume the context interface—they don't know if state comes from useState, Zustand, or a server
+sync.
 
 **Incorrect (UI coupled to state implementation):**
 
@@ -21,10 +21,7 @@ function ChannelComposer({ channelId }: { channelId: string }) {
 
   return (
     <Composer.Frame>
-      <Composer.Input
-        value={state.input}
-        onChange={(text) => sync.updateInput(text)}
-      />
+      <Composer.Input value={state.input} onChange={(text) => sync.updateInput(text)} />
       <Composer.Submit onPress={() => sync.submit()} />
     </Composer.Frame>
   )
@@ -46,11 +43,7 @@ function ChannelProvider({
   const inputRef = useRef(null)
 
   return (
-    <Composer.Provider
-      state={state}
-      actions={{ update, submit }}
-      meta={{ inputRef }}
-    >
+    <Composer.Provider state={state} actions={{ update, submit }} meta={{ inputRef }}>
       {children}
     </Composer.Provider>
   )
@@ -88,10 +81,7 @@ function ForwardMessageProvider({ children }) {
   const forwardMessage = useForwardMessage()
 
   return (
-    <Composer.Provider
-      state={state}
-      actions={{ update: setState, submit: forwardMessage }}
-    >
+    <Composer.Provider state={state} actions={{ update: setState, submit: forwardMessage }}>
       {children}
     </Composer.Provider>
   )
@@ -109,5 +99,5 @@ function ChannelProvider({ channelId, children }) {
 }
 ```
 
-The same `Composer.Input` component works with both providers because it only
-depends on the context interface, not the implementation.
+The same `Composer.Input` component works with both providers because it only depends on the context
+interface, not the implementation.

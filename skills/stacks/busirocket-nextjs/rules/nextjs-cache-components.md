@@ -9,8 +9,8 @@ Understand Cache Components behavior for route handlers.
 If Cache Components is enabled later:
 
 - `GET` handlers follow the same model as UI routes.
-- `use cache` **cannot** be used directly inside a Route Handler body; extract
-  it to a helper function.
+- `use cache` **cannot** be used directly inside a Route Handler body; extract it to a helper
+  function.
 
 ## Examples
 

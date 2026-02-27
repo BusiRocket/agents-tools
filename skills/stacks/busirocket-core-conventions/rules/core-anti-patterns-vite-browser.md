@@ -6,14 +6,13 @@ Avoid patterns that cause runtime errors in browser/webview environments.
 
 ## Vite/Browser Runtime Anti-Patterns
 
-- **`process` or `process.env`** in frontend code; use `import.meta.env` (Vite)
-  for environment variables.
-- **Node globals** (`process`, `Buffer`) at runtime in bundles that run in
-  browser or webview; they are undefined and will crash.
-- Patterns like `typeof process !== 'undefined'` in frontend code—they can still
-  ship to the bundle and cause issues.
-- **Hardcoded environment values** instead of using `.env` files and
-  `import.meta.env`.
+- **`process` or `process.env`** in frontend code; use `import.meta.env` (Vite) for environment
+  variables.
+- **Node globals** (`process`, `Buffer`) at runtime in bundles that run in browser or webview; they
+  are undefined and will crash.
+- Patterns like `typeof process !== 'undefined'` in frontend code—they can still ship to the bundle
+  and cause issues.
+- **Hardcoded environment values** instead of using `.env` files and `import.meta.env`.
 
 ## Examples
 

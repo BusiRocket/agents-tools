@@ -10,12 +10,10 @@ This rule only applies if/when this repository adds Supabase.
 
 ## Guideline
 
-- Isolate Supabase access in dedicated service wrappers (e.g.
-  `services/supabase/*`).
-- Do not call Supabase client methods directly from components, hooks, utils, or
-  route handlers.
-- Keep wrappers small, focused, and typed; prefer one file per domain (e.g.
-  `leaderboard.ts`, `periods.ts`).
+- Isolate Supabase access in dedicated service wrappers (e.g. `services/supabase/*`).
+- Do not call Supabase client methods directly from components, hooks, utils, or route handlers.
+- Keep wrappers small, focused, and typed; prefer one file per domain (e.g. `leaderboard.ts`,
+  `periods.ts`).
 
 ## Examples
 
@@ -28,11 +26,7 @@ import { supabaseUrl, supabaseKey } from "lib/supabase"
 const supabase = createClient(supabaseUrl, supabaseKey)
 
 export const getInvoice = async (id: string) => {
-  const { data, error } = await supabase
-    .from("invoices")
-    .select("*")
-    .eq("id", id)
-    .single()
+  const { data, error } = await supabase.from("invoices").select("*").eq("id", id).single()
 
   if (error) {
     throw new Error(error.message)

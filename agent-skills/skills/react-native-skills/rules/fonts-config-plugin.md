@@ -7,18 +7,18 @@ tags: fonts, expo, performance, config-plugin
 
 ## Use Expo Config Plugin for Font Loading
 
-Use the `expo-font` config plugin to embed fonts at build time instead of
-`useFonts` or `Font.loadAsync`. Embedded fonts are more efficient.
+Use the `expo-font` config plugin to embed fonts at build time instead of `useFonts` or
+`Font.loadAsync`. Embedded fonts are more efficient.
 
 **Incorrect (async font loading):**
 
 ```tsx
-import { useFonts } from 'expo-font'
-import { Text, View } from 'react-native'
+import { useFonts } from "expo-font"
+import { Text, View } from "react-native"
 
 function App() {
   const [fontsLoaded] = useFonts({
-    'Geist-Bold': require('./assets/fonts/Geist-Bold.otf'),
+    "Geist-Bold": require("./assets/fonts/Geist-Bold.otf"),
   })
 
   if (!fontsLoaded) {
@@ -27,7 +27,7 @@ function App() {
 
   return (
     <View>
-      <Text style={{ fontFamily: 'Geist-Bold' }}>Hello</Text>
+      <Text style={{ fontFamily: "Geist-Bold" }}>Hello</Text>
     </View>
   )
 }
@@ -52,20 +52,18 @@ function App() {
 ```
 
 ```tsx
-import { Text, View } from 'react-native'
+import { Text, View } from "react-native"
 
 function App() {
   // No loading state needed—font is already available
   return (
     <View>
-      <Text style={{ fontFamily: 'Geist-Bold' }}>Hello</Text>
+      <Text style={{ fontFamily: "Geist-Bold" }}>Hello</Text>
     </View>
   )
 }
 ```
 
-After adding fonts to the config plugin, run `npx expo prebuild` and rebuild the
-native app.
+After adding fonts to the config plugin, run `npx expo prebuild` and rebuild the native app.
 
-Reference:
-[Expo Font Documentation](https://docs.expo.dev/versions/latest/sdk/font/)
+Reference: [Expo Font Documentation](https://docs.expo.dev/versions/latest/sdk/font/)

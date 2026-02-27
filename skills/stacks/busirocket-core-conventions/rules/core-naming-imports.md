@@ -7,8 +7,7 @@ Establish consistent import patterns for maintainability.
 ## Import Rules
 
 - No barrel/index files.
-- Prefer relative imports within a domain folder; use aliases only when they
-  reduce churn.
+- Prefer relative imports within a domain folder; use aliases only when they reduce churn.
 
 ## Examples
 

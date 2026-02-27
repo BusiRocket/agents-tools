@@ -1,9 +1,8 @@
 ---
 name: busirocket-tauri
 description:
-  Applies Tauri-specific standards for desktop apps. Use when creating Tauri
-  commands, configuring invoke handler and permissions, and applying Rust layout
-  under src-tauri.
+  Applies Tauri-specific standards for desktop apps. Use when creating Tauri commands, configuring
+  invoke handler and permissions, and applying Rust layout under src-tauri.
 metadata:
   author: cristiandeluxe
   version: "1.0.0"
@@ -11,8 +10,8 @@ metadata:
 
 # Tauri Standards
 
-Tauri-specific conventions for desktop applications. Builds on `busirocket-rust`
-for language and module rules.
+Tauri-specific conventions for desktop applications. Builds on `busirocket-rust` for language and
+module rules.
 
 ## When to Use
 
@@ -24,10 +23,10 @@ Use this skill when:
 
 ## Non-Negotiables (MUST)
 
-- When creating a Tauri command: (1) create command file, (2) register in invoke
-  handler, (3) add to permissions allowlist.
-- Rust code lives under `src-tauri/src/`; apply `busirocket-rust` module layout
-  there (services, utils, models).
+- When creating a Tauri command: (1) create command file, (2) register in invoke handler, (3) add to
+  permissions allowlist.
+- Rust code lives under `src-tauri/src/`; apply `busirocket-rust` module layout there (services,
+  utils, models).
 - SQL under `src-tauri/sql/<area>/`, prompts under `src-tauri/prompts/<area>/`.
 
 ## Rules
@@ -42,8 +41,7 @@ Use this skill when:
 
 ## Related Skills
 
-- `busirocket-rust` - Rust language, one-thing-per-file, boundaries, SQL/prompt
-  separation
+- `busirocket-rust` - Rust language, one-thing-per-file, boundaries, SQL/prompt separation
 - `busirocket-core-conventions` - General file structure principles
 
 ## How to Use

@@ -23,7 +23,7 @@ export async function POST(request: Request) {
   if (!isRecord(body)) {
     return Response.json(
       { error: { code: "VALIDATION_ERROR", message: "Invalid request body" } },
-      { status: 400 }
+      { status: 400 },
     )
   }
 

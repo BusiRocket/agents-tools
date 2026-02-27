@@ -2,8 +2,7 @@
 
 ## Goal
 
-Use Zod for complex validation schemas, especially for API responses and
-external data.
+Use Zod for complex validation schemas, especially for API responses and external data.
 
 ## When to Use Zod
 

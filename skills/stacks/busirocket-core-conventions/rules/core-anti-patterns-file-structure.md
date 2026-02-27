@@ -6,11 +6,9 @@ Avoid patterns that destroy agent context quality and make refactors risky.
 
 ## File Structure Anti-Patterns
 
-- **Multiple exports per file** (any combination of
-  component/hook/function/type).
+- **Multiple exports per file** (any combination of component/hook/function/type).
 - **Barrel/index files** (`index.ts`) that hide dependencies.
-- **Growing "misc" modules** (`helpers.ts`, `utils.ts`, `types.ts`,
-  `constants.ts`).
+- **Growing "misc" modules** (`helpers.ts`, `utils.ts`, `types.ts`, `constants.ts`).
 
 ## Examples
 

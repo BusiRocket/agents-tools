@@ -6,8 +6,8 @@ Enforce strict type discipline.
 
 ## Rule
 
-- **No inline `interface`/`type` declarations** in components, hooks, utils,
-  services, or route handlers.
+- **No inline `interface`/`type` declarations** in components, hooks, utils, services, or route
+  handlers.
 - Put types in `types/<area>/...` as dedicated files.
 - One type per file.
 

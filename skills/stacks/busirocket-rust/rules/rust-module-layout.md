@@ -12,8 +12,7 @@ Establish strict module layout conventions.
 - `src/models/`: domain types (one type per file).
 - No "misc" modules like `helpers.rs` or `common.rs`.
 
-In Tauri projects, this layout lives under `src-tauri/src/` (see
-`busirocket-tauri` skill).
+In Tauri projects, this layout lives under `src-tauri/src/` (see `busirocket-tauri` skill).
 
 ## Examples
 

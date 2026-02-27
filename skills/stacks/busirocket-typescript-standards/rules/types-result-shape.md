@@ -6,8 +6,8 @@ Establish consistent result shapes for boundaries that can fail.
 
 ## Result Shape (recommended)
 
-For boundaries that can fail (services), prefer a typed result object instead of
-throwing for expected failures:
+For boundaries that can fail (services), prefer a typed result object instead of throwing for
+expected failures:
 
 - `type XxxResult = { ok: true; value: T } | { ok: false; error: XxxError }`
 
@@ -31,9 +31,7 @@ export type CreateInvoiceResult =
 // services/invoices/createInvoice.ts
 import type { CreateInvoiceResult } from "types/invoices/CreateInvoiceResult"
 
-export const createInvoice = async (
-  input: CreateInvoiceInput
-): Promise<CreateInvoiceResult> => {
+export const createInvoice = async (input: CreateInvoiceInput): Promise<CreateInvoiceResult> => {
   try {
     const invoice = await db.invoices.create(input)
     return { ok: true, value: invoice }
@@ -49,9 +47,7 @@ export const createInvoice = async (
 ```typescript
 // ❌ Incorrect - throwing for expected failure
 // services/invoices/createInvoice.ts
-export const createInvoice = async (
-  input: CreateInvoiceInput
-): Promise<Invoice> => {
+export const createInvoice = async (input: CreateInvoiceInput): Promise<Invoice> => {
   const invoice = await db.invoices.create(input)
   if (!invoice) {
     throw new Error("Failed to create invoice") // Should return result object

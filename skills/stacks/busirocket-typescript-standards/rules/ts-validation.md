@@ -6,8 +6,7 @@ Ensure code quality through validation checks.
 
 ## Validation Rule
 
-After meaningful changes: run the project's standard checks (e.g.
-`yarn check:all`).
+After meaningful changes: run the project's standard checks (e.g. `yarn check:all`).
 
 ## Examples
 

@@ -1,9 +1,9 @@
 ---
 name: busirocket-rust
 description:
-  Enforces Rust language and module standards for maintainable codebases. Use
-  when writing Rust code, structuring modules, separating SQL/prompts from code,
-  and enforcing one-thing-per-file discipline.
+  Enforces Rust language and module standards for maintainable codebases. Use when writing Rust
+  code, structuring modules, separating SQL/prompts from code, and enforcing one-thing-per-file
+  discipline.
 metadata:
   author: cristiandeluxe
   version: "1.0.0"
@@ -11,8 +11,7 @@ metadata:
 
 # Rust Standards
 
-Strict, reusable standards for Rust codebases (libraries, CLIs, or backend
-services).
+Strict, reusable standards for Rust codebases (libraries, CLIs, or backend services).
 
 ## When to Use
 
@@ -26,10 +25,10 @@ Use this skill when:
 ## Non-Negotiables (MUST)
 
 - **One public symbol per file** (function / type / trait).
-- **No inline SQL strings** in `.rs` files; use dedicated SQL files with
-  `include_str!()` (e.g. `sql/<area>/Xxx.sql`).
-- **No inline LLM/AI prompts** in `.rs` files; use dedicated prompt files with
-  `include_str!()` (e.g. `prompts/<area>/Xxx.prompt`).
+- **No inline SQL strings** in `.rs` files; use dedicated SQL files with `include_str!()` (e.g.
+  `sql/<area>/Xxx.sql`).
+- **No inline LLM/AI prompts** in `.rs` files; use dedicated prompt files with `include_str!()`
+  (e.g. `prompts/<area>/Xxx.prompt`).
 - Handlers (HTTP, commands, etc.) must be thin: validate, call service, return.
 
 ## Module Layout
@@ -43,8 +42,7 @@ Use this skill when:
 
 ### Language & Style
 
-- `rust-language-style` - Language & style (English-only, struct/enum, error
-  types)
+- `rust-language-style` - Language & style (English-only, struct/enum, error types)
 
 ### One Thing Per File
 
@@ -74,8 +72,7 @@ Use this skill when:
 ## Related Skills
 
 - `busirocket-core-conventions` - General file structure principles
-- `busirocket-tauri` - Tauri-specific layout and commands (when building desktop
-  apps)
+- `busirocket-tauri` - Tauri-specific layout and commands (when building desktop apps)
 
 ## How to Use
 

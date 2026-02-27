@@ -7,9 +7,8 @@ Separate LLM/AI prompts from Rust code.
 ## Rule
 
 - **No inline LLM or AI prompts** inside `.rs` files.
-- Put each prompt in its own file under your prompts directory (e.g.
-  `prompts/<area>/Xxx.prompt`; in Tauri projects typically
-  `src-tauri/prompts/<area>/Xxx.prompt`).
+- Put each prompt in its own file under your prompts directory (e.g. `prompts/<area>/Xxx.prompt`; in
+  Tauri projects typically `src-tauri/prompts/<area>/Xxx.prompt`).
 - Load with `include_str!()` in Rust code.
 
 ## Examples

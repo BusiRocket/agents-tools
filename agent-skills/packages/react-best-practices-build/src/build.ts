@@ -3,27 +3,27 @@
  * Build script to compile individual rule files into AGENTS.md
  */
 
-import { readdir, readFile, writeFile } from 'fs/promises'
-import { join } from 'path'
-import { Rule, Section, GuidelinesDocument, ImpactLevel } from './types.js'
-import { parseRuleFile, RuleFile } from './parser.js'
-import { SKILLS, SkillConfig, DEFAULT_SKILL } from './config.js'
+import { readdir, readFile, writeFile } from "fs/promises"
+import { join } from "path"
+import { Rule, Section, GuidelinesDocument, ImpactLevel } from "./types.js"
+import { parseRuleFile, RuleFile } from "./parser.js"
+import { SKILLS, SkillConfig, DEFAULT_SKILL } from "./config.js"
 
 // Parse command line arguments
 const args = process.argv.slice(2)
-const upgradeVersion = args.includes('--upgrade-version')
-const skillArg = args.find((arg) => arg.startsWith('--skill='))
-const skillName = skillArg ? skillArg.split('=')[1] : null
-const buildAll = args.includes('--all')
+const upgradeVersion = args.includes("--upgrade-version")
+const skillArg = args.find((arg) => arg.startsWith("--skill="))
+const skillName = skillArg ? skillArg.split("=")[1] : null
+const buildAll = args.includes("--all")
 
 /**
  * Increment a semver-style version string (e.g., "0.1.0" -> "0.1.1", "1.0" -> "1.1")
  */
 function incrementVersion(version: string): string {
-  const parts = version.split('.').map(Number)
+  const parts = version.split(".").map(Number)
   // Increment the last part
   parts[parts.length - 1]++
-  return parts.join('.')
+  return parts.join(".")
 }
 
 /**
@@ -38,7 +38,7 @@ function generateMarkdown(
     abstract: string
     references?: string[]
   },
-  skillConfig: SkillConfig
+  skillConfig: SkillConfig,
 ): string {
   let md = `# ${skillConfig.title}\n\n`
   md += `**Version ${metadata.version}**  \n`
@@ -59,15 +59,13 @@ function generateMarkdown(
   sections.forEach((section) => {
     md += `${section.number}. [${section.title}](#${
       section.number
-    }-${section.title.toLowerCase().replace(/\s+/g, '-')}) — **${
-      section.impact
-    }**\n`
+    }-${section.title.toLowerCase().replace(/\s+/g, "-")}) — **${section.impact}**\n`
     section.rules.forEach((rule) => {
       // GitHub generates anchors from the full heading text: "1.1 Title" -> "#11-title"
       const anchor = `${rule.id} ${rule.title}`
         .toLowerCase()
-        .replace(/\s+/g, '-')
-        .replace(/[^\w-]/g, '') // Remove special characters except hyphens
+        .replace(/\s+/g, "-")
+        .replace(/[^\w-]/g, "") // Remove special characters except hyphens
       md += `   - ${rule.id} [${rule.title}](#${anchor})\n`
     })
   })
@@ -78,7 +76,7 @@ function generateMarkdown(
   sections.forEach((section) => {
     md += `## ${section.number}. ${section.title}\n\n`
     md += `**Impact: ${section.impact}${
-      section.impactDescription ? ` (${section.impactDescription})` : ''
+      section.impactDescription ? ` (${section.impactDescription})` : ""
     }**\n\n`
     if (section.introduction) {
       md += `${section.introduction}\n\n`
@@ -87,7 +85,7 @@ function generateMarkdown(
     section.rules.forEach((rule) => {
       md += `### ${rule.id} ${rule.title}\n\n`
       md += `**Impact: ${rule.impact}${
-        rule.impactDescription ? ` (${rule.impactDescription})` : ''
+        rule.impactDescription ? ` (${rule.impactDescription})` : ""
       }**\n\n`
       md += `${rule.explanation}\n\n`
 
@@ -99,7 +97,7 @@ function generateMarkdown(
         }
         // Only generate code block if there's actual code
         if (example.code && example.code.trim()) {
-          md += `\`\`\`${example.language || 'typescript'}\n`
+          md += `\`\`\`${example.language || "typescript"}\n`
           md += `${example.code}\n`
           md += `\`\`\`\n\n`
         }
@@ -109,9 +107,7 @@ function generateMarkdown(
       })
 
       if (rule.references && rule.references.length > 0) {
-        md += `Reference: ${rule.references
-          .map((ref) => `[${ref}](${ref})`)
-          .join(', ')}\n\n`
+        md += `Reference: ${rule.references.map((ref) => `[${ref}](${ref})`).join(", ")}\n\n`
       }
     })
 
@@ -140,7 +136,7 @@ async function buildSkill(skillConfig: SkillConfig) {
   // Read all rule files (exclude files starting with _ and README.md)
   const files = await readdir(skillConfig.rulesDir)
   const ruleFiles = files
-    .filter((f) => f.endsWith('.md') && !f.startsWith('_') && f !== 'README.md')
+    .filter((f) => f.endsWith(".md") && !f.startsWith("_") && f !== "README.md")
     .sort() // Sort filenames for consistent ordering across systems
 
   const ruleData: RuleFile[] = []
@@ -171,9 +167,7 @@ async function buildSkill(skillConfig: SkillConfig) {
 
   // Sort rules within each section by title (using en-US locale for consistency across environments)
   sectionsMap.forEach((section) => {
-    section.rules.sort((a, b) =>
-      a.title.localeCompare(b.title, 'en-US', { sensitivity: 'base' })
-    )
+    section.rules.sort((a, b) => a.title.localeCompare(b.title, "en-US", { sensitivity: "base" }))
 
     // Assign IDs based on sorted order
     section.rules.forEach((rule, index) => {
@@ -183,19 +177,15 @@ async function buildSkill(skillConfig: SkillConfig) {
   })
 
   // Convert to array and sort
-  const sections = Array.from(sectionsMap.values()).sort(
-    (a, b) => a.number - b.number
-  )
+  const sections = Array.from(sectionsMap.values()).sort((a, b) => a.number - b.number)
 
   // Read section metadata from consolidated _sections.md file
-  const sectionsFile = join(skillConfig.rulesDir, '_sections.md')
+  const sectionsFile = join(skillConfig.rulesDir, "_sections.md")
   try {
-    const sectionsContent = await readFile(sectionsFile, 'utf-8')
+    const sectionsContent = await readFile(sectionsFile, "utf-8")
 
     // Parse sections using regex to match each section block
-    const sectionBlocks = sectionsContent
-      .split(/(?=^## \d+\. )/m)
-      .filter(Boolean)
+    const sectionBlocks = sectionsContent.split(/(?=^## \d+\. )/m).filter(Boolean)
 
     for (const block of sectionBlocks) {
       // Extract section number and title, removing section ID in parentheses
@@ -208,12 +198,12 @@ async function buildSkill(skillConfig: SkillConfig) {
       // Extract impact (format: **Impact:** CRITICAL)
       const impactMatch = block.match(/\*\*Impact:\*\*\s+(\w+(?:-\w+)?)/i)
       const impactLevel = impactMatch
-        ? (impactMatch[1].toUpperCase().replace(/-/g, '-') as ImpactLevel)
-        : 'MEDIUM'
+        ? (impactMatch[1].toUpperCase().replace(/-/g, "-") as ImpactLevel)
+        : "MEDIUM"
 
       // Extract description (format: **Description:** text)
       const descMatch = block.match(/\*\*Description:\*\*\s+(.+?)(?=\n\n##|$)/s)
-      const description = descMatch ? descMatch[1].trim() : ''
+      const description = descMatch ? descMatch[1].trim() : ""
 
       // Update section if it exists
       const section = sections.find((s) => s.number === sectionNumber)
@@ -224,21 +214,21 @@ async function buildSkill(skillConfig: SkillConfig) {
       }
     }
   } catch (error) {
-    console.warn('  Warning: Could not read _sections.md, using defaults')
+    console.warn("  Warning: Could not read _sections.md, using defaults")
   }
 
   // Read metadata
   let metadata
   try {
-    const metadataContent = await readFile(skillConfig.metadataFile, 'utf-8')
+    const metadataContent = await readFile(skillConfig.metadataFile, "utf-8")
     metadata = JSON.parse(metadataContent)
   } catch {
     metadata = {
-      version: '1.0.0',
-      organization: 'Engineering',
-      date: new Date().toLocaleDateString('en-US', {
-        month: 'long',
-        year: 'numeric',
+      version: "1.0.0",
+      organization: "Engineering",
+      date: new Date().toLocaleDateString("en-US", {
+        month: "long",
+        year: "numeric",
       }),
       abstract: `Performance optimization guide for ${skillConfig.description}, ordered by impact.`,
     }
@@ -251,22 +241,18 @@ async function buildSkill(skillConfig: SkillConfig) {
     console.log(`  Upgrading version: ${oldVersion} -> ${metadata.version}`)
 
     // Write updated metadata.json
-    await writeFile(
-      skillConfig.metadataFile,
-      JSON.stringify(metadata, null, 2) + '\n',
-      'utf-8'
-    )
+    await writeFile(skillConfig.metadataFile, JSON.stringify(metadata, null, 2) + "\n", "utf-8")
     console.log(`  ✓ Updated metadata.json`)
 
     // Update SKILL.md frontmatter if it exists
-    const skillFile = join(skillConfig.skillDir, 'SKILL.md')
+    const skillFile = join(skillConfig.skillDir, "SKILL.md")
     try {
-      const skillContent = await readFile(skillFile, 'utf-8')
+      const skillContent = await readFile(skillFile, "utf-8")
       const updatedSkillContent = skillContent.replace(
         /^(---[\s\S]*?version:\s*)"[^"]*"([\s\S]*?---)$/m,
-        `$1"${metadata.version}"$2`
+        `$1"${metadata.version}"$2`,
       )
-      await writeFile(skillFile, updatedSkillContent, 'utf-8')
+      await writeFile(skillFile, updatedSkillContent, "utf-8")
       console.log(`  ✓ Updated SKILL.md`)
     } catch {
       // SKILL.md doesn't exist, skip
@@ -277,11 +263,9 @@ async function buildSkill(skillConfig: SkillConfig) {
   const markdown = generateMarkdown(sections, metadata, skillConfig)
 
   // Write output
-  await writeFile(skillConfig.outputFile, markdown, 'utf-8')
+  await writeFile(skillConfig.outputFile, markdown, "utf-8")
 
-  console.log(
-    `  ✓ Built AGENTS.md with ${sections.length} sections and ${ruleData.length} rules`
-  )
+  console.log(`  ✓ Built AGENTS.md with ${sections.length} sections and ${ruleData.length} rules`)
 }
 
 /**
@@ -289,7 +273,7 @@ async function buildSkill(skillConfig: SkillConfig) {
  */
 async function build() {
   try {
-    console.log('Building AGENTS.md from rules...')
+    console.log("Building AGENTS.md from rules...")
 
     if (buildAll) {
       // Build all skills
@@ -301,7 +285,7 @@ async function build() {
       const skill = SKILLS[skillName]
       if (!skill) {
         console.error(`Unknown skill: ${skillName}`)
-        console.error(`Available skills: ${Object.keys(SKILLS).join(', ')}`)
+        console.error(`Available skills: ${Object.keys(SKILLS).join(", ")}`)
         process.exit(1)
       }
       await buildSkill(skill)
@@ -310,9 +294,9 @@ async function build() {
       await buildSkill(SKILLS[DEFAULT_SKILL])
     }
 
-    console.log('\n✓ Build complete')
+    console.log("\n✓ Build complete")
   } catch (error) {
-    console.error('Build failed:', error)
+    console.error("Build failed:", error)
     process.exit(1)
   }
 }

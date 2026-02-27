@@ -2,8 +2,7 @@
 
 ## Goal
 
-Avoid duplicating type definitions by inferring TypeScript types from Zod
-schemas.
+Avoid duplicating type definitions by inferring TypeScript types from Zod schemas.
 
 ## Pattern: Use `z.infer`
 

@@ -7,7 +7,9 @@ tags: state, derived-state, hooks, optimization
 
 ## Minimize State Variables and Derive Values
 
-Use the fewest state variables possible. If a value can be computed from existing state or props, derive it during render instead of storing it in state. Redundant state causes unnecessary re-renders and can drift out of sync.
+Use the fewest state variables possible. If a value can be computed from existing state or props,
+derive it during render instead of storing it in state. Redundant state causes unnecessary
+re-renders and can drift out of sync.
 
 **Incorrect (redundant state):**
 
@@ -50,13 +52,13 @@ function Cart({ items }: { items: Item[] }) {
 
 ```tsx
 // Incorrect: storing both firstName, lastName, AND fullName
-const [firstName, setFirstName] = useState('')
-const [lastName, setLastName] = useState('')
-const [fullName, setFullName] = useState('')
+const [firstName, setFirstName] = useState("")
+const [lastName, setLastName] = useState("")
+const [fullName, setFullName] = useState("")
 
 // Correct: derive fullName
-const [firstName, setFirstName] = useState('')
-const [lastName, setLastName] = useState('')
+const [firstName, setFirstName] = useState("")
+const [lastName, setLastName] = useState("")
 const fullName = `${firstName} ${lastName}`
 ```
 

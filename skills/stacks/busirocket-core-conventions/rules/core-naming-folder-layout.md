@@ -10,8 +10,7 @@ Establish consistent folder structure across the codebase.
 - `components/<area>/...`: reusable UI
 - `hooks/<area>/useXxx.ts`: one hook per file
 - `utils/<area>/xxx.ts`: one pure helper function per file
-- `services/<area>/xxx.ts`: one boundary function per file
-  (network/DB/integrations)
+- `services/<area>/xxx.ts`: one boundary function per file (network/DB/integrations)
 - `types/<area>/Xxx.ts`: one type/interface per file
 
 ## Examples

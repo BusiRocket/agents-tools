@@ -1,9 +1,8 @@
 ---
 name: busirocket-typescript-standards
 description:
-  Enforces TypeScript standards for maintainable codebases. Use when creating or
-  refactoring TS/TSX to enforce one-thing-per-file, type conventions, and
-  Next.js special-file export exceptions.
+  Enforces TypeScript standards for maintainable codebases. Use when creating or refactoring TS/TSX
+  to enforce one-thing-per-file, type conventions, and Next.js special-file export exceptions.
 metadata:
   author: cristiandeluxe
   version: "1.0.0"
@@ -25,26 +24,22 @@ Use this skill when:
 ## Non-Negotiables (MUST)
 
 - **One exported symbol per file** for your own modules.
-- **No inline `interface`/`type`** in components/hooks/utils/services/route
-  handlers.
+- **No inline `interface`/`type`** in components/hooks/utils/services/route handlers.
 - Put shared shapes under `types/<area>/...` (**one type per file**).
 - Avoid barrel files (`index.ts`) that hide dependencies.
-- After meaningful changes: run the project's standard checks (e.g.
-  `yarn check:all`).
+- After meaningful changes: run the project's standard checks (e.g. `yarn check:all`).
 
 ## Next.js Special-file Exceptions
 
 - `app/**/page.tsx`, `app/**/layout.tsx`: allow `default export` +
   `metadata/generateMetadata/viewport` (etc.).
-- `app/api/**/route.ts`: allow multiple HTTP method exports and route config
-  exports.
+- `app/api/**/route.ts`: allow multiple HTTP method exports and route config exports.
 
 ## Rules
 
 ### TypeScript Standards
 
-- `ts-language-style` - Language & style (interface vs type, const vs let,
-  English-only)
+- `ts-language-style` - Language & style (interface vs type, const vs let, English-only)
 - `ts-one-thing-per-file` - One thing per file (STRICT)
 - `ts-nextjs-exceptions` - Next.js special-file exceptions
 - `ts-types-strict` - Types (STRICT) - no inline types
@@ -61,8 +56,7 @@ Use this skill when:
 
 ## Related Skills
 
-- `busirocket-core-conventions` - General file structure (one-thing-per-file,
-  boundaries)
+- `busirocket-core-conventions` - General file structure (one-thing-per-file, boundaries)
 - `busirocket-react` - Component and hook structure
 - `busirocket-refactor-workflow` - Refactoring workflow for TypeScript/React
 

@@ -8,8 +8,8 @@ Understand allowed exceptions for Next.js special files.
 
 Some Next.js files require additional exports by convention. Allowed exceptions:
 
-- `app/**/layout.tsx`, `app/**/page.tsx`: `default export` + `metadata` /
-  `generateMetadata` / `viewport` (etc.).
+- `app/**/layout.tsx`, `app/**/page.tsx`: `default export` + `metadata` / `generateMetadata` /
+  `viewport` (etc.).
 - `app/api/**/route.ts`: multiple HTTP method exports and route config exports.
 
 ## Examples

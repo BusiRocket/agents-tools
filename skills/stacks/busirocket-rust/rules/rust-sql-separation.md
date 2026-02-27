@@ -7,9 +7,8 @@ Separate SQL queries from Rust code.
 ## Rule
 
 - **No inline SQL strings** inside `.rs` files.
-- Put each query in its own file under your SQL directory (e.g.
-  `sql/<area>/Xxx.sql`; in Tauri projects typically
-  `src-tauri/sql/<area>/Xxx.sql`).
+- Put each query in its own file under your SQL directory (e.g. `sql/<area>/Xxx.sql`; in Tauri
+  projects typically `src-tauri/sql/<area>/Xxx.sql`).
 - Load with `include_str!()` in Rust code.
 
 ## Examples

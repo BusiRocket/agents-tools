@@ -2,7 +2,7 @@
  * Type definitions for React Performance Guidelines rules
  */
 
-export type ImpactLevel = 'CRITICAL' | 'HIGH' | 'MEDIUM-HIGH' | 'MEDIUM' | 'LOW-MEDIUM' | 'LOW'
+export type ImpactLevel = "CRITICAL" | "HIGH" | "MEDIUM-HIGH" | "MEDIUM" | "LOW-MEDIUM" | "LOW"
 
 export interface CodeExample {
   label: string // e.g., "Incorrect", "Correct", "Example"
@@ -46,7 +46,7 @@ export interface GuidelinesDocument {
 export interface TestCase {
   ruleId: string
   ruleTitle: string
-  type: 'bad' | 'good'
+  type: "bad" | "good"
   code: string
   language: string
   description?: string

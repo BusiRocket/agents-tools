@@ -7,8 +7,7 @@ Establish where types can be defined.
 ## Rule
 
 - Types must live in `types/<area>/...`.
-- Do not declare inline types/interfaces in
-  components/hooks/utils/services/route handlers.
+- Do not declare inline types/interfaces in components/hooks/utils/services/route handlers.
 
 ## Examples
 

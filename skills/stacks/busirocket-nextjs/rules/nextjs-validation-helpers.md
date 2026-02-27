@@ -25,11 +25,7 @@ export const coerceFirstString = (value: unknown): string | null => {
   if (typeof value === "string") {
     return value
   }
-  if (
-    Array.isArray(value) &&
-    value.length > 0 &&
-    typeof value[0] === "string"
-  ) {
+  if (Array.isArray(value) && value.length > 0 && typeof value[0] === "string") {
     return value[0]
   }
   return null
@@ -63,7 +59,7 @@ export async function POST(request: Request) {
   if (!isRecord(body)) {
     return Response.json(
       { error: { code: "VALIDATION_ERROR", message: "Invalid request body" } },
-      { status: 400 }
+      { status: 400 },
     )
   }
 
@@ -71,7 +67,7 @@ export async function POST(request: Request) {
   if (amount === null) {
     return Response.json(
       { error: { code: "VALIDATION_ERROR", message: "Invalid amount" } },
-      { status: 400 }
+      { status: 400 },
     )
   }
 

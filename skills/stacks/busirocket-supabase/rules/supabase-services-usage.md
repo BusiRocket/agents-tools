@@ -9,10 +9,9 @@ Centralize Supabase access in service modules.
 This rule only applies if/when this repository adds Supabase.
 
 - Route handlers, hooks, utils, and components must NOT call Supabase directly.
-- Centralize reads/writes in dedicated Supabase service modules (e.g.
-  `services/supabase/`).
-- Never import `@supabase/supabase-js` outside a single Supabase client module
-  (e.g. `lib/supabase.ts`) or your Supabase service wrappers.
+- Centralize reads/writes in dedicated Supabase service modules (e.g. `services/supabase/`).
+- Never import `@supabase/supabase-js` outside a single Supabase client module (e.g.
+  `lib/supabase.ts`) or your Supabase service wrappers.
 
 ## Examples
 
@@ -23,7 +22,7 @@ import { createClient } from "@supabase/supabase-js"
 
 export const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
 )
 ```
 
@@ -33,11 +32,7 @@ export const supabase = createClient(
 import { supabase } from "lib/supabase"
 
 export const getInvoice = async (id: string) => {
-  const { data, error } = await supabase
-    .from("invoices")
-    .select("*")
-    .eq("id", id)
-    .single()
+  const { data, error } = await supabase.from("invoices").select("*").eq("id", id).single()
 
   if (error) throw error
   return data

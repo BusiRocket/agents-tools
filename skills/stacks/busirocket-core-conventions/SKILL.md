@@ -1,9 +1,9 @@
 ---
 name: busirocket-core-conventions
 description:
-  Applies general engineering conventions optimized for AI agents. Use when
-  creating or refactoring codebases and you need strict file discipline, clear
-  module boundaries, naming/layout rules, and anti-pattern avoidance.
+  Applies general engineering conventions optimized for AI agents. Use when creating or refactoring
+  codebases and you need strict file discipline, clear module boundaries, naming/layout rules, and
+  anti-pattern avoidance.
 metadata:
   author: cristiandeluxe
   version: "1.0.0"
@@ -11,8 +11,8 @@ metadata:
 
 # Core Conventions
 
-Reusable, project-agnostic conventions designed to keep codebases scalable and
-easy for AI agents to navigate.
+Reusable, project-agnostic conventions designed to keep codebases scalable and easy for AI agents to
+navigate.
 
 ## When to Use
 
@@ -26,8 +26,7 @@ Use this skill when:
 ## Non-Negotiables (MUST)
 
 - Keep **many small, focused files** with explicit boundaries.
-- **One exported symbol per file** for your own modules
-  (component/hook/function/type).
+- **One exported symbol per file** for your own modules (component/hook/function/type).
 - **No barrel/index files** (e.g. `index.ts`) that hide dependencies.
 - **No inline types** outside `types/`.
 - **No helper functions inside components or hooks**; extract to `utils/`.
@@ -46,29 +45,23 @@ Use this skill when:
 
 ### Core Principles
 
-- `core-agent-defaults` - Agent behavior defaults (small changes, ask questions,
-  avoid dependencies)
-- `core-code-style` - Code style guidelines (English-only, pure functions, avoid
-  nesting)
-- `core-repo-hygiene` - Repository hygiene (no barrel files, one responsibility,
-  thin handlers)
+- `core-agent-defaults` - Agent behavior defaults (small changes, ask questions, avoid dependencies)
+- `core-code-style` - Code style guidelines (English-only, pure functions, avoid nesting)
+- `core-repo-hygiene` - Repository hygiene (no barrel files, one responsibility, thin handlers)
 
 ### Boundaries & Placement
 
-- `core-boundaries-decision-tree` - Decision tree for where code belongs (app,
-  components, hooks, utils, services, types)
-- `core-boundaries-hard-rules` - Hard rules for boundaries (one export, no
-  inline types, no helpers in components)
+- `core-boundaries-decision-tree` - Decision tree for where code belongs (app, components, hooks,
+  utils, services, types)
+- `core-boundaries-hard-rules` - Hard rules for boundaries (one export, no inline types, no helpers
+  in components)
 
 ### Naming & Layout
 
 - `core-naming-folder-layout` - Folder structure conventions
-- `core-naming-file-naming` - File naming conventions (PascalCase, camelCase,
-  kebab-case)
-- `core-naming-exports` - Export conventions (default vs named, Next.js
-  exceptions)
-- `core-naming-imports` - Import conventions (no barrel files, relative vs
-  aliases)
+- `core-naming-file-naming` - File naming conventions (PascalCase, camelCase, kebab-case)
+- `core-naming-exports` - Export conventions (default vs named, Next.js exceptions)
+- `core-naming-imports` - Import conventions (no barrel files, relative vs aliases)
 
 ### Services vs Utils
 
@@ -78,17 +71,13 @@ Use this skill when:
 
 ### Anti-Patterns
 
-- `core-anti-patterns-file-structure` - File structure anti-patterns (multiple
-  exports, barrel files, misc modules)
-- `core-anti-patterns-types` - Type anti-patterns (inline types, huge type
-  files)
-- `core-anti-patterns-react` - React anti-patterns (fetching in components,
-  helpers in components)
-- `core-anti-patterns-app-router` - App Router anti-patterns (fat handlers,
-  unvalidated input)
+- `core-anti-patterns-file-structure` - File structure anti-patterns (multiple exports, barrel
+  files, misc modules)
+- `core-anti-patterns-types` - Type anti-patterns (inline types, huge type files)
+- `core-anti-patterns-react` - React anti-patterns (fetching in components, helpers in components)
+- `core-anti-patterns-app-router` - App Router anti-patterns (fat handlers, unvalidated input)
 - `core-anti-patterns-dependencies` - Dependency anti-patterns (trivial helpers)
-- `core-anti-patterns-vite-browser` - Vite/Browser runtime anti-patterns
-  (process.env, Node globals)
+- `core-anti-patterns-vite-browser` - Vite/Browser runtime anti-patterns (process.env, Node globals)
 
 ## Related Skills
 

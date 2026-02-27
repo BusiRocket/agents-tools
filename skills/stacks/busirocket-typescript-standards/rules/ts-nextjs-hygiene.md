@@ -7,8 +7,7 @@ Maintain TypeScript hygiene in Next.js projects.
 ## Next.js TS Hygiene (docs-aligned)
 
 - Do not edit `next-env.d.ts` (it is generated).
-- If you need custom `.d.ts`, create a new file and include it in
-  `tsconfig.json`.
+- If you need custom `.d.ts`, create a new file and include it in `tsconfig.json`.
 
 ## Examples
 

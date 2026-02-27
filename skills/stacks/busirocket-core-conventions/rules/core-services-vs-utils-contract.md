@@ -2,8 +2,7 @@
 
 ## Goal
 
-Clearly distinguish between pure logic (utils) and external boundaries
-(services).
+Clearly distinguish between pure logic (utils) and external boundaries (services).
 
 ## utils/ (Pure Logic)
 

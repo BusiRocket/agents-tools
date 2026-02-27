@@ -1,9 +1,8 @@
 ---
 name: busirocket-validation
 description:
-  Applies validation strategy using Zod for schemas and guard helpers for
-  runtime checks. Use when validating API responses, request inputs, or external
-  data at boundaries.
+  Applies validation strategy using Zod for schemas and guard helpers for runtime checks. Use when
+  validating API responses, request inputs, or external data at boundaries.
 metadata:
   author: cristiandeluxe
   version: "1.0.0"
@@ -11,8 +10,8 @@ metadata:
 
 # Validation (Zod + Guards)
 
-Consistent validation at boundaries: Zod for complex schemas, small guards for
-simple runtime checks.
+Consistent validation at boundaries: Zod for complex schemas, small guards for simple runtime
+checks.
 
 ## When to Use
 
@@ -25,12 +24,9 @@ Use this skill when:
 
 ## Non-Negotiables (MUST)
 
-- **Services**: validate API/external data with Zod schemas (e.g.
-  `.safeParse()`).
-- **Utils**: keep small coercion/guard helpers under `utils/validation/` (one
-  function per file).
-- **Types**: Zod schemas can live in `types/<area>/`; infer types with
-  `z.infer<typeof Schema>`.
+- **Services**: validate API/external data with Zod schemas (e.g. `.safeParse()`).
+- **Utils**: keep small coercion/guard helpers under `utils/validation/` (one function per file).
+- **Types**: Zod schemas can live in `types/<area>/`; infer types with `z.infer<typeof Schema>`.
 - Prefer `unknown` inputs at boundaries + explicit narrowing.
 - No inline validation logic inside components/hooks.
 
@@ -42,16 +38,13 @@ Use this skill when:
 
 ### Zod Schemas (Complex Validation)
 
-- `validation-zod-schemas` - Using Zod for complex validation with
-  `.safeParse()`
+- `validation-zod-schemas` - Using Zod for complex validation with `.safeParse()`
 - `validation-zod-types` - Inferring types from Zod schemas with `z.infer`
 
 ### Guard Helpers (Simple Runtime Checks)
 
-- `validation-guard-helpers` - Creating simple guard functions with type
-  predicates
-- `validation-guard-examples` - Recommended guard helpers (isRecord,
-  isNonEmptyString, etc.)
+- `validation-guard-helpers` - Creating simple guard functions with type predicates
+- `validation-guard-examples` - Recommended guard helpers (isRecord, isNonEmptyString, etc.)
 
 ### Anti-Patterns
 

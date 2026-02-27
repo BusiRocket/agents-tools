@@ -6,13 +6,12 @@ Establish consistent API patterns for services and utils.
 
 ## Utils API
 
-**API:** single exported function; throw only for programmer errors; return
-explicit values.
+**API:** single exported function; throw only for programmer errors; return explicit values.
 
 ## Services API Guidance
 
-- Return domain data or typed result objects; avoid returning framework
-  primitives from deep services.
+- Return domain data or typed result objects; avoid returning framework primitives from deep
+  services.
 - Prefer explicit error shapes over throwing for expected failures.
 
 ## Examples
@@ -31,9 +30,7 @@ export const formatInvoiceNumber = (number: number): string => {
 ```typescript
 // ✅ Correct - services API with result object
 // services/invoices/createInvoice.ts
-export const createInvoice = async (
-  data: InvoiceInput
-): Promise<InvoiceResult> => {
+export const createInvoice = async (data: InvoiceInput): Promise<InvoiceResult> => {
   try {
     const invoice = await db.invoices.create(data)
     return { ok: true, value: invoice }

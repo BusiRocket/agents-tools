@@ -10,8 +10,8 @@ Establish consistent file naming patterns for easy navigation.
   - `components/orders/OrderCard/OrderCard.tsx`
   - `components/orders/OrderCard/Header.tsx`
 - Hooks: `useXxx.ts`
-- Utils/services: verb-noun, lower camel or lower kebab; pick one and stay
-  consistent within a folder.
+- Utils/services: verb-noun, lower camel or lower kebab; pick one and stay consistent within a
+  folder.
 - Types: PascalCase, match the exported symbol name.
 
 ## Examples

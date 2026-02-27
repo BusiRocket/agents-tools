@@ -2,8 +2,7 @@
 
 ## Goal
 
-Keep validation logic out of components and hooks to maintain separation of
-concerns.
+Keep validation logic out of components and hooks to maintain separation of concerns.
 
 ## Anti-Pattern: Inline Validation
 
@@ -81,5 +80,4 @@ export const createUser = async (data: unknown) => {
 - No inline validation logic inside components/hooks
 - Extract simple checks to `utils/validation/` guards
 - Use Zod schemas for complex validation in services
-- If validation logic grows, split into dedicated helpers (one function per
-  file)
+- If validation logic grows, split into dedicated helpers (one function per file)

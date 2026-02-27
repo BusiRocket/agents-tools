@@ -8,8 +8,7 @@ Ensure code quality through validation checks.
 
 After meaningful changes, run:
 
-- Project standard checks (e.g. `yarn check:all` or `cargo check` /
-  `cargo clippy`).
+- Project standard checks (e.g. `yarn check:all` or `cargo check` / `cargo clippy`).
 
 ## Examples
 

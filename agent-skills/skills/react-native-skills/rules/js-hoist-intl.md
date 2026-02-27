@@ -7,17 +7,17 @@ tags: javascript, intl, optimization, memoization
 
 ## Hoist Intl Formatter Creation
 
-Don't create `Intl.DateTimeFormat`, `Intl.NumberFormat`, or
-`Intl.RelativeTimeFormat` inside render or loops. These are expensive to
-instantiate. Hoist to module scope when the locale/options are static.
+Don't create `Intl.DateTimeFormat`, `Intl.NumberFormat`, or `Intl.RelativeTimeFormat` inside render
+or loops. These are expensive to instantiate. Hoist to module scope when the locale/options are
+static.
 
 **Incorrect (new formatter every render):**
 
 ```tsx
 function Price({ amount }: { amount: number }) {
-  const formatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
+  const formatter = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
   })
   return <Text>{formatter.format(amount)}</Text>
 }
@@ -26,9 +26,9 @@ function Price({ amount }: { amount: number }) {
 **Correct (hoisted to module scope):**
 
 ```tsx
-const currencyFormatter = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD',
+const currencyFormatter = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
 })
 
 function Price({ amount }: { amount: number }) {
@@ -40,8 +40,8 @@ function Price({ amount }: { amount: number }) {
 
 ```tsx
 const dateFormatter = useMemo(
-  () => new Intl.DateTimeFormat(locale, { dateStyle: 'medium' }),
-  [locale]
+  () => new Intl.DateTimeFormat(locale, { dateStyle: "medium" }),
+  [locale],
 )
 ```
 
@@ -49,13 +49,13 @@ const dateFormatter = useMemo(
 
 ```tsx
 // Module-level formatters
-const dateFormatter = new Intl.DateTimeFormat('en-US', { dateStyle: 'medium' })
-const timeFormatter = new Intl.DateTimeFormat('en-US', { timeStyle: 'short' })
-const percentFormatter = new Intl.NumberFormat('en-US', { style: 'percent' })
-const relativeFormatter = new Intl.RelativeTimeFormat('en-US', {
-  numeric: 'auto',
+const dateFormatter = new Intl.DateTimeFormat("en-US", { dateStyle: "medium" })
+const timeFormatter = new Intl.DateTimeFormat("en-US", { timeStyle: "short" })
+const percentFormatter = new Intl.NumberFormat("en-US", { style: "percent" })
+const relativeFormatter = new Intl.RelativeTimeFormat("en-US", {
+  numeric: "auto",
 })
 ```
 
-Creating `Intl` objects is significantly more expensive than `RegExp` or plain
-objects—each instantiation parses locale data and builds internal lookup tables.
+Creating `Intl` objects is significantly more expensive than `RegExp` or plain objects—each
+instantiation parses locale data and builds internal lookup tables.

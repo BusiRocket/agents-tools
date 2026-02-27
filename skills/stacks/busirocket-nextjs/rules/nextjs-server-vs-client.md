@@ -2,13 +2,11 @@
 
 ## Goal
 
-Understand when to use Server Components vs Client Components in Next.js App
-Router.
+Understand when to use Server Components vs Client Components in Next.js App Router.
 
 ## Server Components (Default)
 
-- `app/**/page.tsx` and `app/**/layout.tsx` are **Server Components by
-  default**.
+- `app/**/page.tsx` and `app/**/layout.tsx` are **Server Components by default**.
 - No `'use client'` directive needed.
 - Can directly access server-only APIs (database, file system, etc.).
 
@@ -22,8 +20,8 @@ Use **Client Components** only when you need:
 
 ## Client Boundary
 
-- `'use client'` creates a **boundary**: the file and all of its imports become
-  part of the client bundle.
+- `'use client'` creates a **boundary**: the file and all of its imports become part of the client
+  bundle.
 - Keep client islands small to reduce JS shipped to the browser.
 
 ## Examples

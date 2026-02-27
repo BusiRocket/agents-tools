@@ -38,27 +38,18 @@ export async function POST(request: Request) {
 ```typescript
 // ✅ Correct - multiple methods
 // app/api/invoices/[id]/route.ts
-export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: Request, { params }: { params: { id: string } }) {
   const invoice = await getInvoice(params.id)
   return Response.json({ data: invoice })
 }
 
-export async function PUT(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(request: Request, { params }: { params: { id: string } }) {
   const body = await request.json()
   const result = await updateInvoice(params.id, body)
   return Response.json({ data: result })
 }
 
-export async function DELETE(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: Request, { params }: { params: { id: string } }) {
   await deleteInvoice(params.id)
   return new Response(null, { status: 204 })
 }

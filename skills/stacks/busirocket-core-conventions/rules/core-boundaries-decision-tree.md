@@ -2,8 +2,7 @@
 
 ## Goal
 
-Make it obvious where new code belongs so agents can create **many small files**
-without guessing.
+Make it obvious where new code belongs so agents can create **many small files** without guessing.
 
 ## Decision Tree
 

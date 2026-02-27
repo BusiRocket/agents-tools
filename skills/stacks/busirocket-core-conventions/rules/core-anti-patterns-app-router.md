@@ -54,7 +54,7 @@ export async function POST(request: Request) {
   if (!result.success) {
     return Response.json(
       { error: { code: "VALIDATION_ERROR", message: result.error.message } },
-      { status: 400 }
+      { status: 400 },
     )
   }
 

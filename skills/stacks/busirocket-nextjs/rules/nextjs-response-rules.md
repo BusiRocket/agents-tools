@@ -8,8 +8,7 @@ Establish rules for consistent API responses.
 
 - Never return unvalidated request input.
 - Do not throw for expected errors; return `{ error }` with an explicit status.
-- Keep mapping minimal inside the route handler; do it in `services/` when
-  possible.
+- Keep mapping minimal inside the route handler; do it in `services/` when possible.
 
 ## Examples
 
@@ -32,7 +31,7 @@ export async function POST(request: Request) {
   if (!result.success) {
     return Response.json(
       { error: { code: "VALIDATION_ERROR", message: result.error.message } },
-      { status: 400 }
+      { status: 400 },
     )
   }
 
@@ -44,10 +43,7 @@ export async function POST(request: Request) {
 ```typescript
 // ❌ Incorrect - throwing for expected error
 // app/api/invoices/[id]/route.ts
-export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: Request, { params }: { params: { id: string } }) {
   const invoice = await getInvoice(params.id)
   if (!invoice) {
     throw new Error("Not found") // Should return error response
@@ -59,15 +55,12 @@ export async function GET(
 ```typescript
 // ✅ Correct - return error response
 // app/api/invoices/[id]/route.ts
-export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: Request, { params }: { params: { id: string } }) {
   const invoice = await getInvoice(params.id)
   if (!invoice) {
     return Response.json(
       { error: { code: "NOT_FOUND", message: "Invoice not found" } },
-      { status: 404 }
+      { status: 404 },
     )
   }
   return Response.json({ data: invoice })

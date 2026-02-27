@@ -10,8 +10,8 @@ Establish strategy for using Tailwind utility classes.
 - Group related classes together for readability.
 - If class strings become hard to read or are reused:
   - Extract a small presentational component.
-  - Or extract a custom utility class (or `@layer components` rule) when the
-    same combination is reused.
+  - Or extract a custom utility class (or `@layer components` rule) when the same combination is
+    reused.
   - Prefer `components/<area>/...` wrappers over large custom CSS files.
 
 ## Examples

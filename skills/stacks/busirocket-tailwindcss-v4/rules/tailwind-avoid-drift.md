@@ -7,8 +7,7 @@ Prevent style drift by keeping custom CSS minimal and using consistent tokens.
 ## Avoid Drift
 
 - Avoid large custom CSS files; keep custom CSS truly global (resets, tokens).
-- Avoid heavy use of arbitrary values unless necessary; prefer consistent
-  tokens.
+- Avoid heavy use of arbitrary values unless necessary; prefer consistent tokens.
 
 ## Examples
 

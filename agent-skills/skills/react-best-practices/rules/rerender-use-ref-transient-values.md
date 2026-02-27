@@ -7,7 +7,10 @@ tags: rerender, useref, state, performance
 
 ## Use useRef for Transient Values
 
-When a value changes frequently and you don't want a re-render on every update (e.g., mouse trackers, intervals, transient flags), store it in `useRef` instead of `useState`. Keep component state for UI; use refs for temporary DOM-adjacent values. Updating a ref does not trigger a re-render.
+When a value changes frequently and you don't want a re-render on every update (e.g., mouse
+trackers, intervals, transient flags), store it in `useRef` instead of `useState`. Keep component
+state for UI; use refs for temporary DOM-adjacent values. Updating a ref does not trigger a
+re-render.
 
 **Incorrect (renders every update):**
 
@@ -17,19 +20,19 @@ function Tracker() {
 
   useEffect(() => {
     const onMove = (e: MouseEvent) => setLastX(e.clientX)
-    window.addEventListener('mousemove', onMove)
-    return () => window.removeEventListener('mousemove', onMove)
+    window.addEventListener("mousemove", onMove)
+    return () => window.removeEventListener("mousemove", onMove)
   }, [])
 
   return (
     <div
       style={{
-        position: 'fixed',
+        position: "fixed",
         top: 0,
         left: lastX,
         width: 8,
         height: 8,
-        background: 'black',
+        background: "black",
       }}
     />
   )
@@ -51,21 +54,21 @@ function Tracker() {
         node.style.transform = `translateX(${e.clientX}px)`
       }
     }
-    window.addEventListener('mousemove', onMove)
-    return () => window.removeEventListener('mousemove', onMove)
+    window.addEventListener("mousemove", onMove)
+    return () => window.removeEventListener("mousemove", onMove)
   }, [])
 
   return (
     <div
       ref={dotRef}
       style={{
-        position: 'fixed',
+        position: "fixed",
         top: 0,
         left: 0,
         width: 8,
         height: 8,
-        background: 'black',
-        transform: 'translateX(0px)',
+        background: "black",
+        transform: "translateX(0px)",
       }}
     />
   )

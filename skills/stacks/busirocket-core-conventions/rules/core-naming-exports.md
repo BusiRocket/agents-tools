@@ -6,8 +6,8 @@ Establish consistent export patterns across the codebase.
 
 ## Export Rules
 
-- Next.js route components (`app/**/page.tsx`, `layout.tsx`): **default export**
-  (required by conventions).
+- Next.js route components (`app/**/page.tsx`, `layout.tsx`): **default export** (required by
+  conventions).
 - Reusable components/hooks/utils/services/types: **single export per file**.
 
 ## Examples

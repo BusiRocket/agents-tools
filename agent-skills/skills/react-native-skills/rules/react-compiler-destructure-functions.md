@@ -9,14 +9,14 @@ tags: rerender, hooks, performance, react-compiler
 
 This rule is only applicable if you are using the React Compiler.
 
-Destructure functions from hooks at the top of render scope. Never dot into
-objects to call functions. Destructured functions are stable references; dotting
-creates new references and breaks memoization.
+Destructure functions from hooks at the top of render scope. Never dot into objects to call
+functions. Destructured functions are stable references; dotting creates new references and breaks
+memoization.
 
 **Incorrect (dotting into object):**
 
 ```tsx
-import { useRouter } from 'expo-router'
+import { useRouter } from "expo-router"
 
 function SaveButton(props) {
   const router = useRouter()
@@ -24,7 +24,7 @@ function SaveButton(props) {
   // bad: react-compiler will key the cache on "props" and "router", which are objects that change each render
   const handlePress = () => {
     props.onSave()
-    router.push('/success') // unstable reference
+    router.push("/success") // unstable reference
   }
 
   return <Button onPress={handlePress}>Save</Button>
@@ -34,7 +34,7 @@ function SaveButton(props) {
 **Correct (destructure early):**
 
 ```tsx
-import { useRouter } from 'expo-router'
+import { useRouter } from "expo-router"
 
 function SaveButton({ onSave }) {
   const { push } = useRouter()
@@ -42,7 +42,7 @@ function SaveButton({ onSave }) {
   // good: react-compiler will key on push and onSave
   const handlePress = () => {
     onSave()
-    push('/success') // stable reference
+    push("/success") // stable reference
   }
 
   return <Button onPress={handlePress}>Save</Button>

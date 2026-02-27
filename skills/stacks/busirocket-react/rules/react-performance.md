@@ -8,8 +8,7 @@ Optimize React component performance.
 
 - Memoize expensive computations with `useMemo`.
 - Use `useCallback` for stable handlers passed to children or effect deps.
-- Consider `React.memo` for purely presentational components to avoid
-  unnecessary re-renders.
+- Consider `React.memo` for purely presentational components to avoid unnecessary re-renders.
 
 ## Examples
 

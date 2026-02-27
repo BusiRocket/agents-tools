@@ -39,10 +39,7 @@ export async function POST(request: Request) {
 ```typescript
 // ✅ Correct - 204 No Content
 // app/api/invoices/[id]/route.ts
-export async function DELETE(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: Request, { params }: { params: { id: string } }) {
   await deleteInvoice(params.id)
   return new Response(null, { status: 204 })
 }
@@ -56,7 +53,7 @@ export async function POST(request: Request) {
   if (!result.success) {
     return Response.json(
       { error: { code: "VALIDATION_ERROR", message: result.error.message } },
-      { status: 400 }
+      { status: 400 },
     )
   }
   // ...
@@ -66,15 +63,12 @@ export async function POST(request: Request) {
 ```typescript
 // ✅ Correct - 404 Not Found
 // app/api/invoices/[id]/route.ts
-export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: Request, { params }: { params: { id: string } }) {
   const invoice = await getInvoice(params.id)
   if (!invoice) {
     return Response.json(
       { error: { code: "NOT_FOUND", message: "Invoice not found" } },
-      { status: 404 }
+      { status: 404 },
     )
   }
   return Response.json({ data: invoice })

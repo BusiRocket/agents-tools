@@ -6,8 +6,8 @@ Ensure components are tested consistently.
 
 ## Rule
 
-- Every component should have corresponding tests in a `__tests__` folder (or
-  mirror directory next to the component).
+- Every component should have corresponding tests in a `__tests__` folder (or mirror directory next
+  to the component).
 - Test both functionality and rendering.
 - Use React Testing Library for component tests.
 

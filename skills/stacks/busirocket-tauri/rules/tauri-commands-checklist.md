@@ -9,14 +9,12 @@ Ensure Tauri commands are properly set up.
 When creating a new Tauri command, **all three steps are required**:
 
 1. Create the command file: `src-tauri/src/commands/<command_name>.rs`
-2. Register in invoke handler: add to `tauri::generate_handler![]` in
-   `src-tauri/src/lib.rs`
-3. **Add to permissions**: add command name to `commands.allow` in the Tauri
-   permissions allowlist file used by the project (e.g.,
-   `src-tauri/permissions/*.toml`)
+2. Register in invoke handler: add to `tauri::generate_handler![]` in `src-tauri/src/lib.rs`
+3. **Add to permissions**: add command name to `commands.allow` in the Tauri permissions allowlist
+   file used by the project (e.g., `src-tauri/permissions/*.toml`)
 
-**CRITICAL**: Without step 3, the command will fail at runtime with "not
-allowed. Command not found" error.
+**CRITICAL**: Without step 3, the command will fail at runtime with "not allowed. Command not found"
+error.
 
 ## Examples
 

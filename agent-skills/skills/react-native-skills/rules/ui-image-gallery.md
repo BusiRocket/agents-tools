@@ -1,16 +1,15 @@
 ---
 title: Use Galeria for Image Galleries and Lightbox
 impact: MEDIUM
-impactDescription:
-  native shared element transitions, pinch-to-zoom, pan-to-close
+impactDescription: native shared element transitions, pinch-to-zoom, pan-to-close
 tags: images, gallery, lightbox, expo-image, ui
 ---
 
 ## Use Galeria for Image Galleries and Lightbox
 
-For image galleries with lightbox (tap to fullscreen), use `@nandorojo/galeria`.
-It provides native shared element transitions with pinch-to-zoom, double-tap
-zoom, and pan-to-close. Works with any image component including `expo-image`.
+For image galleries with lightbox (tap to fullscreen), use `@nandorojo/galeria`. It provides native
+shared element transitions with pinch-to-zoom, double-tap zoom, and pan-to-close. Works with any
+image component including `expo-image`.
 
 **Incorrect (custom modal implementation):**
 
@@ -36,8 +35,8 @@ function ImageGallery({ urls }: { urls: string[] }) {
 **Correct (Galeria with expo-image):**
 
 ```tsx
-import { Galeria } from '@nandorojo/galeria'
-import { Image } from 'expo-image'
+import { Galeria } from "@nandorojo/galeria"
+import { Image } from "expo-image"
 
 function ImageGallery({ urls }: { urls: string[] }) {
   return (
@@ -55,8 +54,8 @@ function ImageGallery({ urls }: { urls: string[] }) {
 **Single image:**
 
 ```tsx
-import { Galeria } from '@nandorojo/galeria'
-import { Image } from 'expo-image'
+import { Galeria } from "@nandorojo/galeria"
+import { Image } from "expo-image"
 
 function Avatar({ url }: { url: string }) {
   return (
@@ -98,7 +97,6 @@ function Avatar({ url }: { url: string }) {
 </Galeria>
 ```
 
-Works with `expo-image`, `SolitoImage`, `react-native` Image, or any image
-component.
+Works with `expo-image`, `SolitoImage`, `react-native` Image, or any image component.
 
 Reference: [Galeria](https://github.com/nandorojo/galeria)

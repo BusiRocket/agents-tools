@@ -7,9 +7,8 @@ tags: composition, compound-components, architecture
 
 ## Use Compound Components
 
-Structure complex components as compound components with a shared context. Each
-subcomponent accesses shared state via context, not props. Consumers compose the
-pieces they need.
+Structure complex components as compound components with a shared context. Each subcomponent
+accesses shared state via context, not props. Consumers compose the pieces they need.
 
 **Incorrect (monolithic component with render props):**
 
@@ -47,11 +46,7 @@ function Composer({
 const ComposerContext = createContext<ComposerContextValue | null>(null)
 
 function ComposerProvider({ children, state, actions, meta }: ProviderProps) {
-  return (
-    <ComposerContext value={{ state, actions, meta }}>
-      {children}
-    </ComposerContext>
-  )
+  return <ComposerContext value={{ state, actions, meta }}>{children}</ComposerContext>
 }
 
 function ComposerFrame({ children }: { children: React.ReactNode }) {
@@ -109,4 +104,6 @@ const Composer = {
 </Composer.Provider>
 ```
 
-Consumers explicitly compose exactly what they need. No hidden conditionals. And the state, actions and meta are dependency-injected by a parent provider, allowing multiple usages of the same component structure.
+Consumers explicitly compose exactly what they need. No hidden conditionals. And the state, actions
+and meta are dependency-injected by a parent provider, allowing multiple usages of the same
+component structure.

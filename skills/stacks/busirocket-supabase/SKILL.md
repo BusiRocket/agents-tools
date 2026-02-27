@@ -1,9 +1,9 @@
 ---
 name: busirocket-supabase
 description:
-  Enforces Supabase access patterns and service boundaries. Use only when
-  working with Supabase projects. Centralizes Supabase in a dedicated layer and
-  forbids calling Supabase from outside that boundary.
+  Enforces Supabase access patterns and service boundaries. Use only when working with Supabase
+  projects. Centralizes Supabase in a dedicated layer and forbids calling Supabase from outside that
+  boundary.
 metadata:
   author: cristiandeluxe
   version: "1.0.0"
@@ -23,10 +23,10 @@ Use this skill only when:
 
 ## Non-Negotiables (MUST)
 
-- **Single boundary:** All Supabase access lives in a dedicated layer (service
-  wrappers). No direct Supabase calls from outside that layer.
-- **Single client:** The Supabase client is created in one module; all Supabase
-  usage goes through that client and your service wrappers.
+- **Single boundary:** All Supabase access lives in a dedicated layer (service wrappers). No direct
+  Supabase calls from outside that layer.
+- **Single client:** The Supabase client is created in one module; all Supabase usage goes through
+  that client and your service wrappers.
 - **Focused wrappers:** Keep wrappers small, focused, and typed.
 
 ## Rules
@@ -34,8 +34,7 @@ Use this skill only when:
 ### Supabase Access
 
 - `supabase-access-rule` - Isolate Supabase access in service wrappers
-- `supabase-services-usage` - Callers outside the service layer must not use
-  Supabase directly
+- `supabase-services-usage` - Callers outside the service layer must not use Supabase directly
 
 ## Related Skills
 

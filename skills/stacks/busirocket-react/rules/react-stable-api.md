@@ -7,8 +7,7 @@ Design hooks with stable, predictable APIs.
 ## Rules
 
 - Return the minimal meaningful shape.
-- Prefer stable references for handlers/derived values (`useCallback`,
-  `useMemo`).
+- Prefer stable references for handlers/derived values (`useCallback`, `useMemo`).
 
 ## Examples
 

@@ -7,7 +7,8 @@ tags: server, rsc, parallel-fetching, composition
 
 ## Parallel Data Fetching with Component Composition
 
-React Server Components execute sequentially within a tree. Restructure with composition to parallelize data fetching.
+React Server Components execute sequentially within a tree. Restructure with composition to
+parallelize data fetching.
 
 **Incorrect (Sidebar waits for Page's fetch to complete):**
 

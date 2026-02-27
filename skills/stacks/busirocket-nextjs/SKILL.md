@@ -1,9 +1,9 @@
 ---
 name: busirocket-nextjs
 description:
-  Applies Next.js App Router route handler patterns. Use when creating or
-  refactoring route.ts files, implementing API endpoints, validating request
-  inputs, and returning standardized JSON responses with proper status codes.
+  Applies Next.js App Router route handler patterns. Use when creating or refactoring route.ts
+  files, implementing API endpoints, validating request inputs, and returning standardized JSON
+  responses with proper status codes.
 metadata:
   author: cristiandeluxe
   version: "1.0.0"
@@ -25,21 +25,17 @@ Use this skill when:
 
 ## Non-Negotiables (MUST)
 
-- Route handlers must be **thin**: validate input, call a `services/` function,
-  return a response.
+- Route handlers must be **thin**: validate input, call a `services/` function, return a response.
 - **No business logic or IO** directly in the handler.
 - **Never return unvalidated request input**.
-- Use standard JSON response shapes: `{ data }` for success,
-  `{ error: { code, message } }` for errors.
-- Use appropriate HTTP status codes (200, 201, 204, 400, 401, 403, 404, 409,
-  500).
+- Use standard JSON response shapes: `{ data }` for success, `{ error: { code, message } }` for
+  errors.
+- Use appropriate HTTP status codes (200, 201, 204, 400, 401, 403, 404, 409, 500).
 
 ## Server vs Client Components
 
-- `app/**/page.tsx` and `app/**/layout.tsx` are **Server Components by
-  default**.
-- Use **Client Components** only when you need: state/event handlers, effects,
-  browser-only APIs.
+- `app/**/page.tsx` and `app/**/layout.tsx` are **Server Components by default**.
+- Use **Client Components** only when you need: state/event handlers, effects, browser-only APIs.
 - `'use client'` creates a boundary; keep client islands small.
 - Props from Server -> Client must be **serializable**.
 
@@ -47,13 +43,10 @@ Use this skill when:
 
 ### Next.js App Router
 
-- `nextjs-server-vs-client` - Server vs Client Components (defaults, when to use
-  client)
+- `nextjs-server-vs-client` - Server vs Client Components (defaults, when to use client)
 - `nextjs-serializable-props` - Props must be serializable from Server to Client
-- `nextjs-protecting-server-code` - Protecting server-only code from client
-  imports
-- `nextjs-special-file-exports` - Allowed extra exports for Next.js special
-  files
+- `nextjs-protecting-server-code` - Protecting server-only code from client imports
+- `nextjs-special-file-exports` - Allowed extra exports for Next.js special files
 
 ### Route Handlers
 
@@ -71,8 +64,7 @@ Use this skill when:
 
 ### Validation
 
-- `nextjs-validation-boundaries` - Where validation lives (route handlers,
-  services, utils)
+- `nextjs-validation-boundaries` - Where validation lives (route handlers, services, utils)
 - `nextjs-validation-patterns` - Validation patterns (unknown inputs, guards)
 - `nextjs-validation-helpers` - Recommended validation helpers
 - `nextjs-validation-rules` - Validation rules (no inline types/helpers)

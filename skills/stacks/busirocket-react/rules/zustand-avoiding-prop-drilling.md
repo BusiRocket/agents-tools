@@ -6,8 +6,7 @@ Use Zustand stores instead of prop drilling for shared state.
 
 ## Pattern
 
-Instead of passing callbacks through multiple components, use Zustand stores for
-shared state.
+Instead of passing callbacks through multiple components, use Zustand stores for shared state.
 
 ## Examples
 

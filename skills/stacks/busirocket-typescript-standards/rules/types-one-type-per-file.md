@@ -6,8 +6,7 @@ Enforce strict one-type-per-file discipline.
 
 ## Rule
 
-- Each file under `types/` exports **exactly one** `interface` (preferred) or
-  `type` (unions only).
+- Each file under `types/` exports **exactly one** `interface` (preferred) or `type` (unions only).
 - File name must match the exported symbol.
 
 ## Examples

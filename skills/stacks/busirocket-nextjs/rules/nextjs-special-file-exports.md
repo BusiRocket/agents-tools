@@ -2,25 +2,23 @@
 
 ## Goal
 
-Understand allowed exceptions for Next.js special files that require extra
-exports.
+Understand allowed exceptions for Next.js special files that require extra exports.
 
 ## Exception Rule
 
-This repository enforces "one export per file" for your own modules, **but
-Next.js special files require extra exports**.
+This repository enforces "one export per file" for your own modules, **but Next.js special files
+require extra exports**.
 
 ## Allowed Exceptions
 
 ### Layout and Page Files
 
-- `app/**/layout.tsx`, `app/**/page.tsx`: `default export` + `metadata` /
-  `generateMetadata` / `viewport` (and similar Next.js file-convention exports).
+- `app/**/layout.tsx`, `app/**/page.tsx`: `default export` + `metadata` / `generateMetadata` /
+  `viewport` (and similar Next.js file-convention exports).
 
 ### Route Handlers
 
-- `app/api/**/route.ts`: multiple HTTP method exports (GET/POST/...) + route
-  config exports.
+- `app/api/**/route.ts`: multiple HTTP method exports (GET/POST/...) + route config exports.
 
 ## Examples
 

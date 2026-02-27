@@ -1,0 +1,30 @@
+{
+  "name": "busirocket-rules",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cursor rules template - reusable project rules",
+  "scripts": {
+    "check:all": "pnpm run format && pnpm run lint:fix && pnpm run rules:check",
+    "check:ci": "pnpm run check:all",
+    "check": "pnpm run check:all",
+    "format:check": "prettier --check .",
+    "format": "prettier --write .",
+    "lint:fix": "eslint . --fix",
+    "lint": "eslint .",
+    "rules:check": "node scripts/compile-rules.mjs --check",
+    "rules:compile": "node scripts/compile-rules.mjs",
+    "rules:link:all": "pnpm run rules:link:codex && pnpm run rules:link:claude && pnpm run rules:link:antigravity && pnpm run rules:link:windsurf",
+    "rules:link:antigravity": "node scripts/link-antigravity-global.mjs",
+    "rules:link:claude": "node scripts/link-claude-global.mjs",
+    "rules:link:codex": "node scripts/link-codex-global.mjs",
+    "rules:link:windsurf": "node scripts/link-windsurf-global.mjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.0.2",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.3.0",
+    "prettier": "^3.8.1"
+  },
+  "packageManager": "pnpm@10.30.3"
+}

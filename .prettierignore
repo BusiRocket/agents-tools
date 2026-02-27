@@ -1,9 +1,3 @@
 node_modules/
-rules/compiled/
 dist/
 pnpm-lock.yaml
-CLAUDE.md
-AGENTS.md
-GEMINI.md
-WINDSURF.md
-available_skills.xml

@@ -9,9 +9,12 @@ const ROOT = process.cwd()
 const HOME = os.homedir()
 
 const links = [
-  { source: path.join(ROOT, "CLAUDE.md"), target: path.join(HOME, ".claude", "CLAUDE.md") },
   {
-    source: path.join(ROOT, ".claude", "rules"),
+    source: path.join(ROOT, "dist", "markdown", "CLAUDE.md"),
+    target: path.join(HOME, ".claude", "CLAUDE.md"),
+  },
+  {
+    source: path.join(ROOT, "dist", "global", ".claude", "rules"),
     target: path.join(HOME, ".claude", "rules", "busirocket"),
   },
 ]

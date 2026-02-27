@@ -2,13 +2,13 @@
 /**
  * Link Windsurf global rules: copy WINDSURF.md to ~/.windsurf/rules/global.md.
  */
-import path from "node:path"
 import os from "node:os"
+import path from "node:path"
 import { copyFileToGlobal } from "./lib/link/copyFileToGlobal.mjs"
 
 const HOME = os.homedir()
 const WINDSURF_GLOBAL_DIR = path.join(HOME, ".windsurf", "rules")
-const LOCAL_WINDSURF = path.join(process.cwd(), "WINDSURF.md")
+const LOCAL_WINDSURF = path.join(process.cwd(), "dist", "markdown", "WINDSURF.md")
 
 const main = async () => {
   const { globalPath } = await copyFileToGlobal(

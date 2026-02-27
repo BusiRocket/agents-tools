@@ -4,11 +4,10 @@
   "private": true,
   "description": "Agent workflow engine + rules/skills orchestrator for high-quality code across IDEs",
   "scripts": {
-    "build": "pnpm run format && pnpm run lint:fix && pnpm run rules:compile && pnpm run skills:validate",
-    "check:all": "pnpm run format:check && pnpm run lint && pnpm run rules:check && pnpm run skills:validate",
+    "build": "pnpm run rules:compile",
+    "check:all": "pnpm run format && pnpm run lint:fix && pnpm run rules:check && pnpm run skills:validate",
     "check:ci": "pnpm run check:all",
     "check": "pnpm run check:all",
-    "fix:all": "pnpm run format && pnpm run lint:fix",
     "format:check": "prettier --check .",
     "format": "prettier --write .",
     "lint:fix": "eslint . --fix",

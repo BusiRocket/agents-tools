@@ -2,9 +2,11 @@
 /**
  * Link skills globally: project source → canonical → all IDE targets.
  * Cleans stale busirocket-* entries before re-linking at each level.
+ * Uses copy instead of symlink for IDEs that don't follow symlinks.
  */
 import { promises as fs } from "node:fs"
 import path from "node:path"
+import { copySkillsToTarget } from "./lib/link/copySkillsToTarget.mjs"
 import { CANONICAL_SKILLS_DIR, IDE_REGISTRY } from "./lib/link/ideRegistry.mjs"
 import { linkSkillsToTarget } from "./lib/link/linkSkillsToTarget.mjs"
 import { pathExists } from "./lib/link/pathExists.mjs"
@@ -24,7 +26,7 @@ const main = async () => {
     return
   }
 
-  // Step 1: project source → canonical
+  // Step 1: project source → canonical (always symlink)
   const canonical = await linkSkillsToTarget({
     sourceDir: SKILLS_SOURCE_DIR,
     targetDir: CANONICAL_SKILLS_DIR,
@@ -50,14 +52,29 @@ const main = async () => {
       continue
     }
 
-    await linkSkillsToTarget({
-      sourceDir: CANONICAL_SKILLS_DIR,
-      targetDir: target.skillsDir,
-      skillNames,
-      prefix: PREFIX,
-    })
+    const strategy = target.linkStrategy ?? "symlink"
 
-    console.log(`+ ${target.id}: ${skillNames.length} skills`)
+    if (strategy === "copy") {
+      const result = await copySkillsToTarget({
+        sourceDir: CANONICAL_SKILLS_DIR,
+        targetDir: target.skillsDir,
+        skillNames,
+        prefix: PREFIX,
+      })
+
+      const verb = result.copied.length > 0 ? "copied" : "unchanged"
+      console.log(`+ ${target.id}: ${skillNames.length} skills (${verb})`)
+    } else {
+      await linkSkillsToTarget({
+        sourceDir: CANONICAL_SKILLS_DIR,
+        targetDir: target.skillsDir,
+        skillNames,
+        prefix: PREFIX,
+      })
+
+      console.log(`+ ${target.id}: ${skillNames.length} skills`)
+    }
+
     linked++
   }
 

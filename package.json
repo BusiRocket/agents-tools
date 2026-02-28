@@ -4,7 +4,7 @@
   "private": true,
   "description": "Agent workflow engine + rules/skills orchestrator for high-quality code across IDEs",
   "scripts": {
-    "build": "pnpm run rules:compile",
+    "build": "pnpm run rules:compile && pnpm run skills:compile",
     "check:all": "pnpm run format && pnpm run lint:fix && pnpm run rules:check && pnpm run skills:validate",
     "check:ci": "pnpm run check:all",
     "check": "pnpm run check:all",
@@ -21,6 +21,7 @@
     "skills:llms": "node scripts/generate-llms-txt.mjs",
     "skills:prompt": "node scripts/to-prompt.mjs",
     "skills:prompt:file": "node scripts/to-prompt.mjs > available_skills.xml",
+    "skills:compile": "node scripts/compile-skills.mjs",
     "skills:version:check": "node scripts/check-version.mjs"
   },
   "devDependencies": {

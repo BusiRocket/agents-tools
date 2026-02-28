@@ -1,49 +1,66 @@
 #!/usr/bin/env node
 /**
  * Link skills globally: project source → canonical → all IDE targets.
- * Cleans stale busirocket-* entries before re-linking at each level.
- * Uses copy instead of symlink for IDEs that don't follow symlinks.
+ * Cleans stale brp-* and busirocket-* entries before re-linking.
  */
 import { promises as fs } from "node:fs"
 import path from "node:path"
+import { listFilesRecursive } from "./lib/fs/listFilesRecursive.mjs"
 import { copySkillsToTarget } from "./lib/link/copySkillsToTarget.mjs"
 import { CANONICAL_SKILLS_DIR, IDE_REGISTRY } from "./lib/link/ideRegistry.mjs"
 import { linkSkillsToTarget } from "./lib/link/linkSkillsToTarget.mjs"
 import { pathExists } from "./lib/link/pathExists.mjs"
 
 const ROOT = process.cwd()
-const PREFIX = "busirocket-"
-const SKILLS_SOURCE_DIR = path.join(ROOT, "src", "skills", "stacks")
+const SKILLS_DIST_DIR = path.join(ROOT, "dist", "skills")
 
 const main = async () => {
-  const entries = await fs.readdir(SKILLS_SOURCE_DIR, { withFileTypes: true })
-  const skillNames = entries
-    .filter((entry) => entry.isDirectory() && entry.name.startsWith(PREFIX))
-    .map((entry) => entry.name)
+  // Discovery
+  const allFiles = await listFilesRecursive(SKILLS_DIST_DIR)
+  const skillDirsSet = new Set()
+  for (const file of allFiles) {
+    if (file.endsWith("SKILL.md")) {
+      skillDirsSet.add(path.dirname(file))
+    }
+  }
 
-  if (skillNames.length === 0) {
-    console.log("No busirocket-* skills found in src/skills/stacks/.")
+  const skillDirs = Array.from(skillDirsSet)
+  if (skillDirs.length === 0) {
+    console.log("No skills found in dist/skills/.")
     return
   }
 
-  // Step 1: project source → canonical (always symlink)
-  const canonical = await linkSkillsToTarget({
-    sourceDir: SKILLS_SOURCE_DIR,
-    targetDir: CANONICAL_SKILLS_DIR,
-    skillNames,
-    prefix: PREFIX,
-  })
+  // We want to link all skills into CANONICAL_SKILLS_DIR flat
+  await fs.mkdir(CANONICAL_SKILLS_DIR, { recursive: true })
 
-  if (canonical.cleaned.length > 0) {
-    console.log(`Canonical: cleaned ${canonical.cleaned.length} stale skill(s)`)
+  // Custom logic to copy/symlink from various source dirs into the single CANONICAL dir
+  // Then we can use the CANONICAL dir as the source for all IDEs.
+  const { cleanGlobalPrefix } = await import("./lib/link/cleanGlobalPrefix.mjs")
+  const { linkOneWithBackup } = await import("./lib/link/linkOneWithBackup.mjs")
+
+  // Step 1: Clean old canonical directories (both old busirocket- and new brp-)
+  await cleanGlobalPrefix(CANONICAL_SKILLS_DIR, "busirocket-")
+  await cleanGlobalPrefix(CANONICAL_SKILLS_DIR, "brp-")
+  await cleanGlobalPrefix(CANONICAL_SKILLS_DIR, "brp") // the orchestrator itself
+  await cleanGlobalPrefix(CANONICAL_SKILLS_DIR, "react-doctor")
+
+  const skillNames = []
+
+  for (const skillDir of skillDirs) {
+    const skillName = path.basename(skillDir)
+    skillNames.push(skillName)
+    const target = path.join(CANONICAL_SKILLS_DIR, skillName)
+    await linkOneWithBackup({ source: skillDir, target })
   }
+
   console.log(`Canonical: ${skillNames.length} skills linked to ${CANONICAL_SKILLS_DIR}`)
 
-  // Step 2: canonical → each IDE target (only IDEs with skillsDir)
+  // Step 2: canonical → each IDE target
   const skillTargets = IDE_REGISTRY.filter((ide) => ide.skillsDir !== null)
   let linked = 0
   let skipped = 0
 
+  // Use CANONICAL_SKILLS_DIR as sourceDir for linkSkillsToTarget / copySkillsToTarget
   for (const target of skillTargets) {
     const ideExists = await pathExists(target.rootDir)
     if (!ideExists) {
@@ -52,6 +69,12 @@ const main = async () => {
       continue
     }
 
+    // Clean both old prefix "busirocket-" and new "brp-" or no prefix
+    await cleanGlobalPrefix(target.skillsDir, "busirocket-")
+    await cleanGlobalPrefix(target.skillsDir, "brp-")
+    await cleanGlobalPrefix(target.skillsDir, "brp")
+    await cleanGlobalPrefix(target.skillsDir, "react-doctor")
+
     const strategy = target.linkStrategy ?? "symlink"
 
     if (strategy === "copy") {
@@ -59,9 +82,8 @@ const main = async () => {
         sourceDir: CANONICAL_SKILLS_DIR,
         targetDir: target.skillsDir,
         skillNames,
-        prefix: PREFIX,
+        prefix: "", // We just cleaned above, and pass "" to avoid re-cleaning inside with a single prefix
       })
-
       const verb = result.copied.length > 0 ? "copied" : "unchanged"
       console.log(`+ ${target.id}: ${skillNames.length} skills (${verb})`)
     } else {
@@ -69,9 +91,8 @@ const main = async () => {
         sourceDir: CANONICAL_SKILLS_DIR,
         targetDir: target.skillsDir,
         skillNames,
-        prefix: PREFIX,
+        prefix: "",
       })
-
       console.log(`+ ${target.id}: ${skillNames.length} skills`)
     }
 

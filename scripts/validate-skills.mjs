@@ -11,9 +11,8 @@ import { join } from "path"
 
 const ROOT = process.cwd()
 const SKILL_PARENTS = [
-  join(ROOT, "src", "skills", "stacks"),
-  join(ROOT, "src", "skills", "core"),
-  join(ROOT, "src", "skills", "orchestrator"),
+  join(ROOT, "dist", "skills", "core"),
+  join(ROOT, "dist", "skills", "orchestrator"),
 ]
 const VENV_DIR = join(ROOT, ".venv-validate")
 const VENV_BIN = join(VENV_DIR, process.platform === "win32" ? "Scripts" : "bin")

@@ -15,20 +15,13 @@ BRP consolidates rules, skills, and an orchestration protocol into a single proj
 ## Quick Start
 
 ```bash
-# Clone and install
+# Clone and run full setup (install, build, check, link rules + skills to IDEs)
 git clone https://github.com/BusiRocket/busirocket-agents-tools.git
 cd busirocket-agents-tools
-pnpm install
-
-# Build (compile rules for all IDEs)
-pnpm build
-
-# Validate everything
-pnpm check:all
-
-# Link rules globally (optional)
-pnpm rules:link:all
+pnpm run setup
 ```
+
+To update dependencies and refresh everything: `pnpm run update`.
 
 ### As a Cursor Plugin
 
@@ -206,12 +199,14 @@ Task > Project > Stack > Global
 
 | Script                        | Description                                              |
 | ----------------------------- | -------------------------------------------------------- |
+| `pnpm run setup`              | Install, build, check, and link rules + skills to IDEs   |
+| `pnpm run update`             | Update deps then run full setup (build, check, link)     |
 | `pnpm build`                  | Compile canonical rules for all IDEs                     |
 | `pnpm check:all`              | Format + lint + rules:check + skills:validate            |
 | `pnpm check`                  | Alias for `check:all`                                    |
 | `pnpm rules:compile`          | Compile `src/rules/` → `dist/global/` + `dist/markdown/` |
 | `pnpm rules:check`            | Verify compiled output is current                        |
-| `pnpm rules:link:all`         | Link rules globally for all IDEs                         |
+| `pnpm rules:link`             | Link rules globally for all IDEs                         |
 | `pnpm rules:link:claude`      | Link to `~/.claude/`                                     |
 | `pnpm rules:link:codex`       | Link to `~/.codex/`                                      |
 | `pnpm rules:link:antigravity` | Link to `~/.gemini/`                                     |

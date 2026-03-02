@@ -8,6 +8,8 @@
     "check:all": "pnpm run format && pnpm run lint:fix && pnpm run rules:check && pnpm run skills:validate",
     "check:ci": "pnpm run check:all",
     "check": "pnpm run check:all",
+    "setup": "pnpm install && pnpm run build && pnpm run check && pnpm run rules:link && pnpm run skills:link",
+    "update": "pnpm update && pnpm run setup",
     "format:check": "prettier --check .",
     "format": "prettier --write .",
     "lint:fix": "eslint . --fix",

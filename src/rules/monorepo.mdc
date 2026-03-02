@@ -9,7 +9,7 @@ Use **@monorepo** when working on workspace structure, package boundaries, or Tu
 
 This rule references:
 
-- **Turbo workspaces**: `.cursor/rules/monorepo/turbo.mdc` - boundaries, task pipelines, shared config
+- **Turbo workspaces**: `@rules/monorepo/turbo.mdc` - boundaries, task pipelines, shared config
 
 ## Short summary
 

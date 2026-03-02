@@ -17,7 +17,7 @@ Many small, focused files for maximum agent context efficiency.
 - One exported type per `types/**`.
 - No inline types outside `types/`.
 - No helpers inside components/hooks.
-- No index/barrel files.
+- No index/barrel files (except one `index.ts` per vertical-slice folder as public API; see vertical-slice-architecture.mdc).
 - **Single-purpose functions only**: if a function does multiple tasks, split it and keep a thin orchestrator function.
 
 ## App Router Defaults (Next.js)
@@ -33,6 +33,6 @@ Many small, focused files for maximum agent context efficiency.
 
 ## References
 
-- **When creating code**: follow [code-quality-guidelines.mdc](.cursor/rules/core/code-quality-guidelines.mdc) (file size 10–50, one per file, types in `types/`, etc.).
-- Naming/layout: `.cursor/rules/core/naming-and-layout.mdc`
-- Boundaries: `.cursor/rules/core/boundaries.mdc`
+- **When creating code**: follow [code-quality-guidelines.mdc](@rules/core/code-quality-guidelines.mdc) (file size 10–50, one per file, types in `types/`, etc.).
+- Naming/layout: `@rules/core/naming-and-layout.mdc`
+- Boundaries: `@rules/core/boundaries.mdc`

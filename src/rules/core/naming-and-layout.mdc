@@ -28,7 +28,7 @@ alwaysApply: false
 ## Identifier naming
 
 - Framework-agnostic naming rules stay here.
-- React-specific handler/boolean/hook naming lives in `.cursor/rules/react/naming.mdc`.
+- React-specific handler/boolean/hook naming lives in `@rules/react/naming.mdc`.
 
 ## Exports
 
@@ -37,7 +37,7 @@ alwaysApply: false
 
 ## Imports
 
-- No barrel/index files.
+- No barrel/index files. Exception: vertical-slice folders may expose a single `index.ts` as public API; consumers must not import internal files from outside the folder (see vertical-slice-architecture.mdc).
 - Prefer relative imports within a domain folder; use aliases only when they reduce churn.
 
 ## Alternative: Frontend/backend split

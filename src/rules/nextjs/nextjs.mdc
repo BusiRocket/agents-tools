@@ -54,10 +54,10 @@ Allowed exceptions:
 
 ## References
 
-- Route Handlers: `.cursor/rules/nextjs/route-handlers.mdc`
-- Server Actions: `.cursor/rules/nextjs/server-actions.mdc`
-- Forms/Actions: `.cursor/rules/nextjs/forms-and-actions.mdc`
-- Data Fetching: `.cursor/rules/nextjs/data-fetching.mdc`
-- Rendering/Performance: `.cursor/rules/nextjs/rendering-performance.mdc`
-- Error/Observability: `.cursor/rules/nextjs/error-observability.mdc`
-- Boundaries: `.cursor/rules/core/boundaries.mdc`
+- Route Handlers: `@rules/nextjs/route-handlers.mdc`
+- Server Actions: `@rules/nextjs/server-actions.mdc`
+- Forms/Actions: `@rules/nextjs/forms-and-actions.mdc`
+- Data Fetching: `@rules/nextjs/data-fetching.mdc`
+- Rendering/Performance: `@rules/nextjs/rendering-performance.mdc`
+- Error/Observability: `@rules/nextjs/error-observability.mdc`
+- Boundaries: `@rules/core/boundaries.mdc`

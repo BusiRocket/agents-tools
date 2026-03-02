@@ -9,7 +9,7 @@ Use **@go** when working on Go codebases.
 
 This rule references:
 
-- **Go microservices**: `.cursor/rules/go/microservices.mdc` - clean architecture, interfaces, observability, resilience, testing
+- **Go microservices**: `@rules/go/microservices.mdc` - clean architecture, interfaces, observability, resilience, testing
 
 ## Short summary
 

@@ -24,4 +24,4 @@ Run this after every meaningful change:
 
 ## Checklist and common issues
 
-- For the full checklist (file size, one per file, types in `types/`, etc.) and common issues/fixes, see [code-quality-guidelines.mdc](.cursor/rules/core/code-quality-guidelines.mdc).
+- For the full checklist (file size, one per file, types in `types/`, etc.) and common issues/fixes, see [code-quality-guidelines.mdc](@rules/core/code-quality-guidelines.mdc).

@@ -10,15 +10,15 @@ when the project includes multiple JS/TS runtimes.
 
 This rule references:
 
-- **General JS/TS**: `.cursor/rules/javascript/general.mdc`
-- **Chrome Extensions MV3**: `.cursor/rules/javascript/chrome-extension-mv3.mdc`
-- **Modern web apps**: `.cursor/rules/javascript/web-apps.mdc`
-- **Vue + Vite** (optional): `.cursor/rules/javascript/vue-vite.mdc`
-- **SvelteKit** (optional): `.cursor/rules/javascript/sveltekit.mdc`
-- **Payload CMS + Node** (optional): `.cursor/rules/integrations/payload-cms.mdc`
-- **React Native/Expo**: `.cursor/rules/javascript/react-native-expo.mdc`
-- **Playwright QA**: `.cursor/rules/javascript/playwright-qa.mdc`
-- **Shopify theme JS**: `.cursor/rules/javascript/shopify-theme.mdc`
+- **General JS/TS**: `@rules/javascript/general.mdc`
+- **Chrome Extensions MV3**: `@rules/javascript/chrome-extension-mv3.mdc`
+- **Modern web apps**: `@rules/javascript/web-apps.mdc`
+- **Vue + Vite** (optional): `@rules/javascript/vue-vite.mdc`
+- **SvelteKit** (optional): `@rules/javascript/sveltekit.mdc`
+- **Payload CMS + Node** (optional): `@rules/integrations/payload-cms.mdc`
+- **React Native/Expo**: `@rules/javascript/react-native-expo.mdc`
+- **Playwright QA**: `@rules/javascript/playwright-qa.mdc`
+- **Shopify theme JS**: `@rules/javascript/shopify-theme.mdc`
 
 ## Short summary
 

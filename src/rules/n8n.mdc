@@ -9,7 +9,7 @@ Use **@n8n** when designing, building, or validating n8n workflows with n8n-MCP 
 
 This rule references:
 
-- **n8n MCP**: `.cursor/rules/n8n/n8n-mcp.mdc` — silent/parallel execution, templates first, validation levels, explicit parameters, addConnection/batch syntax
+- **n8n MCP**: `@rules/n8n/n8n-mcp.mdc` — silent/parallel execution, templates first, validation levels, explicit parameters, addConnection/batch syntax
 
 ## Short summary
 

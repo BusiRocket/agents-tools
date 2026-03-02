@@ -9,8 +9,8 @@ Use **@refactor** when refactoring a file or splitting code.
 
 This rule references:
 
-- **Refactor current file**: `.cursor/rules/refactor/file-refactor.mdc` — one symbol per file, no inline types/helpers; run check after
-- **TypeScript refactoring**: `.cursor/rules/typescript/refactoring-typescript.mdc` — move types to `types/`, helpers to `utils/`, no index files
+- **Refactor current file**: `@rules/refactor/file-refactor.mdc` — one symbol per file, no inline types/helpers; run check after
+- **TypeScript refactoring**: `@rules/typescript/refactoring-typescript.mdc` — move types to `types/`, helpers to `utils/`, no index files
 
 ## Short summary
 

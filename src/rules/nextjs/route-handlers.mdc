@@ -37,6 +37,6 @@ No business logic, no DB/network access directly in the handler.
 
 ## References
 
-- Response shapes: `.cursor/rules/nextjs/api-response-shapes.mdc`
-- Validation: `.cursor/rules/api/validation.mdc`
-- utils vs services: `.cursor/rules/backend/services-and-utils.mdc`
+- Response shapes: `@rules/nextjs/api-response-shapes.mdc`
+- Validation: `@rules/api/validation.mdc`
+- utils vs services: `@rules/backend/services-and-utils.mdc`

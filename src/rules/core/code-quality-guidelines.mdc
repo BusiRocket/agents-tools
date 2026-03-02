@@ -24,7 +24,7 @@ priority: high
 - Exactly one exported symbol per file.
 - No inline `interface`/`type` in non-type files; put types in `types/<area>/` (one type per file).
 - No helper functions inside components/hooks; extract to `utils/<area>/`.
-- No index/barrel files; import from concrete modules.
+- No index/barrel files; import from concrete modules. Exception: one `index.ts` per vertical-slice (feature) folder as the sole public API; see vertical-slice-architecture.mdc.
 - **Single-purpose functions only**: each function does one task. If a function contains multiple steps (fetch/read/parse/transform/branching), split into smaller functions and orchestrate them from a parent function.
 
 ## Framework-specific exceptions
@@ -69,7 +69,7 @@ Split immediately if any is true:
 - [ ] No circular dependencies.
 - [ ] File size 10–50 lines (max ~100).
 - [ ] One function/type/hook per file.
-- [ ] Types in `types/<area>/`; no index/barrel files.
+- [ ] Types in `types/<area>/`; no index/barrel files (except one index.ts per vertical-slice folder per vertical-slice-architecture.mdc).
 
 ## Common issues and fixes
 

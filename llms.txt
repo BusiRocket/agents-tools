@@ -1,0 +1,10 @@
+# BusiRocket Agent Skills
+
+A collection of reusable Agent Skills for TypeScript/React/Next.js/Rust/Tauri projects. Skills follow the Agent Skills format (https://agentskills.io/specification).
+
+## Skills
+
+## Links
+
+- [Agent Skills specification](https://agentskills.io/specification)
+- [Integrate skills into your agent](https://agentskills.io/integrate-skills)

@@ -26,6 +26,6 @@ alwaysApply: true
 
 ## References
 
-- Naming/layout: `.cursor/rules/core/naming-and-layout.mdc`
-- Boundaries: `.cursor/rules/core/boundaries.mdc`
-- TypeScript: `.cursor/rules/typescript/standards.mdc`
+- Naming/layout: `@rules/core/naming-and-layout.mdc`
+- Boundaries: `@rules/core/boundaries.mdc`
+- TypeScript: `@rules/typescript/standards.mdc`

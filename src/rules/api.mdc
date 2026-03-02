@@ -9,11 +9,11 @@ Use **@api** when working on route handlers, validation, or backend boundaries.
 
 This rule references:
 
-- **Route handlers**: `.cursor/rules/nextjs/route-handlers.mdc` — thin handlers, no logic in route
-- **Response shapes**: `.cursor/rules/nextjs/api-response-shapes.mdc` — `{ data }` / `{ error: { code, message } }`, status codes
-- **Server actions**: `.cursor/rules/nextjs/server-actions.mdc` — input validation and typed action results
-- **Validation**: `.cursor/rules/api/validation.mdc` — validate at boundary, guard/coercion helpers in `utils/validation/`
-- **Services vs utils**: `.cursor/rules/backend/services-and-utils.mdc` — utils = pure; services = IO/DB/auth
+- **Route handlers**: `@rules/nextjs/route-handlers.mdc` — thin handlers, no logic in route
+- **Response shapes**: `@rules/nextjs/api-response-shapes.mdc` — `{ data }` / `{ error: { code, message } }`, status codes
+- **Server actions**: `@rules/nextjs/server-actions.mdc` — input validation and typed action results
+- **Validation**: `@rules/api/validation.mdc` — validate at boundary, guard/coercion helpers in `utils/validation/`
+- **Services vs utils**: `@rules/backend/services-and-utils.mdc` — utils = pure; services = IO/DB/auth
 
 ## Short summary
 

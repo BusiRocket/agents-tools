@@ -10,7 +10,7 @@ Use this rule by referencing **@refactor** when you need to refactor the current
 ## What to apply
 
 - All quality criteria and extraction rules come from **code-quality-guidelines**: file size (10–50 target, ~100 max), one export per file, types in `types/<area>/`, no helpers inside components/hooks, constants in dedicated files, when to split, checklist.
-- Do not duplicate those rules here; read and apply [code-quality-guidelines.mdc](.cursor/rules/core/code-quality-guidelines.mdc).
+- Do not duplicate those rules here; read and apply [code-quality-guidelines.mdc](@rules/core/code-quality-guidelines.mdc).
 
 ## Refactor workflow
 
@@ -18,6 +18,10 @@ Use this rule by referencing **@refactor** when you need to refactor the current
 2. **Decide** what to extract using the heuristics and extraction decision tree in code-quality-guidelines (e.g. multiple functions → one per file; inline types → `types/<area>/`; complex logic → hook or util; repeated JSX → child components; large collections → constant files).
 3. **Extract** and create/update files; fix all imports; remove unused code.
 4. **Run** the project check script (e.g. `pnpm run check`, `npm run check`) and fix until clean.
+
+## Refactoring into a vertical slice
+
+When refactoring a module into a vertical-slice folder (single public API, internal structure, no external imports of internal files), follow [vertical-slice-architecture.mdc](@rules/core/vertical-slice-architecture.mdc): target structure, migration plan, guardrails, and verification.
 
 ## Mandatory after refactor
 

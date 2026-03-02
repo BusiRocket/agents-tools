@@ -9,10 +9,10 @@ Use **@typescript** when writing or refactoring TypeScript.
 
 This rule references:
 
-- **Standards**: `.cursor/rules/typescript/standards.mdc` - strict TS style, one export per file, Next.js exceptions
-- **Types conventions**: `.cursor/rules/typescript/types-conventions.mdc` - naming patterns and result shapes
-- **Refactoring flow**: `.cursor/rules/typescript/refactoring-typescript.mdc` - single source of truth for extraction/splitting
-- **Post-change checks**: `.cursor/rules/typescript/typescript-debug.mdc` - check order and failure handling
+- **Standards**: `@rules/typescript/standards.mdc` - strict TS style, one export per file, Next.js exceptions
+- **Types conventions**: `@rules/typescript/types-conventions.mdc` - naming patterns and result shapes
+- **Refactoring flow**: `@rules/typescript/refactoring-typescript.mdc` - single source of truth for extraction/splitting
+- **Post-change checks**: `@rules/typescript/typescript-debug.mdc` - check order and failure handling
 
 ## Short summary
 

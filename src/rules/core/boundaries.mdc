@@ -29,10 +29,11 @@ If you are writing...
 
 ## References
 
-- Next.js: `.cursor/rules/nextjs/nextjs.mdc`
-- Route handlers: `.cursor/rules/nextjs/route-handlers.mdc`
-- API response shapes: `.cursor/rules/nextjs/api-response-shapes.mdc`
-- Validation: `.cursor/rules/api/validation.mdc`
-- Naming/layout: `.cursor/rules/core/naming-and-layout.mdc`
-- utils vs services: `.cursor/rules/backend/services-and-utils.mdc`
-- Anti-patterns: `.cursor/rules/core/anti-patterns.mdc`
+- Next.js: `@rules/nextjs/nextjs.mdc`
+- Route handlers: `@rules/nextjs/route-handlers.mdc`
+- API response shapes: `@rules/nextjs/api-response-shapes.mdc`
+- Validation: `@rules/api/validation.mdc`
+- Naming/layout: `@rules/core/naming-and-layout.mdc`
+- utils vs services: `@rules/backend/services-and-utils.mdc`
+- Anti-patterns: `@rules/core/anti-patterns.mdc`
+- Vertical-slice (feature folder, public API): `@rules/core/vertical-slice-architecture.mdc`

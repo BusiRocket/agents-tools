@@ -11,7 +11,7 @@ This rule references:
 
 - **Python standards**: `@rules/python/python.mdc` — schema-first, UV, type hints, structure, testing, packaging
 - **Django** (optional): `@rules/python/django.mdc` — app structure, ORM-first, MVT boundaries, security
-- **Django REST API** (optional): `@rules/python/django-rest-api.mdc` — DRF serializers/views, versioning, pagination, error shape
+- **Django REST API** (optional): `@rules/python/django-rest-api.mdc` — DRF serializers/views, pagination, error shape
 
 ## Short summary
 

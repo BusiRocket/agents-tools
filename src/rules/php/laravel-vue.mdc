@@ -9,7 +9,6 @@ alwaysApply: false
 
 - Keep backend/frontend boundary explicit: controllers/resources define stable contracts.
 - Prefer API Resources (or Inertia props contracts) over ad-hoc array payloads.
-- Version public API contracts when backward compatibility matters.
 
 ## Frontend integration
 

@@ -36,7 +36,6 @@ alwaysApply: true
 
 ## API and contracts
 
-- For public APIs, define explicit versioning strategy (path/header) and keep it consistent.
 - Use API Resources/Transformers as the boundary contract; avoid leaking internal model structure.
 - Normalize expected failures to stable response shapes and status codes.
 

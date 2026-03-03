@@ -31,7 +31,7 @@ Detect the project stack and assess the current state:
 1. **TypeScript**: Check `tsconfig.json` for `strict: true` and additional correctness flags.
 2. **ESLint**: Check config format (flat `.ts`/`.mjs` vs legacy `.eslintrc`), installed plugins,
    type-aware linting.
-3. **Scripts**: Check `package.json` for `lint`, `typecheck`, and `test` scripts.
+3. **Scripts**: Check `package.json` for `lint`, `type-check`, and `test` scripts.
 4. **Folder conventions**: Check for `src/app`, `src/features`, `src/shared`, `src/server`,
    `src/public`.
 5. **Import hygiene**: Check for barrel files, deep imports across module boundaries, unused
@@ -365,7 +365,7 @@ Ensure `package.json` has these scripts:
 {
   "scripts": {
     "lint": "eslint .",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "type-check": "tsc -p tsconfig.json --noEmit",
     "test": "vitest"
   }
 }
@@ -375,7 +375,7 @@ Run all three and verify zero errors:
 
 ```bash
 pnpm lint
-pnpm typecheck
+pnpm type-check
 pnpm test
 ```
 
@@ -384,7 +384,7 @@ pnpm test
 Before declaring success:
 
 - [ ] `pnpm lint` passes with zero warnings treated as errors.
-- [ ] `pnpm typecheck` passes.
+- [ ] `pnpm type-check` passes.
 - [ ] No deep imports remain outside module boundaries.
 - [ ] Client/public code cannot import server-only modules (lint enforces).
 - [ ] Server code cannot import browser-only modules (lint enforces).

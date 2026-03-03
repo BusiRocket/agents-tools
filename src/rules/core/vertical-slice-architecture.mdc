@@ -85,7 +85,7 @@ Add or extend lint rules to enforce:
 
 After the refactor:
 
-- Run **typecheck** (e.g. `pnpm run typecheck` or `tsc --noEmit`).
+- Run **type-check** (e.g. `pnpm run type-check` or `tsc --noEmit`).
 - Run **lint** (e.g. `pnpm run lint` or `eslint .`).
 - Run **tests** (e.g. `pnpm run test` or `pnpm run check`).
 

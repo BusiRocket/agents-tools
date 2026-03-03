@@ -56,7 +56,7 @@ Optimize for agent context by keeping **many small, focused files** and explicit
 ## Network / API
 
 - Implement proper error handling for network requests and responses; surface user-friendly errors when possible.
-- Consider API versioning and CORS when designing or integrating with backends.
+- Consider CORS when designing or integrating with backends.
 - For external backends: consider retries for transient failures and appropriate serialization for complex payloads.
 
 ## Quality Gate

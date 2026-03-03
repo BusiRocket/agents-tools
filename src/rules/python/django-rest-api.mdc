@@ -8,7 +8,6 @@ alwaysApply: false
 ## API design
 
 - Follow RESTful semantics with clear method/status usage.
-- Keep API versioning explicit and consistent (prefer URL-based versioning).
 - Keep response contracts stable and documented.
 - Use standardized success/error response shapes across endpoints.
 

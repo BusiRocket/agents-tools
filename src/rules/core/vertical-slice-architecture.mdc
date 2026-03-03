@@ -16,7 +16,7 @@ Refactor React + TypeScript modules into scalable vertical-slice folders with a 
 - **Single public entrypoint per folder** — one `index.ts` per vertical-slice folder; all external consumers import only from that entrypoint.
 - **No internal imports from outside** — code outside a slice must not import internal files (e.g. hooks, subcomponents, utils) of the slice; only the public API via `index.ts`.
 
-**Barrel exception:** The only allowed barrel file in the repo is **one `index.ts` per vertical-slice (feature) folder**, used solely as the public API. All other barrel/index files remain forbidden (see code-quality-guidelines and anti-patterns).
+**Public API standard:** Each feature/module folder exposes one `index.ts` with explicit named re-exports as its public API. Do not use `export * from` in entrypoints. Cross-module imports must go through the entrypoint, never into internal files.
 
 ## Objective
 

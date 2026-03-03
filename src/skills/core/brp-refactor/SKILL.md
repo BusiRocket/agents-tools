@@ -51,7 +51,7 @@ For each refactoring step:
 - [ ] No new lint warnings
 - [ ] File sizes improved (closer to 10–50 lines target)
 - [ ] One exported symbol per file
-- [ ] No barrel/index files introduced
+- [ ] Imports use module entrypoints (`index.ts`); no wildcard re-export barrels introduced
 - [ ] Entry points unchanged (public API preserved)
 
 ## Rules

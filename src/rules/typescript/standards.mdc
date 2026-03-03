@@ -76,3 +76,7 @@ For boundaries that can fail (services), prefer a typed result object instead of
 ## Validation
 
 Run the project's check script after meaningful changes (e.g. `pnpm run check`, `npm run check`).
+
+## References
+
+- TypeScript strict hardening: `@rules/typescript/strict-hardening.mdc`

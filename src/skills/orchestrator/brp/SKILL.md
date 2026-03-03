@@ -20,16 +20,17 @@ directly with `/brp` for guided task selection.
 
 ## Commands
 
-| Command         | Intent              | Skill Chain                      |
-| --------------- | ------------------- | -------------------------------- |
-| `/brp-create`   | New feature/code    | plan → implement → test → review |
-| `/brp-fix`      | Bug fix             | fix → test → review              |
-| `/brp-refactor` | Safe refactor       | refactor → test → review         |
-| `/brp-review`   | PR/code review      | review                           |
-| `/brp-test`     | Tests & validation  | test                             |
-| `/brp-debug`    | Investigate issues  | debug → fix → test               |
-| `/brp-migrate`  | Upgrades/migrations | plan → implement → test → review |
-| `/brp-docs`     | Documentation       | docs                             |
+| Command             | Intent                       | Skill Chain                      |
+| ------------------- | ---------------------------- | -------------------------------- |
+| `/brp-create`       | New feature/code             | plan → implement → test → review |
+| `/brp-fix`          | Bug fix                      | fix → test → review              |
+| `/brp-refactor`     | Safe refactor                | refactor → test → review         |
+| `/brp-review`       | PR/code review               | review                           |
+| `/brp-test`         | Tests & validation           | test                             |
+| `/brp-debug`        | Investigate issues           | debug → fix → test               |
+| `/brp-migrate`      | Upgrades/migrations          | plan → implement → test → review |
+| `/brp-docs`         | Documentation                | docs                             |
+| `/brp-code-quality` | Audit & harden quality gates | code-quality                     |
 
 ## Orchestration Logic
 

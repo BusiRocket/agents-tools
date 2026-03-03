@@ -17,7 +17,7 @@ Many small, focused files for maximum agent context efficiency.
 - One exported type per `types/**`.
 - No inline types outside `types/`.
 - No helpers inside components/hooks.
-- No index/barrel files (except one `index.ts` per vertical-slice folder as public API; see vertical-slice-architecture.mdc).
+- Import from module entrypoints (`index.ts`); no wildcard re-export barrels. Each feature/module folder exposes one `index.ts` as its public API; see vertical-slice-architecture.mdc.
 - **Single-purpose functions only**: if a function does multiple tasks, split it and keep a thin orchestrator function.
 
 ## App Router Defaults (Next.js)

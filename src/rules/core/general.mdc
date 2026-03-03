@@ -49,7 +49,7 @@ Optimize for agent context by keeping **many small, focused files** and explicit
 
 ## Repo Hygiene
 
-- No index/barrel files.
+- Import from module entrypoints (`index.ts`); no wildcard re-export barrels.
 - One responsibility per file.
 - Keep route handlers thin; move logic to `services/`.
 

@@ -18,7 +18,7 @@ This rule references the following; for full detail open each:
 - **JavaScript** (optional): `@rules/javascript.mdc` — cross-runtime JS/TS domain rules
 - **Boundaries**: `@rules/core/boundaries.mdc` — where to put routes, components, hooks, utils, services, types
 - **Naming & layout**: `@rules/core/naming-and-layout.mdc` — folder layout, file naming, exports
-- **Anti-patterns**: `@rules/core/anti-patterns.mdc` — what to avoid (barrels, inline types, fat handlers)
+- **Anti-patterns**: `@rules/core/anti-patterns.mdc` — what to avoid (wildcard re-export barrels, inline types, fat handlers)
 - **Vertical-slice architecture**: `@rules/core/vertical-slice-architecture.mdc` — refactor module into vertical slice, public API, migration plan, guardrails (use for "vertical slice", "public API", "refactor module")
 - **Security baseline**: `@rules/core/security-baseline.mdc` — XSS/secrets/least-privilege defaults
 

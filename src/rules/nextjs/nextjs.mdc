@@ -60,4 +60,6 @@ Allowed exceptions:
 - Data Fetching: `@rules/nextjs/data-fetching.mdc`
 - Rendering/Performance: `@rules/nextjs/rendering-performance.mdc`
 - Error/Observability: `@rules/nextjs/error-observability.mdc`
+- Runtime Boundaries: `@rules/nextjs/runtime-boundaries.mdc`
+- Import Hygiene: `@rules/nextjs/import-hygiene.mdc`
 - Boundaries: `@rules/core/boundaries.mdc`

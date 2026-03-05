@@ -3,12 +3,11 @@ description: Supabase services usage (only if Supabase is added)
 alwaysApply: false
 ---
 
-# Supabase Services Usage
+# Supabase Services Usage (pointer)
 
-## Rule
+Use this rule only if/when the repository adds Supabase.
 
-This rule only applies if/when this repository adds Supabase.
+Canonical guidance lives in: `@rules/backend/supabase.mdc`.
 
-- Route handlers, hooks, utils, and components must NOT call Supabase directly.
-- Centralize reads/writes in `services/supabase/` modules.
-- Never import `@supabase/supabase-js` outside the Supabase client setup or `services/supabase/*`.
+- Isolate Supabase access in `services/supabase/*`.
+- Do not call Supabase directly from components, hooks, utils, or route handlers.

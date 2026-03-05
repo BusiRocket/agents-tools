@@ -10,7 +10,7 @@ These patterns destroy agent context quality and make refactors risky.
 ## File Structure
 
 - **Multiple exports per file** (any combination of component/hook/function/type).
-- **Wildcard re-export barrels** (`export * from`) and **deep imports into module internals**. Each module exposes one `index.ts` as its public API with explicit named re-exports; see vertical-slice-architecture.mdc.
+- **Wildcard re-export barrels** (`export * from`) and **deep imports into module internals**. One `index.ts` per slice, explicit re-exports only, no `export *`. Canonical rule: `@rules/core/code-quality-guidelines.mdc`.
 - **Growing "misc" modules** (`helpers.ts`, `utils.ts`, `types.ts`, `constants.ts`).
 - **God functions** that fetch/read/parse/transform/branch in one place instead of being split into single-purpose helpers.
 - **TODO/placeholders** in delivered code.
@@ -30,7 +30,7 @@ These patterns destroy agent context quality and make refactors risky.
 
 ## App Router / API
 
-- **Fat route handlers** that contain business logic.
+- **Fat route handlers** that contain business logic. Entry layers must be thin (validate, call service, return). See `@rules/core/boundaries.mdc`.
 - Returning unvalidated input; always validate and return explicit responses.
 
 ## Dependencies

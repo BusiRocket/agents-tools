@@ -38,7 +38,8 @@ Use `services/<area>/xxx.ts` when code:
 - Do not return framework response primitives from services (e.g. Response/NextResponse). Services return domain data or typed results; map to `{ data }/{ error }` in route handlers and `{ ok }` in server actions.
 - Prefer explicit error shapes over throwing for expected failures.
 
+**Result shape by layer:** Route handlers: `{ data }` / `{ error }`. Server actions: `{ ok, data }` / `{ ok, error }`. Services: `{ ok, value }` / `{ ok, error }` — use `value` in services to avoid confusion with HTTP `data`.
+
 ## app route handlers
 
-- Must be **thin**: validate input, call a service, return a response.
-- No business logic; no data mapping beyond request/response translation.
+Route handlers must be thin (validate, call service, return response). See `@rules/core/boundaries.mdc`. No business logic; no data mapping beyond request/response translation.

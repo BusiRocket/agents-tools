@@ -9,7 +9,7 @@ alwaysApply: true
 
 - Prefer **Server Components** by default.
 - Add `'use client'` only when you need client-side state/effects/event handlers.
-- Route handlers live in `app/api/**/route.ts` and must be thin (logic goes to `services/`).
+- Route handlers live in `app/api/**/route.ts` and must be thin (validate, call service, return). See `@rules/core/boundaries.mdc`.
 
 ## File Discipline (STRICT)
 

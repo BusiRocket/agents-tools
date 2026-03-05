@@ -5,6 +5,8 @@ alwaysApply: false
 
 # Agent Guidelines (Sonnet / Cursor)
 
+See also `@rules/core/general.mdc` for agent defaults (planning, search).
+
 ## Required
 
 1. Use **codebase_search** with `target_directories="."` first to find existing core files.

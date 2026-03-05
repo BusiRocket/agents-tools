@@ -12,7 +12,7 @@ alwaysApply: true
 
 ## Architecture
 
-- Controllers should be thin orchestration layers.
+- Controllers should be thin orchestration layers (validate, call service, return). See `@rules/core/boundaries.mdc`.
 - Keep business logic in services/actions/domain classes.
 - Use constructor DI/method injection over static facades in core business paths.
 - Use repositories only when persistence complexity justifies the extra layer.

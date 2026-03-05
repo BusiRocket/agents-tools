@@ -59,10 +59,7 @@ Optimize for long-term maintainability with **many small, focused files** and ex
 
 ## Boundaries
 
-- Route handlers or command handlers should be thin:
-  - Validate input
-  - Call a single service function
-  - Return explicit results
+- Route handlers or command handlers should be thin (validate, call service, return). Canonical: `@rules/core/boundaries.mdc`.
 
 ## Tauri Commands Checklist (MANDATORY)
 

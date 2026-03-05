@@ -9,18 +9,12 @@ Rules for clean, stable, and enforceable import graphs in TypeScript/Next.js pro
 
 ## Public API only
 
-Each feature/module folder exposes one `index.ts` as its public API. Cross-module imports must go through the entrypoint, never into internal files.
-
-Note: See `@rules/core/code-quality-guidelines.mdc` for the canonical `index.ts` and barrel policy.
+One `index.ts` per slice/module, explicit re-exports only, no `export *`. Full policy: see `@rules/core/code-quality-guidelines.mdc`.
 
 - Allowed: `import { LoginForm } from '@/features/auth'`
 - Forbidden: `import { LoginForm } from '@/features/auth/ui/LoginForm'`
 
 Enforce with `import/no-internal-modules` in ESLint.
-
-## No wildcard re-export barrels
-
-Do not use `export * from './...'` in entrypoints. Use explicit named re-exports so the public contract is visible and tree-shakeable.
 
 ## Consistent type imports
 

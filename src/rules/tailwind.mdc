@@ -5,7 +5,7 @@ alwaysApply: false
 
 # Tailwind Rules
 
-Use **@tailwind** when working on Tailwind styles, component variants, or theme tokens.
+Use **@tailwind** when working on Tailwind styles, component variants, or theme tokens. Legacy entrypoint: `@rules/styling/tailwindcss.mdc`.
 
 This rule references:
 

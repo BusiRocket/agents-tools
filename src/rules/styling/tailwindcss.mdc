@@ -5,8 +5,4 @@ alwaysApply: false
 
 # Tailwind Legacy Pointer
 
-Canonical entrypoint: `@rules/tailwind.mdc`.
-
-Use **@tailwind** and follow the split Tailwind rules under `@rules/styling/tailwind/*`.
-
-This file is intentionally a thin pointer to avoid duplication drift.
+Use `@rules/styling/tailwind/*` and summary in `@rules/tailwind.mdc`. Same canonical rules as **@tailwind**.

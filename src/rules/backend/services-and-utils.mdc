@@ -35,7 +35,7 @@ Use `services/<area>/xxx.ts` when code:
 
 **API guidance:**
 
-- Return domain data or typed result objects; avoid returning framework primitives from deep services.
+- Do not return framework response primitives from services (e.g. Response/NextResponse). Services return domain data or typed results; map to `{ data }/{ error }` in route handlers and `{ ok }` in server actions.
 - Prefer explicit error shapes over throwing for expected failures.
 
 ## app route handlers

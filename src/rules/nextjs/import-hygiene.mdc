@@ -11,6 +11,8 @@ Rules for clean, stable, and enforceable import graphs in TypeScript/Next.js pro
 
 Each feature/module folder exposes one `index.ts` as its public API. Cross-module imports must go through the entrypoint, never into internal files.
 
+Note: See `@rules/core/code-quality-guidelines.mdc` for the canonical `index.ts` and barrel policy.
+
 - Allowed: `import { LoginForm } from '@/features/auth'`
 - Forbidden: `import { LoginForm } from '@/features/auth/ui/LoginForm'`
 

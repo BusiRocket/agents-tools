@@ -63,13 +63,34 @@ export function renderClaudeIndexOnly(bundle, options = {}) {
 }
 
 function normalizeRel(rel) {
-  return String(rel ?? "")
+  const s = String(rel ?? "")
     .replace(/\\/g, "/")
     .replace(/^\/+/, "")
+  return s.replace(/(^|\/)\.\.(?=\/|$)/g, "")
 }
 
 /** Root-level .mdc files to show under this segment instead of entrypoints (index only). */
 const ROOT_FILE_TO_SEGMENT = { "tailwind.mdc": "styling" }
+
+/** Root .mdc files that are first-class entrypoints; all other root files go to misc. */
+const ENTRYPOINTS = new Set([
+  "api.mdc",
+  "bash.mdc",
+  "core.mdc",
+  "deploy.mdc",
+  "frontend.mdc",
+  "go.mdc",
+  "javascript.mdc",
+  "monorepo.mdc",
+  "n8n.mdc",
+  "nextjs.mdc",
+  "php.mdc",
+  "python.mdc",
+  "react.mdc",
+  "refactor.mdc",
+  "rust.mdc",
+  "typescript.mdc",
+])
 
 function groupByTopSegment(items) {
   /** @type {Record<string, Array<any>>} */
@@ -77,13 +98,18 @@ function groupByTopSegment(items) {
   for (const item of items) {
     const parts = item.rel.split("/")
     let seg
-    if (parts.length === 1 && item.rel.endsWith(".mdc")) {
-      seg = ROOT_FILE_TO_SEGMENT[item.rel] ?? "entrypoints"
+    if (parts.length === 1) {
+      if (ROOT_FILE_TO_SEGMENT[item.rel]) seg = ROOT_FILE_TO_SEGMENT[item.rel]
+      else if (ENTRYPOINTS.has(item.rel)) seg = "entrypoints"
+      else seg = "misc"
     } else {
       seg = parts[0]
     }
     map[seg] = map[seg] ?? []
     map[seg].push(item)
+  }
+  for (const seg of Object.keys(map)) {
+    map[seg].sort((a, b) => a.rel.localeCompare(b.rel))
   }
   return map
 }
@@ -136,11 +162,14 @@ function getOneLineDescription(item, { includeShortSummary }) {
 }
 
 function truncate(value, max) {
-  if (value.length <= max) return value
-  const cut = value.slice(0, max - 1)
+  const limit = Number.isFinite(max) ? max : MAX_DESCRIPTION_CHARS
+  if (limit <= 0) return ""
+  if (value.length <= limit) return value
+  if (limit === 1) return "…"
+  const cut = value.slice(0, limit - 1)
   const lastSpace = cut.lastIndexOf(" ")
   const safe = lastSpace > 40 ? cut.slice(0, lastSpace) : cut
-  return `${safe}…`
+  return `${safe.trimEnd()}…`
 }
 
 function toOneLine(value) {

@@ -20,3 +20,4 @@ This rule references:
 - Handler: parse/validate input → call one service → return explicit response.
 - Success: `Response.json({ data })`; error: `Response.json({ error: { code, message } }, { status })`.
 - No business logic or DB access in the handler.
+- Do not mix shapes: route handlers use `{ data }` / `{ error }`; server actions use `{ ok: true/false }` results; services return typed results—see `@rules/backend/services-and-utils.mdc` for the canonical mapping rule.

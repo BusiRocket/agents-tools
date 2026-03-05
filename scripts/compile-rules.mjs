@@ -14,6 +14,7 @@ import { checkWindsurfRules } from "./lib/rules/checkWindsurfRules.mjs"
 import { generateBundle } from "./lib/rules/generateBundle.mjs"
 import { renderAgents } from "./lib/rules/renderAgents.mjs"
 import { renderAntigravity } from "./lib/rules/renderAntigravity.mjs"
+import { renderAllRules } from "./lib/rules/renderAllRules.mjs"
 import { renderClaudeIndexOnly } from "./lib/rules/renderClaudeIndexOnly.mjs"
 import { renderWindsurf } from "./lib/rules/renderWindsurf.mjs"
 import { syncAntigravityRules } from "./lib/rules/syncAntigravityRules.mjs"
@@ -31,7 +32,9 @@ const CLAUDE_PATH = path.join(ROOT, "dist", "markdown", "CLAUDE.md")
 const AGENTS_PATH = path.join(ROOT, "dist", "markdown", "AGENTS.md")
 const GEMINI_PATH = path.join(ROOT, "dist", "markdown", "GEMINI.md")
 const WINDSURF_PATH = path.join(ROOT, "dist", "markdown", "WINDSURF.md")
+const ALL_RULES_PATH = path.join(ROOT, "dist", "markdown", "ALL_RULES.md")
 const CLAUDE_MAX_CHARS = 15_000
+const ALL_RULES_MAX_CHARS_WARN = 2_000_000
 const RULE_MAX_CHARS_WARN = 30_000
 
 const main = async () => {
@@ -63,6 +66,7 @@ const main = async () => {
   const nextAgents = renderAgents(bundle)
   const nextGemini = renderAntigravity(bundle)
   const nextWindsurf = renderWindsurf(bundle)
+  const nextAllRules = renderAllRules(bundle)
 
   if (checkOnly) {
     const errors = [
@@ -93,6 +97,11 @@ const main = async () => {
       errors.push("Outdated generated file: WINDSURF.md")
     }
 
+    const currentAllRules = await readIfExists(ALL_RULES_PATH)
+    if (currentAllRules !== nextAllRules) {
+      errors.push("Outdated generated file: ALL_RULES.md")
+    }
+
     if (errors.length > 0) {
       console.error("Rules are not compiled or are out of date:\n")
       for (const error of errors) {
@@ -113,8 +122,16 @@ const main = async () => {
   await fs.writeFile(AGENTS_PATH, nextAgents, "utf8")
   await fs.writeFile(GEMINI_PATH, nextGemini, "utf8")
   await fs.writeFile(WINDSURF_PATH, nextWindsurf, "utf8")
+  await fs.writeFile(ALL_RULES_PATH, nextAllRules, "utf8")
+
+  if (nextAllRules.length > ALL_RULES_MAX_CHARS_WARN) {
+    console.warn(
+      `[rules] ALL_RULES.md is large (${nextAllRules.length} chars > ${ALL_RULES_MAX_CHARS_WARN}). Consider splitting or excluding heavy rules.`,
+    )
+  }
 
   console.log(`Wrote CLAUDE.md bootstrap (${nextClaude.length} chars) -> ${CLAUDE_PATH}`)
+  console.log(`Wrote dist/markdown/ALL_RULES.md (${nextAllRules.length} chars)`)
   console.log("Compiled rules for Cursor, Claude, Codex, Antigravity (Gemini), and Windsurf.")
 }
 

@@ -25,14 +25,16 @@ Optimize for agent context by keeping **many small, focused files** and explicit
 
 - Prefer small, safe changes over sweeping refactors unless requested.
 - When requirements are ambiguous, ask a clarifying question before coding.
-- Dependencies policy:
+- Use subagents to process multiple files in parallel when the task involves several independent edits.
+- Plan before executing: create a short plan before modifying code; ask if scope is unclear.
+- After meaningful changes: briefly reflect on maintainability and scalability; suggest improvements if needed.
+
+## Dependencies policy
+
 - First, check if an existing dependency in the repo already solves the problem (UI, icons, dates, validation, data access, etc.).
 - If existing dependencies are insufficient, research and suggest the best-fit library with brief tradeoffs.
 - Prefer mature libraries over building complex systems in-house (dates, advanced UI, rich text, DB/ORM, complex state/query layers).
 - Keep changes reversible; avoid touching unrelated files.
-- Use subagents to process multiple files in parallel when the task involves several independent edits.
-- Plan before executing: create a short plan before modifying code; ask if scope is unclear.
-- After meaningful changes: briefly reflect on maintainability and scalability; suggest improvements if needed.
 
 ## Code Style
 

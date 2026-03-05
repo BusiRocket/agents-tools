@@ -37,7 +37,15 @@ const CLAUDE_MAX_CHARS = 15_000
 const ALL_RULES_MAX_CHARS_WARN = 2_000_000
 const RULE_MAX_CHARS_WARN = 30_000
 
+// When RULES_INDEX_ONLY=0, legacy full-content could be used; currently index-only is the only path.
+const RULES_INDEX_ONLY = process.env.RULES_INDEX_ONLY !== "0"
+
 const main = async () => {
+  if (!RULES_INDEX_ONLY) {
+    console.warn(
+      "[rules] RULES_INDEX_ONLY=0: index-only is still used (legacy path not implemented).",
+    )
+  }
   const checkOnly = process.argv.includes("--check")
 
   let sourceFiles = []
@@ -63,6 +71,7 @@ const main = async () => {
     maxChars: CLAUDE_MAX_CHARS,
     includeShortSummary: false,
   })
+  // AGENTS, GEMINI, WINDSURF are index-only (RULES_INDEX_ONLY=0 would switch to legacy full-content if that path existed)
   const nextAgents = renderAgents(bundle)
   const nextGemini = renderAntigravity(bundle)
   const nextWindsurf = renderWindsurf(bundle)

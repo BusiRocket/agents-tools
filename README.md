@@ -10,7 +10,7 @@ BRP consolidates rules, skills, and an orchestration protocol into a single proj
 - A **Cursor plugin** (`dist/plugins/cursor/.cursor-plugin/plugin.json`)
 - A **Claude Code plugin** (`dist/plugins/claude/.claude-plugin/plugin.json`)
 - A **multi-IDE rules exporter** (Cursor, Claude, Codex, Antigravity/Gemini, Windsurf)
-- An **AgentSkills-compatible** skill collection (19 validated skills)
+- An **AgentSkills-compatible** skill collection (9 validated skills)
 
 ## Quick Start
 
@@ -18,10 +18,11 @@ BRP consolidates rules, skills, and an orchestration protocol into a single proj
 # Clone and run full setup (install, build, check, link rules + skills to IDEs)
 git clone https://github.com/BusiRocket/busirocket-agents-tools.git
 cd busirocket-agents-tools
-pnpm run setup
+pnpm run sync
 ```
 
-To update dependencies and refresh everything: `pnpm run update`.
+`sync` is the canonical bootstrap command (install, build, check, rules:link, skills:link). To
+update dependencies and refresh everything: `pnpm run update`.
 
 ### As a Cursor Plugin
 
@@ -65,7 +66,7 @@ Every task follows 6 steps:
 ```
 busirocket-agents-tools/
 ├── src/                         # Source (canonical content)
-│   ├── rules/                   # Canonical rules (.mdc, IDE-agnostic)
+│   ├── rules/                   # Canonical rule definitions (.mdc)
 │   │   ├── core/                # Code quality, boundaries, naming
 │   │   ├── react/               # React patterns
 │   │   ├── nextjs/              # Next.js App Router
@@ -83,23 +84,12 @@ busirocket-agents-tools/
 │   │   ├── core/                # 8 BRP workflow skills
 │   │   │   ├── brp-plan/
 │   │   │   ├── brp-implement/
-│   │   │   ├── brp-test/
-│   │   │   ├── brp-review/
 │   │   │   ├── brp-fix/
 │   │   │   ├── brp-refactor/
+│   │   │   ├── brp-review/
+│   │   │   ├── brp-test/
 │   │   │   ├── brp-debug/
 │   │   │   └── brp-docs/
-│   │   ├── stacks/              # Stack-specific skills (10)
-│   │   │   ├── busirocket-core-conventions/
-│   │   │   ├── busirocket-react/
-│   │   │   ├── busirocket-nextjs/
-│   │   │   ├── busirocket-typescript-standards/
-│   │   │   ├── busirocket-tailwind/
-│   │   │   ├── busirocket-rust/
-│   │   │   ├── busirocket-tauri/
-│   │   │   ├── busirocket-supabase/
-│   │   │   ├── busirocket-refactor-workflow/
-│   │   │   └── busirocket-validation/
 │   │   └── orchestrator/        # Command router
 │   │       └── brp/
 │   └── core/                    # Protocol & policy
@@ -111,25 +101,31 @@ busirocket-agents-tools/
 │   │   ├── .cursor/rules/
 │   │   ├── .claude/rules/
 │   │   ├── .agent/rules/        # Antigravity (Gemini)
-│   │   ├── .windsurf/rules/
-│   │   └── codex/
-│   ├── markdown/                # Monolithic markdown exports
+│   │   └── .windsurf/rules/
+│   ├── markdown/                # Aggregated markdown outputs
+│   │   ├── ALL_RULES.md         # Full rule reference (all canonical rules)
 │   │   ├── CLAUDE.md
 │   │   ├── AGENTS.md
 │   │   ├── GEMINI.md
 │   │   └── WINDSURF.md
-│   └── plugins/                 # Plugin manifests
+│   ├── skills/                 # Compiled skills (from src/skills)
+│   └── plugins/                # Plugin manifests
 │       ├── cursor/.cursor-plugin/plugin.json
 │       └── claude/.claude-plugin/plugin.json
 │
-├── scripts/                     # Build, lint, compile, validate
+├── scripts/                     # Build, lint, compile, validate, link
+│   ├── compile-rules.mjs
+│   ├── compile-skills.mjs
+│   ├── validate-skills.mjs
+│   ├── link-rules-global.mjs
+│   └── link-skills-global.mjs
 ├── docs/                        # Project documentation
 │   ├── architecture.md
 │   └── ide-setup.md
 └── package.json
 ```
 
-## Skills (19 validated)
+## Skills (9 validated)
 
 ### Core Workflow Skills (8)
 
@@ -144,26 +140,13 @@ busirocket-agents-tools/
 | `brp-debug`     | Symptom analysis, hypothesis, isolation, resolution |
 | `brp-docs`      | Documentation generation (README, API, ADR)         |
 
-### Stack Skills (10)
-
-| Skill                             | Coverage                                        |
-| --------------------------------- | ----------------------------------------------- |
-| `busirocket-core-conventions`     | Code quality, boundaries, naming, anti-patterns |
-| `busirocket-react`                | React patterns, hooks, Zustand, accessibility   |
-| `busirocket-nextjs`               | App Router, caching, route handlers, validation |
-| `busirocket-typescript-standards` | Types, strictness, one-thing-per-file           |
-| `busirocket-tailwind`             | Tailwind setup, class strategy, ordering        |
-| `busirocket-rust`                 | Rust boundaries, modules, validation            |
-| `busirocket-tauri`                | Tauri commands, project structure               |
-| `busirocket-supabase`             | Supabase access rule, service usage             |
-| `busirocket-refactor-workflow`    | File refactoring workflow, split heuristics     |
-| `busirocket-validation`           | Validation boundaries, Zod, guard helpers       |
-
 ### Orchestrator (1)
 
 | Skill | Purpose                                       |
 | ----- | --------------------------------------------- |
 | `brp` | Routes commands to the appropriate core skill |
+
+Stack-specific skills may be added in future versions.
 
 ## Rule Categories
 
@@ -200,11 +183,12 @@ Rules are structured in three tiers so that the always-loaded context stays smal
 Do not edit `CLAUDE.md` by hand; it is generated by `pnpm rules:compile`. Edit files in `src/rules/`
 and recompile.
 
-**Index-only outputs:** `CLAUDE.md`, `AGENTS.md`, `GEMINI.md`, and `WINDSURF.md` are generated as
-index-only files: they list rule references (`@rules/...`) and short descriptions only; no rule
-bodies are inlined. This keeps the always-loaded context small. Full rule content lives in
-`src/rules/` and is synced to each IDE’s rules directory. To verify outputs against the Definition
-of Done (no inline mdc blocks, refs count, size budget), run `pnpm rules:verify`.
+**Markdown outputs:** Generated under `dist/markdown/` by `pnpm rules:compile`. `ALL_RULES.md`
+aggregates all canonical rules into a single reference. `CLAUDE.md`, `AGENTS.md`, `GEMINI.md`, and
+`WINDSURF.md` are generated as index-only files: they list rule references (`@rules/...`) and short
+descriptions only; no rule bodies are inlined. This keeps the always-loaded context small. Full rule
+content lives in `src/rules/` and is synced to each IDE’s rules directory. To verify outputs against
+the Definition of Done (no inline mdc blocks, refs count, size budget), run `pnpm rules:verify`.
 
 ## Rule Precedence
 
@@ -219,31 +203,32 @@ Task > Project > Stack > Global
 
 ## Scripts
 
-| Script                        | Description                                              |
-| ----------------------------- | -------------------------------------------------------- |
-| `pnpm run setup`              | Install, build, check, and link rules + skills to IDEs   |
-| `pnpm run update`             | Update deps then run full setup (build, check, link)     |
-| `pnpm build`                  | Compile canonical rules for all IDEs                     |
-| `pnpm check:all`              | Format + lint + rules:check + skills:validate            |
-| `pnpm check`                  | Alias for `check:all`                                    |
-| `pnpm rules:compile`          | Compile `src/rules/` → `dist/global/` + `dist/markdown/` |
-| `pnpm rules:verify`           | Verify index-only outputs (DoD + CLAUDE golden master)   |
-| `pnpm rules:check`            | Verify compiled output is current                        |
-| `pnpm rules:link`             | Link rules globally for all IDEs                         |
-| `pnpm rules:link:claude`      | Link to `~/.claude/`                                     |
-| `pnpm rules:link:codex`       | Link to `~/.codex/`                                      |
-| `pnpm rules:link:antigravity` | Link to `~/.gemini/`                                     |
-| `pnpm rules:link:windsurf`    | Link to `~/.windsurf/`                                   |
-| `pnpm skills:validate`        | Validate all 19 skills against AgentSkills spec          |
-| `pnpm skills:llms`            | Generate `llms.txt` for skill discovery                  |
-| `pnpm skills:prompt`          | Generate XML prompt with all skills                      |
-| `pnpm skills:prompt:file`     | Write prompt to `available_skills.xml`                   |
-| `pnpm skills:version:check`   | Check skill version consistency                          |
-| `pnpm validate:install`       | Install Python venv for skills validation                |
-| `pnpm format`                 | Format all files with Prettier                           |
-| `pnpm format:check`           | Check formatting without writing                         |
-| `pnpm lint`                   | ESLint check                                             |
-| `pnpm lint:fix`               | ESLint auto-fix                                          |
+| Script                          | Description                                                             |
+| ------------------------------- | ----------------------------------------------------------------------- |
+| `pnpm run sync`                 | Full project bootstrap (install, build, check, rules:link, skills:link) |
+| `pnpm run update`               | Update deps then run sync                                               |
+| `pnpm run build`                | Compile rules and skills                                                |
+| `pnpm run check`                | Run all validations                                                     |
+| `pnpm run check:all`            | Format, lint, rules:check, skills:validate                              |
+| `pnpm run check:ci`             | CI alias of check:all                                                   |
+| `pnpm run rules:compile`        | Compile `src/rules/` to `dist/global/` + `dist/markdown/`               |
+| `pnpm run rules:link`           | Link rules to all supported IDEs                                        |
+| `pnpm run skills:compile`       | Compile skills from `src/skills/` to `dist/skills/`                     |
+| `pnpm run skills:link`          | Link compiled skills to supported IDEs                                  |
+| `pnpm run rules:verify`         | Verify index-only outputs (DoD + CLAUDE golden master)                  |
+| `pnpm run rules:check`          | Verify compiled output is current                                       |
+| `pnpm run skills:validate`      | Validate all 9 skills against AgentSkills spec                          |
+| `pnpm run skills:llms`          | Generate `llms.txt` for skill discovery                                 |
+| `pnpm run skills:prompt`        | Generate XML prompt with all skills                                     |
+| `pnpm run skills:prompt:file`   | Write prompt to `available_skills.xml`                                  |
+| `pnpm run skills:version:check` | Check skill version consistency                                         |
+| `pnpm run validate:install`     | Install Python venv for skills validation                               |
+| `pnpm run format`               | Format all files with Prettier                                          |
+| `pnpm run format:check`         | Check formatting without writing                                        |
+| `pnpm run lint`                 | ESLint check                                                            |
+| `pnpm run lint:fix`             | ESLint auto-fix                                                         |
+
+`sync` is the primary command used to bootstrap the project locally.
 
 ## Plugins
 

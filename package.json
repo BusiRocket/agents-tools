@@ -14,6 +14,7 @@
     "lint": "eslint .",
     "rules:check": "node scripts/compile-rules.mjs --check",
     "rules:compile": "node scripts/compile-rules.mjs",
+    "rules:verify": "node scripts/verify-rules-output.mjs",
     "rules:link": "node scripts/link-rules-global.mjs",
     "skills:compile": "node scripts/compile-skills.mjs",
     "skills:link": "node scripts/link-skills-global.mjs",

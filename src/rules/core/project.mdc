@@ -5,11 +5,9 @@ alwaysApply: false
 
 # Project Guidelines (pointer)
 
-For full file discipline, checklists, and when-to-split rules, see `@rules/core/code-quality-guidelines.mdc`.
+Canonical guidance: `@rules/core/code-quality-guidelines.mdc`.
 
 **Project-specific:**
 
 - App Router: Server Components by default; `'use client'` only when needed. Thin route handlers: `app/api/**/route.ts` -> call `services/`.
 - Quality gate: run the project check script after meaningful changes (e.g. `pnpm run check`, `npm run check`).
-
-References: naming/layout `@rules/core/naming-and-layout.mdc`, boundaries `@rules/core/boundaries.mdc`.

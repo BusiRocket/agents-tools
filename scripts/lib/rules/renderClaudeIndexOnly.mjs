@@ -68,12 +68,20 @@ function normalizeRel(rel) {
     .replace(/^\/+/, "")
 }
 
+/** Root-level .mdc files to show under this segment instead of entrypoints (index only). */
+const ROOT_FILE_TO_SEGMENT = { "tailwind.mdc": "styling" }
+
 function groupByTopSegment(items) {
   /** @type {Record<string, Array<any>>} */
   const map = {}
   for (const item of items) {
     const parts = item.rel.split("/")
-    const seg = parts.length === 1 && item.rel.endsWith(".mdc") ? "entrypoints" : parts[0]
+    let seg
+    if (parts.length === 1 && item.rel.endsWith(".mdc")) {
+      seg = ROOT_FILE_TO_SEGMENT[item.rel] ?? "entrypoints"
+    } else {
+      seg = parts[0]
+    }
     map[seg] = map[seg] ?? []
     map[seg].push(item)
   }
@@ -92,10 +100,14 @@ function renderRouter(groups, { includeShortSummary }) {
     "",
     "Each entry points to the source rule file. Content is intentionally not inlined here.",
     "",
+    "### Sections",
+    "",
+    segments.join(" · "),
+    "",
   ]
 
   for (const seg of segments) {
-    lines.push(`### ${seg}`)
+    lines.push(seg === "entrypoints" ? "### entrypoints (start here)" : `### ${seg}`)
     lines.push("")
 
     for (const item of groups[seg]) {

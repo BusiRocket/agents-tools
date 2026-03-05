@@ -3,11 +3,8 @@ description: "Next.js + React + styling (pages, components, hooks, Tailwind)"
 alwaysApply: false
 ---
 
-# Frontend Rules (pointer)
+# Frontend (pointer)
 
-Use **@frontend** when working on UI, pages, components, or styling.
+Canonical guidance: `@rules/nextjs.mdc`.
 
-Canonical bundles: use `@nextjs` + `@react` + `@tailwind` (or `@rules/styling/*`). For the full reference list (route handlers, server actions, data fetching, forms, Tailwind, optional integrations), see `@rules/nextjs.mdc` and `@rules/react.mdc`.
-
-- Server Components by default; `'use client'` only when needed.
-- One component/hook per file; types in `types/`; helpers in `utils/`.
+Use **@nextjs** (and referenced rules) for App Router, React, and styling.

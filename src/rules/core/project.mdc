@@ -3,36 +3,13 @@ description: Project guidelines (strict one-thing-per-file, many small files)
 alwaysApply: false
 ---
 
-# Project Guidelines
+# Project Guidelines (pointer)
 
-## Core Goal
+For full file discipline, checklists, and when-to-split rules, see `@rules/core/code-quality-guidelines.mdc`.
 
-Many small, focused files for maximum agent context efficiency.
+**Project-specific:**
 
-## Strict File Discipline
+- App Router: Server Components by default; `'use client'` only when needed. Thin route handlers: `app/api/**/route.ts` -> call `services/`.
+- Quality gate: run the project check script after meaningful changes (e.g. `pnpm run check`, `npm run check`).
 
-- One exported component per `.tsx`.
-- One exported hook per `hooks/**/useXxx.ts`.
-- One exported function per `utils/**` and `services/**`.
-- One exported type per `types/**`.
-- No inline types outside `types/`.
-- No helpers inside components/hooks.
-- Import from module entrypoints (`index.ts`); no wildcard re-export barrels. Each feature/module folder exposes one `index.ts` as its public API; see vertical-slice-architecture.mdc.
-- **Single-purpose functions only**: if a function does multiple tasks, split it and keep a thin orchestrator function.
-
-## App Router Defaults (Next.js)
-
-- Server Components by default.
-- Add `'use client'` only when needed.
-- Thin route handlers: `app/api/**/route.ts` -> call `services/`.
-- Next.js special-file exceptions live in the Next.js rules.
-
-## Quality Gate
-
-- Run the project's check script after meaningful changes (e.g. `pnpm run check`, `npm run check`).
-
-## References
-
-- **When creating code**: follow [code-quality-guidelines.mdc](@rules/core/code-quality-guidelines.mdc) (file size 10–50, one per file, types in `types/`, etc.).
-- Naming/layout: `@rules/core/naming-and-layout.mdc`
-- Boundaries: `@rules/core/boundaries.mdc`
+References: naming/layout `@rules/core/naming-and-layout.mdc`, boundaries `@rules/core/boundaries.mdc`.

@@ -14,7 +14,7 @@ import { checkWindsurfRules } from "./lib/rules/checkWindsurfRules.mjs"
 import { generateBundle } from "./lib/rules/generateBundle.mjs"
 import { renderAgents } from "./lib/rules/renderAgents.mjs"
 import { renderAntigravity } from "./lib/rules/renderAntigravity.mjs"
-import { renderClaude } from "./lib/rules/renderClaude.mjs"
+import { renderClaudeIndexOnly } from "./lib/rules/renderClaudeIndexOnly.mjs"
 import { renderWindsurf } from "./lib/rules/renderWindsurf.mjs"
 import { syncAntigravityRules } from "./lib/rules/syncAntigravityRules.mjs"
 import { syncClaudeRules } from "./lib/rules/syncClaudeRules.mjs"
@@ -31,6 +31,8 @@ const CLAUDE_PATH = path.join(ROOT, "dist", "markdown", "CLAUDE.md")
 const AGENTS_PATH = path.join(ROOT, "dist", "markdown", "AGENTS.md")
 const GEMINI_PATH = path.join(ROOT, "dist", "markdown", "GEMINI.md")
 const WINDSURF_PATH = path.join(ROOT, "dist", "markdown", "WINDSURF.md")
+const CLAUDE_MAX_CHARS = 15_000
+const RULE_MAX_CHARS_WARN = 30_000
 
 const main = async () => {
   const checkOnly = process.argv.includes("--check")
@@ -44,7 +46,20 @@ const main = async () => {
   }
 
   const bundle = await generateBundle(sourceFiles, SOURCE_DIR)
-  const nextClaude = renderClaude(bundle)
+
+  for (const item of bundle) {
+    const bodyLen = String(item.content ?? "").length
+    if (bodyLen > RULE_MAX_CHARS_WARN) {
+      console.warn(
+        `[rules] Large rule body: ${item.rel} (${bodyLen} chars) > ${RULE_MAX_CHARS_WARN}. Consider splitting.`,
+      )
+    }
+  }
+
+  const nextClaude = renderClaudeIndexOnly(bundle, {
+    maxChars: CLAUDE_MAX_CHARS,
+    includeShortSummary: false,
+  })
   const nextAgents = renderAgents(bundle)
   const nextGemini = renderAntigravity(bundle)
   const nextWindsurf = renderWindsurf(bundle)
@@ -99,6 +114,7 @@ const main = async () => {
   await fs.writeFile(GEMINI_PATH, nextGemini, "utf8")
   await fs.writeFile(WINDSURF_PATH, nextWindsurf, "utf8")
 
+  console.log(`Wrote CLAUDE.md bootstrap (${nextClaude.length} chars) -> ${CLAUDE_PATH}`)
   console.log("Compiled rules for Cursor, Claude, Codex, Antigravity (Gemini), and Windsurf.")
 }
 

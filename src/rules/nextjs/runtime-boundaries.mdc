@@ -27,6 +27,6 @@ Use `import/no-restricted-paths` to create zone-based restrictions and `eslint-p
 ## Preferred Next.js patterns
 
 - Server Actions (`'use server'`) for mutations.
-- Route handlers (`src/app/api/**/route.ts`) for API boundaries.
+- Route handlers (`app/api/**/route.ts`) for API boundaries. If using a `src/` layout, use `src/app/api/**/route.ts`.
 - RSC (default server components) for server-only data fetching.
 - Client components labeled with `'use client'`, importing only from `public/*` or `shared/ui/*`.

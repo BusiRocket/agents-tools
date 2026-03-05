@@ -5,13 +5,8 @@ alwaysApply: false
 
 # Tailwind Legacy Pointer
 
-Use **@tailwind** and the split Tailwind rules:
+Canonical entrypoint: `@rules/tailwind.mdc`.
 
-- `@rules/tailwind.mdc`
-- `@rules/styling/tailwind/baseline.mdc`
-- `@rules/styling/tailwind/tokens-theming.mdc`
-- `@rules/styling/tailwind/class-authoring.mdc`
-- `@rules/styling/tailwind/state-accessibility.mdc`
-- `@rules/styling/tailwind/responsive.mdc`
-- `@rules/styling/tailwind/performance-hygiene.mdc`
-- `@rules/styling/tailwind/stack-notes.mdc`
+Use **@tailwind** and follow the split Tailwind rules under `@rules/styling/tailwind/*`.
+
+This file is intentionally a thin pointer to avoid duplication drift.

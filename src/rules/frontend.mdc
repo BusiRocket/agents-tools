@@ -7,4 +7,6 @@ alwaysApply: false
 
 Canonical guidance: `@rules/nextjs.mdc`.
 
+This file is intentionally a pointer to avoid duplication drift.
+
 Use **@nextjs** (and referenced rules) for App Router, React, and styling.

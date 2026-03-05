@@ -24,7 +24,7 @@
     "skills:validate": "node scripts/validate-skills.mjs",
     "skills:version:check": "node scripts/check-version.mjs",
     "sync": "pnpm install && pnpm run build && pnpm run check && pnpm run rules:link && pnpm run skills:link",
-    "update": "pnpm update && pnpm run setup",
+    "update": "pnpm update && pnpm run sync",
     "validate:install": "python3 -m venv .venv-validate && .venv-validate/bin/pip install skills-ref"
   },
   "devDependencies": {

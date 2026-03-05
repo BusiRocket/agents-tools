@@ -51,9 +51,9 @@ Optimize for agent context by keeping **many small, focused files** and explicit
 
 ## Repo Hygiene
 
-- Import from module entrypoints (`index.ts`); no wildcard re-export barrels.
+- Imports: use module entrypoints only; no wildcard barrels. One `index.ts` per slice, explicit re-exports only. Full policy: see `@rules/core/code-quality-guidelines.mdc`.
 - One responsibility per file.
-- Keep route handlers thin; move logic to `services/`.
+- Route handlers must be thin (validate, call service, return response). See `@rules/core/boundaries.mdc`.
 
 ## Network / API
 

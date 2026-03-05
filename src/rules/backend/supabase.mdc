@@ -7,7 +7,7 @@ alwaysApply: false
 
 ## Scope
 
-This rule only applies if/when this repository adds Supabase.
+This rule only applies if/when this repository adds Supabase. Prefer service wrappers in `services/supabase/*`.
 
 ## Guideline
 

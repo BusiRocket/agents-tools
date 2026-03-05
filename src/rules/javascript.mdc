@@ -6,11 +6,12 @@ alwaysApply: false
 # JavaScript Rules
 
 Use **@javascript** when working outside strictly Next.js/React app rules or
-when the project includes multiple JS/TS runtimes.
+when the project includes multiple JS/TS runtimes. For Next.js/React the main entry point is `@rules/frontend.mdc` and `@rules/nextjs.mdc`.
 
 This rule references:
 
 - **General JS/TS**: `@rules/javascript/general.mdc`
+- **HTMX**: `@rules/javascript/htmx.mdc`
 - **Chrome Extensions MV3**: `@rules/javascript/chrome-extension-mv3.mdc`
 - **Modern web apps**: `@rules/javascript/web-apps.mdc`
 - **Vue + Vite** (optional): `@rules/javascript/vue-vite.mdc`

@@ -37,7 +37,7 @@ alwaysApply: false
 
 ## Imports
 
-- Import from module entrypoints (`index.ts`); no wildcard re-export barrels. Vertical-slice folders expose a single `index.ts` as public API; consumers must not import internal files from outside the folder (see vertical-slice-architecture.mdc).
+- One `index.ts` per slice/module, explicit re-exports only, no `export *`. Full policy: see `@rules/core/code-quality-guidelines.mdc`.
 - Prefer relative imports within a domain folder; use aliases only when they reduce churn.
 
 ## Alternative: Frontend/backend split

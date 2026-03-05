@@ -25,7 +25,16 @@ If you are writing...
 - **One exported symbol per file** (component / hook / function / type).
 - **No inline types** outside `types/`.
 - **No helpers inside components/hooks**; helpers go to `utils/`.
-- **Route handlers must be thin**: validate input, call a `services/` function, return a response.
+- **Thin entry layers:** see subsection below.
+
+## Thin entry layers (canonical)
+
+Entry layers (route handlers, controllers, command handlers) must be thin: validate input, call a `services/` (or equivalent) function, return a response. No business logic, no DB/network access directly in the handler.
+
+- **Next.js:** `@rules/nextjs/route-handlers.mdc`
+- **Laravel:** thin controllers in `@rules/php/laravel.mdc`
+- **Rust/Tauri:** `@rules/rust/rust-tauri.mdc`
+- **Go:** `@rules/go.mdc`
 
 ## References
 

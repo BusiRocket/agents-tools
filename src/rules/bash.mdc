@@ -15,4 +15,4 @@ This rule references:
 ## Short summary
 
 - One responsibility per script; entry scripts thin (parse + call helpers); helpers in `scripts/bash/utils/` or area subfolders.
-- Validate with `bash -n` and `shellcheck` where possible.
+- Validation: run `bash -n` and `shellcheck` where available; see `@rules/bash/refactor.mdc` for script refactor checks.

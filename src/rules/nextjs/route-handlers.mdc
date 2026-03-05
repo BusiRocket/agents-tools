@@ -12,13 +12,7 @@ alwaysApply: true
 
 ## Thin Handler Rule (STRICT)
 
-Route handlers must be thin:
-
-- Parse/validate request input
-- Call a `services/<area>/...` function
-- Return an explicit response
-
-No business logic, no DB/network access directly in the handler.
+Route handlers must be thin: validate input, call service, return response. Canonical definition: see `@rules/core/boundaries.mdc`. Next.js-specific placement and caching: below.
 
 ## HTTP Methods
 
@@ -31,7 +25,7 @@ No business logic, no DB/network access directly in the handler.
 
 ## Cache Components Note
 
-- If Cache Components is enabled later:
+- If the project uses Next.js Cache Components (experimental):
   - `GET` handlers follow the same model as UI routes.
   - `use cache` **cannot** be used directly inside a Route Handler body; extract it to a helper function.
 

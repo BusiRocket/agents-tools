@@ -13,6 +13,6 @@ This rule references:
 
 ## Short summary
 
-- Keep handlers thin and domain logic isolated.
+- Keep handlers thin and domain logic isolated. See `@rules/core/boundaries.mdc` for the universal thin-handler principle.
 - Depend on interfaces, use explicit DI, avoid global mutable state.
 - Enforce context propagation, explicit error handling, and observability.

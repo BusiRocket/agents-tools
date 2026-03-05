@@ -1,5 +1,5 @@
 ---
-description: "Next.js + React + styling (pages, components, hooks, Tailwind)"
+description: "Next.js + React + styling (pages, components, hooks, Tailwind); for Vue/Svelte/HTMX/Shopify see @javascript"
 alwaysApply: false
 ---
 
@@ -7,6 +7,4 @@ alwaysApply: false
 
 Canonical guidance: `@rules/nextjs.mdc`.
 
-This file is intentionally a pointer to avoid duplication drift.
-
-Use **@nextjs** (and referenced rules) for App Router, React, and styling.
+Use **@nextjs** (and referenced rules) for App Router, React, and styling. For non-Next frontends: `@rules/javascript.mdc` (Vue, Svelte, HTMX, Shopify theme). For Bootstrap-based styling: `@rules/styling/bootstrap.mdc`.

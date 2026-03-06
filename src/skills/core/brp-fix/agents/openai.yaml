@@ -1,0 +1,3 @@
+interface:
+  display_name: BRP Fix
+  short_description: Reproduce, isolate, fix, and verify software bugs safely.

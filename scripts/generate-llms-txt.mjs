@@ -1,49 +1,16 @@
 #!/usr/bin/env node
 /**
- * Generates llms.txt at repo root for skill discovery. Reads SKILL.md
- * frontmatter from each skill (Node-only, no Python). See
- * https://agentskills.io/specification and https://agentskills.io/llms.txt
+ * Generates llms.txt at repo root for skill discovery.
  */
 
-import { existsSync, readdirSync, readFileSync, writeFileSync } from "fs"
-import { join, relative } from "path"
+import { readFileSync, writeFileSync } from "node:fs"
+import { join, relative } from "node:path"
+import { listSkillDirs } from "./lib/skills/listSkillDirs.mjs"
+import { parseDescription, parseFrontmatter, stripQuotes } from "./lib/skills/frontmatter.mjs"
 
 const ROOT = process.cwd()
 const SKILLS_DIR = join(ROOT, "src", "skills")
 const LLMS_TXT = join(ROOT, "llms.txt")
-
-function getSkillDirs() {
-  if (!existsSync(SKILLS_DIR)) {
-    console.error("skills/ directory not found")
-    process.exit(1)
-  }
-  return readdirSync(SKILLS_DIR, { withFileTypes: true })
-    .filter((d) => d.isDirectory())
-    .map((d) => join(SKILLS_DIR, d.name))
-}
-
-function parseFrontmatter(content) {
-  const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---/)
-  if (!match) return null
-  const yaml = match[1]
-  const nameMatch = yaml.match(/^name:\s*(.+?)(?=\n|$)/m)
-  const name = nameMatch ? nameMatch[1].trim() : null
-  const lines = yaml.split(/\r?\n/)
-  let description = null
-  for (let i = 0; i < lines.length; i++) {
-    if (lines[i].startsWith("description:")) {
-      const first = lines[i].replace(/^description:\s*/, "").trim()
-      const rest = []
-      for (i++; i < lines.length; i++) {
-        if (/^[a-z_-]+:/.test(lines[i]) || lines[i].trim() === "") break
-        rest.push(lines[i].trim())
-      }
-      description = [first, ...rest].filter(Boolean).join(" ")
-      break
-    }
-  }
-  return name && description ? { name, description } : null
-}
 
 function buildLlmsTxt(skills) {
   const lines = [
@@ -68,19 +35,24 @@ function buildLlmsTxt(skills) {
   return lines.join("\n")
 }
 
-const skillDirs = getSkillDirs()
+const skillDirs = await listSkillDirs(SKILLS_DIR)
 if (skillDirs.length === 0) {
-  console.error("No skill directories found under skills/")
+  console.error("No skill directories found under src/skills/")
   process.exit(1)
 }
 
 const skills = []
 for (const skillPath of skillDirs) {
   const skillMd = join(skillPath, "SKILL.md")
-  if (!existsSync(skillMd)) continue
   const content = readFileSync(skillMd, "utf-8")
-  const meta = parseFrontmatter(content)
-  if (meta) skills.push({ ...meta, skillPath })
+  const fm = parseFrontmatter(content)
+  if (!fm) continue
+
+  const name = stripQuotes(fm.fields.get("name") || "")
+  const description = parseDescription(fm.raw)
+  if (!name || !description) continue
+
+  skills.push({ name, description, skillPath })
 }
 
 skills.sort((a, b) => a.name.localeCompare(b.name))

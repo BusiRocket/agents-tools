@@ -1,0 +1,3 @@
+interface:
+  display_name: BRP Docs
+  short_description: Generate technical documentation, specs, and ADRs from code context.

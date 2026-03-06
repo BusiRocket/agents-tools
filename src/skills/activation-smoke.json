@@ -1,0 +1,13 @@
+{
+  "brp-refactor": [
+    "split this component into hooks and types",
+    "refactor this TSX into multiple files",
+    "extract inline types and helpers"
+  ],
+  "brp-fix": ["fix this bug with minimal diff", "reproduce and patch this failing behavior"],
+  "brp-debug": ["debug this runtime error", "isolate the root cause of this performance issue"],
+  "brp-test": [
+    "add unit and integration tests for this change",
+    "validate this implementation with deterministic tests"
+  ]
+}

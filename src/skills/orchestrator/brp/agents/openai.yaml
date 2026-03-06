@@ -1,0 +1,3 @@
+interface:
+  display_name: BRP Orchestrator
+  short_description: Route BRP commands to the right workflow and ruleset.

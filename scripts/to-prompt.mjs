@@ -1,15 +1,12 @@
 #!/usr/bin/env node
 /**
- * Generates <available_skills> XML for all skills under skills/ using the
- * Agent Skills reference library. Output is written to stdout for piping or
- * redirection. Prefers the local venv from yarn validate:install, then pipx,
- * then skills-ref on PATH.
- * See https://agentskills.io/integrate-skills
+ * Generates <available_skills> XML for all skills under dist/skills using skills-ref.
  */
 
 import { spawnSync } from "child_process"
-import { existsSync, readdirSync } from "fs"
+import { existsSync } from "fs"
 import { join } from "path"
+import { listSkillDirs } from "./lib/skills/listSkillDirs.mjs"
 
 const ROOT = process.cwd()
 const SKILLS_DIR = join(ROOT, "dist", "skills")
@@ -20,27 +17,15 @@ const VENV_CLI = join(VENV_BIN, process.platform === "win32" ? "agentskills.exe"
 const INSTALL_HINT = `
 To run to-prompt, create the project venv (recommended):
 
-  yarn validate:install
+  pnpm run validate:install
 
 Then run:
 
-  yarn to-prompt
+  pnpm run skills:prompt
 
 Alternatively install globally: pip install skills-ref
 Or use pipx: pipx run skills-ref to-prompt path/to/skill ...
-
-See https://github.com/agentskills/agentskills/tree/main/skills-ref
 `
-
-function getSkillDirs() {
-  if (!existsSync(SKILLS_DIR)) {
-    console.error("skills/ directory not found")
-    process.exit(1)
-  }
-  return readdirSync(SKILLS_DIR, { withFileTypes: true })
-    .filter((d) => d.isDirectory())
-    .map((d) => join(SKILLS_DIR, d.name))
-}
 
 function detectExecutor(firstSkillPath) {
   if (existsSync(VENV_CLI)) {
@@ -56,12 +41,12 @@ function detectExecutor(firstSkillPath) {
     shell: true,
   })
   if (pipx.status === 0) return "pipx"
-  const path = spawnSync("skills-ref", ["to-prompt", firstSkillPath], {
+  const global = spawnSync("skills-ref", ["to-prompt", firstSkillPath], {
     stdio: "pipe",
     encoding: "utf-8",
     shell: true,
   })
-  if (path.status === 0) return "path"
+  if (global.status === 0) return "path"
   return null
 }
 
@@ -87,9 +72,9 @@ function runToPrompt(skillPaths, method) {
   })
 }
 
-const skillDirs = getSkillDirs()
+const skillDirs = await listSkillDirs(SKILLS_DIR)
 if (skillDirs.length === 0) {
-  console.error("No skill directories found under skills/")
+  console.error("No skill directories found under dist/skills/")
   process.exit(1)
 }
 

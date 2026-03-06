@@ -80,7 +80,7 @@ busirocket-agents-tools/
 │   │   ├── deploy/              # CI/CD, security
 │   │   ├── integrations/        # Supabase, Stripe, n8n, etc.
 │   │   └── ...
-│   ├── skills/                  # Agent skills
+│   ├── skills/                  # Skill source (pure templates + manifest)
 │   │   ├── core/                # 8 BRP workflow skills
 │   │   │   ├── brp-plan/
 │   │   │   ├── brp-implement/
@@ -92,6 +92,8 @@ busirocket-agents-tools/
 │   │   │   └── brp-docs/
 │   │   └── orchestrator/        # Command router
 │   │       └── brp/
+│   │   ├── skill-rules.map.json # Skill -> @rules mapping source of truth
+│   │   └── activation-smoke.json # Activation smoke phrases per skill
 │   └── core/                    # Protocol & policy
 │       ├── protocol.md          # 6-step workflow contract
 │       └── policy.json          # Routing, precedence, stack detection
@@ -108,15 +110,20 @@ busirocket-agents-tools/
 │   │   ├── AGENTS.md
 │   │   ├── GEMINI.md
 │   │   └── WINDSURF.md
-│   ├── skills/                 # Compiled skills (from src/skills)
-│   └── plugins/                # Plugin manifests
+│   ├── skills/                  # Compiled installable skills with Rules Index
+│   ├── packages/skills/         # Packaged skill zip artifacts
+│   └── reports/                 # Inventory and compatibility reports
+│   └── plugins/                 # Plugin manifests
 │       ├── cursor/.cursor-plugin/plugin.json
 │       └── claude/.claude-plugin/plugin.json
 │
-├── scripts/                     # Build, lint, compile, validate, link
+├── scripts/                     # Build, lint, compile, validate, package, link
 │   ├── compile-rules.mjs
 │   ├── compile-skills.mjs
+│   ├── skills-inventory.mjs
 │   ├── validate-skills.mjs
+│   ├── test-skills.mjs
+│   ├── package-skills.mjs
 │   ├── link-rules-global.mjs
 │   └── link-skills-global.mjs
 ├── docs/                        # Project documentation
@@ -214,10 +221,13 @@ Task > Project > Stack > Global
 | `pnpm run rules:compile`        | Compile `src/rules/` to `dist/global/` + `dist/markdown/`               |
 | `pnpm run rules:link`           | Link rules to all supported IDEs                                        |
 | `pnpm run skills:compile`       | Compile skills from `src/skills/` to `dist/skills/`                     |
+| `pnpm run skills:inventory`     | Generate compatibility report for source skills                         |
 | `pnpm run skills:link`          | Link compiled skills to supported IDEs                                  |
+| `pnpm run skills:package`       | Package compiled skills as zip artifacts                                |
 | `pnpm run rules:verify`         | Verify index-only outputs (DoD + CLAUDE golden master)                  |
 | `pnpm run rules:check`          | Verify compiled output is current                                       |
 | `pnpm run skills:validate`      | Validate all 9 skills against AgentSkills spec                          |
+| `pnpm run skills:test`          | Run schema/idempotence/source-purity/snapshot/smoke tests               |
 | `pnpm run skills:llms`          | Generate `llms.txt` for skill discovery                                 |
 | `pnpm run skills:prompt`        | Generate XML prompt with all skills                                     |
 | `pnpm run skills:prompt:file`   | Write prompt to `available_skills.xml`                                  |
@@ -229,6 +239,34 @@ Task > Project > Stack > Global
 | `pnpm run lint:fix`             | ESLint auto-fix                                                         |
 
 `sync` is the primary command used to bootstrap the project locally.
+
+## Skills Compilation Contract
+
+- `src/rules` is the only source of truth for rule content.
+- `src/skills` must stay pure source: template `SKILL.md`, `agents/openai.yaml`, optional
+  `references/` and `scripts/`, no compiled Rules Index and no inline rule bundles.
+- `dist/skills` is the installable artifact and receives generated `Rules Index` sections from
+  `src/skills/skill-rules.map.json`.
+- Each source skill must define only `name` and `description` in frontmatter.
+
+### Skill-Rules Governance
+
+- Use `src/skills/skill-rules.map.json` to map skills to `@rules/...` references.
+- Recommended size: 3-8 rules per skill.
+- Warning threshold: 10+ rules. Manual review threshold: 12+ rules.
+- Prefer mapping order: core -> stack -> specialty -> optional.
+- If a skill keeps growing, split scope into a new skill instead of adding more rules.
+
+### Skills Pipeline
+
+```bash
+pnpm run rules:compile
+pnpm run skills:compile
+pnpm run skills:validate
+pnpm run skills:test
+pnpm run skills:package
+pnpm run skills:link
+```
 
 ## Plugins
 

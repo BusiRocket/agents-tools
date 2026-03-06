@@ -1,0 +1,3 @@
+interface:
+  display_name: BRP Test
+  short_description: Design and run validation tests for implemented changes.

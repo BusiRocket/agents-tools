@@ -1,0 +1,3 @@
+interface:
+  display_name: BRP Refactor
+  short_description: Refactor code safely by splitting files and preserving behavior.

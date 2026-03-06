@@ -1,0 +1,3 @@
+interface:
+  display_name: BRP Debug
+  short_description: Structured debugging workflow from symptoms to root cause and resolution.

@@ -1,0 +1,3 @@
+interface:
+  display_name: BRP Code Quality
+  short_description: Audit and harden TypeScript, lint, and architecture quality gates.

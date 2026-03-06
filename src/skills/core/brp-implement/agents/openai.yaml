@@ -1,0 +1,3 @@
+interface:
+  display_name: BRP Implement
+  short_description: Execute approved plans with minimal diffs and incremental validation.

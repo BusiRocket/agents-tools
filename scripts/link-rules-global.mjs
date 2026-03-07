@@ -12,7 +12,9 @@ const main = async () => {
   let skipped = 0
 
   for (const ruleTarget of IDE_RULE_TARGETS) {
-    const ideExists = await pathExists(ruleTarget.ide.rootDir)
+    const detectPaths = ruleTarget.ide.detectPaths ?? [ruleTarget.ide.rootDir]
+    const detectResults = await Promise.all(detectPaths.map((candidate) => pathExists(candidate)))
+    const ideExists = detectResults.some(Boolean)
     if (!ideExists) {
       console.log(`- ${ruleTarget.ide.id}: skipped (not installed)`)
       skipped++

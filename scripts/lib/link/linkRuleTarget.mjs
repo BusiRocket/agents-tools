@@ -27,9 +27,17 @@ export const linkRuleTarget = async (ruleTarget) => {
     await ensureParentDirectory(link.target)
 
     if (link.method === "copy") {
-      const content = await fs.readFile(link.source, "utf8")
+      const sourceStat = await fs.lstat(link.source)
       await fs.mkdir(path.dirname(link.target), { recursive: true })
-      await fs.writeFile(link.target, content, "utf8")
+
+      if (sourceStat.isDirectory()) {
+        await fs.rm(link.target, { recursive: true, force: true })
+        await fs.cp(link.source, link.target, { recursive: true, dereference: true })
+      } else {
+        const content = await fs.readFile(link.source, "utf8")
+        await fs.writeFile(link.target, content, "utf8")
+      }
+
       copied++
     } else {
       await linkOneWithBackup({ source: link.source, target: link.target })

@@ -63,6 +63,16 @@ export const IDE_RULE_TARGETS = [
         target: path.join(HOME, ".gemini", "GEMINI.md"),
         method: "copy",
       },
+      {
+        source: path.join(ROOT, "dist", "global", ".agent", "rules"),
+        target: path.join(HOME, ".gemini", ".agent", "rules"),
+        method: "copy",
+      },
+      {
+        source: path.join(ROOT, "dist", "global", ".agent", "workflows"),
+        target: path.join(HOME, ".gemini", ".agent", "workflows"),
+        method: "copy",
+      },
     ],
   },
   {

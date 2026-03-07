@@ -11,6 +11,9 @@ BRP consolidates rules, skills, and an orchestration protocol into a single proj
 - A **Claude Code plugin** (`dist/plugins/claude/.claude-plugin/plugin.json`)
 - A **multi-IDE rules exporter** (Cursor, Claude, Codex, Antigravity/Gemini, Windsurf)
 - An **AgentSkills-compatible** skill collection (9 validated skills)
+- A **multi-IDE skill linker** for popular agents/editors including Cursor, Claude Code, Codex,
+  Continue, Cline, Windsurf, Antigravity, Gemini CLI, Goose, OpenHands, Augment, Roo, Kiro, Copilot,
+  OpenCode, OpenClaw, Crush, Zencoder, AdaL, Trae, Qoder, and Qwen Code
 
 ## Quick Start
 
@@ -181,7 +184,8 @@ Rules are structured in three tiers so that the always-loaded context stays smal
 - **Tier 0 (always loaded):** The single `CLAUDE.md` file installed to `~/.claude/CLAUDE.md`. It
   contains only an index (router + paths + short descriptions), no full rule bodies. Target size ≤
   15k chars; the build fails if this budget is exceeded. Full content is loaded on demand via
-  `@rules/<path>.mdc` or your IDE’s tag conventions.
+  `@rules/<path>.mdc` or your IDE’s tag conventions. For Gemini/Antigravity, `GEMINI.md` points to
+  synced files under `@.agent/rules/*.md` and `@.agent/workflows/*.md`.
 - **Tier 1 (umbrella / reference):** Rule files such as `core.mdc`, `api.mdc`, `nextjs.mdc` that act
   as indices or pointers to other rules. They list references rather than duplicating content.
 - **Tier 2 (full content):** All other `.mdc` files under `src/rules/`. Full content lives here and
@@ -192,10 +196,12 @@ and recompile.
 
 **Markdown outputs:** Generated under `dist/markdown/` by `pnpm rules:compile`. `ALL_RULES.md`
 aggregates all canonical rules into a single reference. `CLAUDE.md`, `AGENTS.md`, `GEMINI.md`, and
-`WINDSURF.md` are generated as index-only files: they list rule references (`@rules/...`) and short
-descriptions only; no rule bodies are inlined. This keeps the always-loaded context small. Full rule
-content lives in `src/rules/` and is synced to each IDE’s rules directory. To verify outputs against
-the Definition of Done (no inline mdc blocks, refs count, size budget), run `pnpm rules:verify`.
+`WINDSURF.md` are generated as index-only files: they list rule references and short descriptions
+only; no rule bodies are inlined. `CLAUDE.md`, `AGENTS.md`, and `WINDSURF.md` use `@rules/...`,
+while `GEMINI.md` uses `@.agent/rules/...` and `@.agent/workflows/...`. This keeps the always-loaded
+context small. Full rule content lives in `src/rules/` and is synced to each IDE’s rules directory.
+To verify outputs against the Definition of Done (no inline mdc blocks, refs count, size budget),
+run `pnpm rules:verify`.
 
 ## Rule Precedence
 

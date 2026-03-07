@@ -77,10 +77,23 @@ Restart Codex to pick up the new rules.
 Link the `GEMINI.md` and Antigravity rules globally:
 
 ```bash
-pnpm rules:link:antigravity
+pnpm rules:link
 ```
 
-This creates symlinks for the Gemini agent configuration.
+This copies `GEMINI.md` to `~/.gemini/GEMINI.md` and syncs Antigravity rule/workflow files into
+`~/.gemini/.agent/rules` and `~/.gemini/.agent/workflows`.
+
+To install BRP skills for Antigravity as well:
+
+```bash
+pnpm skills:link
+```
+
+This copies compiled skills into `~/.gemini/antigravity/skills`.
+
+`pnpm skills:link` also installs skills into all detected supported IDEs with skill directories,
+including Cursor, Claude Code, Codex, Continue, Cline, Windsurf, Gemini CLI, Goose, OpenHands,
+Augment, Roo, Kiro, Copilot, OpenCode, OpenClaw, Crush, Zencoder, AdaL, Trae, Qoder, and Qwen Code.
 
 ---
 

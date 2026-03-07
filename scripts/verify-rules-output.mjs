@@ -21,12 +21,14 @@ const DEFAULT_MAX_CHARS = 50_000
 /**
  * DoD checks on index-only output string.
  * @param {string} output
- * @param {{ maxChars?: number, minRefs?: number }} options
+ * @param {{ maxChars?: number, minRefs?: number, refPattern?: RegExp, refLabel?: string }} options
  * @returns {{ ok: boolean, errors: string[] }}
  */
 export function verifyIndexOnlyOutput(output, options = {}) {
   const maxChars = options.maxChars ?? DEFAULT_MAX_CHARS
   const minRefs = options.minRefs ?? DEFAULT_MIN_REFS
+  const refPattern = options.refPattern ?? /@rules\/[^\s`]+/g
+  const refLabel = options.refLabel ?? "@rules/"
   const errors = []
 
   if (typeof output !== "string") {
@@ -41,15 +43,15 @@ export function verifyIndexOnlyOutput(output, options = {}) {
     errors.push('Output must include "## Rules index (router)"')
   }
 
-  const refMatches = output.match(/@rules\/[^\s`]+/g)
+  const refMatches = output.match(refPattern)
   const refs = refMatches ? [...new Set(refMatches)] : []
   if (refs.length < minRefs) {
-    errors.push(`Expected at least ${minRefs} @rules/ references, got ${refs.length}`)
+    errors.push(`Expected at least ${minRefs} ${refLabel} references, got ${refs.length}`)
   }
 
   const duplicates = refMatches && refMatches.length !== refs.length
   if (duplicates) {
-    errors.push("Duplicate @rules/ references found")
+    errors.push(`Duplicate ${refLabel} references found`)
   }
 
   if (output.length > maxChars) {
@@ -109,7 +111,16 @@ async function main() {
   ]) {
     const content = await readIfExists(filePath)
     if (content && content.includes("## Rules index (router)")) {
-      const result = verifyIndexOnlyOutput(content, { maxChars, minRefs: 40 })
+      const result = verifyIndexOnlyOutput(content, {
+        maxChars,
+        minRefs: 40,
+        ...(name === "GEMINI.md"
+          ? {
+              refPattern: /@\.agent\/(?:rules|workflows)\/[^\s`]+/g,
+              refLabel: "@.agent/",
+            }
+          : {}),
+      })
       if (!result.ok) {
         console.error(`[verify] DoD check failed for ${name}:`)
         result.errors.forEach((e) => console.error("  -", e))

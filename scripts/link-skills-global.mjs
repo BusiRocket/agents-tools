@@ -62,7 +62,9 @@ const main = async () => {
 
   // Use CANONICAL_SKILLS_DIR as sourceDir for linkSkillsToTarget / copySkillsToTarget
   for (const target of skillTargets) {
-    const ideExists = await pathExists(target.rootDir)
+    const detectPaths = target.detectPaths ?? [target.rootDir]
+    const detectResults = await Promise.all(detectPaths.map((candidate) => pathExists(candidate)))
+    const ideExists = detectResults.some(Boolean)
     if (!ideExists) {
       console.log(`- ${target.id}: skipped (not installed)`)
       skipped++

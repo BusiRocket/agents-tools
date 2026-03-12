@@ -1,9 +1,10 @@
 ---
 name: brp-refactor
 description:
-  Safe refactoring workflow with quality gates. Use when you need to split large files into
-  components/hooks/types, extract inline helpers, and refactor existing code without changing
-  behavior.
+  Refactor existing code into cleaner structure without changing behavior by splitting files,
+  extracting helpers, and preserving public interfaces with tight validation. Trigger when the goal
+  is structural improvement with no feature change. Do not use for shipping new behavior, fixing
+  unknown bugs, or final quality review of already-finished work.
 ---
 
 ## Rules

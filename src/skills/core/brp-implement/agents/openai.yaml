@@ -1,3 +1,14 @@
 interface:
   display_name: BRP Implement
   short_description: Execute approved plans with minimal diffs and incremental validation.
+  default_prompt:
+    Implement the approved plan in small verifiable steps, preserve scope, and note when the plan
+    stops matching reality.
+  brand_color: "#0F766E"
+policy:
+  allow_implicit_invocation: true
+busirocket:
+  skill_class: workflow
+  requires_references: false
+  failure_mode:
+    Escalate to brp-plan when the implementation discovers missing decisions or scope growth.

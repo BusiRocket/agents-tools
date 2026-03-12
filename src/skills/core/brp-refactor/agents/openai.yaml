@@ -1,3 +1,14 @@
 interface:
   display_name: BRP Refactor
   short_description: Refactor code safely by splitting files and preserving behavior.
+  default_prompt:
+    Refactor structure without changing behavior, preserve public interfaces, and verify each step
+    with the smallest reliable checks.
+  brand_color: "#0F766E"
+policy:
+  allow_implicit_invocation: true
+busirocket:
+  skill_class: workflow
+  requires_references: false
+  failure_mode:
+    Escalate to brp-plan if the refactor reveals hidden feature work or interface changes.

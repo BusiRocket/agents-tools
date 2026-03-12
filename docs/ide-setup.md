@@ -89,7 +89,12 @@ To install BRP skills for Antigravity as well:
 pnpm skills:link
 ```
 
-This copies compiled skills into `~/.gemini/antigravity/skills`.
+This copies compiled skills into Antigravity's global skills directory
+`~/.gemini/antigravity/skills`.
+
+Antigravity workspace skills live under `<workspace-root>/.agents/skills`. This is separate from
+Gemini CLI's shared global skills directory at `~/.gemini/skills`, which `pnpm skills:link` also
+populates when Gemini CLI is installed.
 
 `pnpm skills:link` also installs skills into all detected supported IDEs with skill directories,
 including Cursor, Claude Code, Codex, Continue, Cline, Windsurf, Gemini CLI, Goose, OpenHands,

@@ -1,8 +1,11 @@
 ---
 name: brp-docs
 description:
-  Generates documentation, specifications, and architecture decision records (ADRs). Use when
-  creating or updating README files, API docs, architecture overviews, or technical specs.
+  Generate or update technical documentation, specifications, and ADRs that explain the codebase,
+  interfaces, or design decisions for future readers. Trigger when the task is to write README
+  content, API docs, architecture overviews, or technical specs from code context with strong text
+  hygiene and consistent engineering terminology. Do not use for implementing features, debugging
+  runtime issues, or performing findings-first code review.
 ---
 
 ## Rules

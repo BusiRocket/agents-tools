@@ -8,7 +8,7 @@
 │  (detects stack, selects rules/skills, enforces protocol) │
 ├──────────────┬────────────────┬──────────────────────────┤
 │  Core Skills │  Stack Skills  │     Canonical Rules      │
-│  (8 skills)  │  (10 skills)   │     (.mdc source)        │
+│  (9 skills)  │  (future)      │     (.mdc source)        │
 ├──────────────┴────────────────┴──────────────────────────┤
 │              Compile Pipeline (scripts/)                  │
 │  parse → bundle → render → sync per IDE target           │
@@ -31,18 +31,25 @@ The entry point for all `/brp-*` commands. Responsibilities:
 
 ### Core Skills (`skills/core/`)
 
-Eight workflow skills that implement the BRP protocol:
+Nine workflow skills that implement the BRP protocol:
 
-| Skill           | Protocol Steps Covered       |
-| --------------- | ---------------------------- |
-| `brp-plan`      | DISCOVERY + PLAN             |
-| `brp-implement` | IMPLEMENT                    |
-| `brp-test`      | TEST                         |
-| `brp-review`    | SELF-CHECK + REVIEW          |
-| `brp-fix`       | DISCOVERY + IMPLEMENT + TEST |
-| `brp-refactor`  | All 6 steps                  |
-| `brp-debug`     | DISCOVERY + PLAN + IMPLEMENT |
-| `brp-docs`      | DISCOVERY + IMPLEMENT        |
+| Skill              | Protocol Steps Covered       |
+| ------------------ | ---------------------------- |
+| `brp-plan`         | DISCOVERY + PLAN             |
+| `brp-implement`    | IMPLEMENT                    |
+| `brp-test`         | TEST                         |
+| `brp-review`       | SELF-CHECK + REVIEW          |
+| `brp-fix`          | DISCOVERY + IMPLEMENT + TEST |
+| `brp-refactor`     | All 6 steps                  |
+| `brp-debug`        | DISCOVERY + PLAN + IMPLEMENT |
+| `brp-docs`         | DISCOVERY + IMPLEMENT        |
+| `brp-code-quality` | DISCOVERY + PLAN + REVIEW    |
+
+### Skill Classes
+
+- `workflow` — route and execute multi-step work with strong implicit invocation boundaries.
+- `domain` — inject narrow stack- or subsystem-specific constraints.
+- `execution-assist` — provide deterministic helpers through references, scripts, or tools.
 
 ### Stack Skills (`skills/stacks/`)
 
@@ -70,6 +77,9 @@ rules/source/*.mdc
        │
        ▼
   generateBundle()  → collect all rules into a bundle
+       │
+       ▼
+  validateSkills()  → score descriptions, metadata, collisions, and references
        │
        ▼
   render*()         → transform to each IDE format

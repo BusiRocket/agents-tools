@@ -16,7 +16,29 @@ export const cleanGlobalPrefix = async (targetDir, prefix) => {
     return []
   }
 
-  const entries = await fs.readdir(targetDir)
+  const targetStat = await fs.lstat(targetDir)
+  if (targetStat.isSymbolicLink()) {
+    try {
+      await fs.realpath(targetDir)
+    } catch {
+      await fs.unlink(targetDir)
+      return []
+    }
+  }
+
+  if (!targetStat.isDirectory()) {
+    return []
+  }
+
+  let entries
+  try {
+    entries = await fs.readdir(targetDir)
+  } catch (error) {
+    if (error?.code === "ENOENT" || error?.code === "ENOTDIR") {
+      return []
+    }
+    throw error
+  }
   const removed = []
 
   for (const entry of entries) {

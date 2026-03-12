@@ -7,6 +7,7 @@ import { listFilesRecursive } from "./lib/fs/listFilesRecursive.mjs"
 import { parseDescription, parseFrontmatter, stripQuotes } from "./lib/skills/frontmatter.mjs"
 import { listSkillDirs } from "./lib/skills/listSkillDirs.mjs"
 import { loadSkillRulesManifest, validateSkillRulesManifestShape } from "./lib/skills/manifest.mjs"
+import { parseOpenAiYaml } from "./lib/skills/openaiYaml.mjs"
 
 const ROOT = process.cwd()
 const SRC_SKILLS_DIR = path.join(ROOT, "src", "skills")
@@ -15,6 +16,7 @@ const MANIFEST_PATH = path.join(SRC_SKILLS_DIR, "skill-rules.map.json")
 const SCHEMA_PATH = path.join(ROOT, "scripts", "schemas", "skill-rules.map.schema.json")
 const SNAPSHOT_DIR = path.join(ROOT, "scripts", "golden", "skills-rules-index")
 const SMOKE_PATH = path.join(SRC_SKILLS_DIR, "activation-smoke.json")
+const ACCEPTANCE_PATH = path.join(SRC_SKILLS_DIR, "activation-acceptance.json")
 const RULES_INDEX_START = "<!-- GENERATED-RULES-INDEX:START -->"
 const RULES_INDEX_END = "<!-- GENERATED-RULES-INDEX:END -->"
 
@@ -24,6 +26,16 @@ const tokenize = (value) =>
     .replace(/[^a-z0-9\s-]/g, " ")
     .split(/[\s-]+/)
     .filter(Boolean)
+
+const overlapScore = (left, right) => {
+  const leftTokens = new Set(tokenize(left))
+  const rightTokens = tokenize(right)
+  let hits = 0
+  for (const token of rightTokens) {
+    if (leftTokens.has(token)) hits += 1
+  }
+  return hits
+}
 
 const hashDirectory = async (dir) => {
   const hash = createHash("sha256")
@@ -90,7 +102,6 @@ const main = async () => {
     fail("dist/skills is missing; run pnpm run skills:compile first")
   }
 
-  const beforeHash = await hashDirectory(DIST_SKILLS_DIR)
   const compileRun = spawnSync("node", ["scripts/compile-skills.mjs"], {
     stdio: "pipe",
     encoding: "utf8",
@@ -100,9 +111,19 @@ const main = async () => {
       `skills:compile failed during idempotence test:\n${compileRun.stderr || compileRun.stdout}`,
     )
   }
-  const afterHash = await hashDirectory(DIST_SKILLS_DIR)
-  if (beforeHash !== afterHash) {
-    fail("skills:compile is not idempotent (dist/skills hash changed on second run)")
+  const firstHash = await hashDirectory(DIST_SKILLS_DIR)
+  const secondCompileRun = spawnSync("node", ["scripts/compile-skills.mjs"], {
+    stdio: "pipe",
+    encoding: "utf8",
+  })
+  if (secondCompileRun.status !== 0) {
+    fail(
+      `skills:compile failed during second idempotence run:\n${secondCompileRun.stderr || secondCompileRun.stdout}`,
+    )
+  }
+  const secondHash = await hashDirectory(DIST_SKILLS_DIR)
+  if (firstHash !== secondHash) {
+    fail("skills:compile is not idempotent (dist/skills hash changed between consecutive runs)")
   }
   pass("skills:compile is idempotent")
 
@@ -162,8 +183,10 @@ const main = async () => {
   pass("rules index snapshots passed")
 
   const smoke = JSON.parse(await fs.readFile(SMOKE_PATH, "utf8"))
+  const acceptance = JSON.parse(await fs.readFile(ACCEPTANCE_PATH, "utf8"))
   const srcSkillDirs = await listSkillDirs(SRC_SKILLS_DIR)
   const descriptions = new Map()
+  const sourceMeta = new Map()
   for (const dir of srcSkillDirs) {
     const content = await fs.readFile(path.join(dir, "SKILL.md"), "utf8")
     const fm = parseFrontmatter(content)
@@ -171,6 +194,17 @@ const main = async () => {
     const name = stripQuotes(fm.fields.get("name") || "")
     const description = parseDescription(fm.raw)
     descriptions.set(name, description)
+
+    const openAiPath = path.join(dir, "agents", "openai.yaml")
+    const openAi = await parseOpenAiYaml(openAiPath)
+    sourceMeta.set(name, {
+      hasDefaultPrompt: Boolean(openAi.interface.defaultPrompt),
+      allowImplicitInvocation: openAi.policy.allowImplicitInvocation,
+      requiresReferences: openAi.busirocket.requiresReferences === true,
+      skillClass: openAi.busirocket.skillClass,
+      failureMode: openAi.busirocket.failureMode,
+      files: await listFilesRecursive(dir),
+    })
   }
 
   for (const [skillName, phrases] of Object.entries(smoke)) {
@@ -190,6 +224,58 @@ const main = async () => {
     }
   }
   pass("activation smoke checks passed")
+
+  for (const [skillName, expectations] of Object.entries(acceptance)) {
+    const targetDescription = descriptions.get(skillName)
+    if (!targetDescription) {
+      fail(`acceptance suite references unknown skill: ${skillName}`)
+    }
+
+    for (const prompt of expectations.positive || []) {
+      const targetScore = overlapScore(targetDescription, prompt)
+      let bestCompetitor = ""
+      let bestCompetitorScore = -1
+
+      for (const [otherSkillName, otherDescription] of descriptions.entries()) {
+        if (otherSkillName === skillName) continue
+        const score = overlapScore(otherDescription, prompt)
+        if (score > bestCompetitorScore) {
+          bestCompetitorScore = score
+          bestCompetitor = otherSkillName
+        }
+      }
+
+      if (targetScore < bestCompetitorScore) {
+        fail(
+          `acceptance prompt '${prompt}' favors ${bestCompetitor} over ${skillName} (${bestCompetitorScore} > ${targetScore})`,
+        )
+      }
+    }
+
+    for (const prompt of expectations.negative || []) {
+      const targetScore = overlapScore(targetDescription, prompt)
+      if (targetScore > 2) {
+        fail(`negative prompt '${prompt}' is still too aligned with ${skillName} (${targetScore})`)
+      }
+    }
+  }
+  pass("activation acceptance checks passed")
+
+  for (const [skillName, meta] of sourceMeta.entries()) {
+    if (meta.skillClass === "workflow" && !meta.hasDefaultPrompt) {
+      fail(`workflow skill missing interface.default_prompt: ${skillName}`)
+    }
+    if (meta.skillClass === "workflow" && meta.allowImplicitInvocation !== true) {
+      fail(`workflow skill must opt into implicit invocation: ${skillName}`)
+    }
+    if (meta.skillClass === "workflow" && !meta.failureMode) {
+      fail(`workflow skill missing busirocket.failure_mode: ${skillName}`)
+    }
+    if (meta.requiresReferences && !meta.files.some((file) => file.includes("/references/"))) {
+      fail(`skill marked requires_references but has no references/: ${skillName}`)
+    }
+  }
+  pass("source metadata checks passed")
 
   console.log("\nAll skills tests passed.")
 }

@@ -6,6 +6,14 @@
   ],
   "brp-fix": ["fix this bug with minimal diff", "reproduce and patch this failing behavior"],
   "brp-debug": ["debug this runtime error", "isolate the root cause of this performance issue"],
+  "brp-plan": [
+    "make a decision complete implementation plan",
+    "scope this feature with milestones and acceptance criteria"
+  ],
+  "brp-review": [
+    "review this change for regressions and missing tests",
+    "perform a findings first code review before delivery"
+  ],
   "brp-test": [
     "add unit and integration tests for this change",
     "validate this implementation with deterministic tests"

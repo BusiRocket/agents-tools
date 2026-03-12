@@ -1,9 +1,10 @@
 ---
 name: brp-code-quality
 description:
-  Audits and hardens a project's code-quality infrastructure. Covers TypeScript strict mode, ESLint
-  flat config with typed linting, import hygiene, architecture boundaries, and runtime boundary
-  safety. Use to bootstrap or audit any TypeScript/Next.js project.
+  Audit and harden a project's code-quality infrastructure including strict typing, linting,
+  architectural boundaries, and runtime safety defaults. Trigger when the task is to bootstrap or
+  improve repo-wide quality gates for a TypeScript or Next.js codebase. Do not use for isolated bug
+  fixes, feature delivery, or behavior-preserving refactors inside a single module.
 ---
 
 ## Rules

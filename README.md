@@ -250,10 +250,35 @@ Task > Project > Stack > Global
 
 - `src/rules` is the only source of truth for rule content.
 - `src/skills` must stay pure source: template `SKILL.md`, `agents/openai.yaml`, optional
-  `references/` and `scripts/`, no compiled Rules Index and no inline rule bundles.
+  `references/`, `scripts/`, and `assets/`, no compiled Rules Index and no inline rule bundles.
 - `dist/skills` is the installable artifact and receives generated `Rules Index` sections from
   `src/skills/skill-rules.map.json`.
 - Each source skill must define only `name` and `description` in frontmatter.
+- Richer behavior metadata belongs in `agents/openai.yaml`, not in `SKILL.md` frontmatter.
+
+### Skill Quality Contract
+
+- Write descriptions for strong implicit invocation:
+  - what the skill does
+  - when it should trigger
+  - when it should not trigger
+- `agents/openai.yaml` is required and should define:
+  - `interface.display_name`
+  - `interface.short_description`
+  - `interface.default_prompt` for workflow skills
+  - `policy.allow_implicit_invocation`
+  - `busirocket.skill_class`
+  - `busirocket.failure_mode` for workflow skills
+- Use `references/` for high-value progressive disclosure when a workflow needs structure or
+  rubrics. Do not add references or scripts unless they improve fidelity or determinism.
+- Declare `dependencies.tools` when a skill meaningfully depends on MCP or other tools.
+
+### Skill Classes
+
+- `workflow` — routes and executes multi-step work with explicit outputs, boundaries, and
+  escalation.
+- `domain` — injects narrower implementation constraints for a stack or subsystem.
+- `execution-assist` — adds deterministic helper behavior through references, scripts, or tools.
 
 ### Skill-Rules Governance
 
@@ -262,6 +287,8 @@ Task > Project > Stack > Global
 - Warning threshold: 10+ rules. Manual review threshold: 12+ rules.
 - Prefer mapping order: core -> stack -> specialty -> optional.
 - If a skill keeps growing, split scope into a new skill instead of adding more rules.
+- Keep workflow sequencing, deliverable format, escalation rules, and tool discipline inside the
+  skill. Keep reusable coding laws and architectural heuristics inside rules.
 
 ### Skills Pipeline
 
@@ -273,6 +300,9 @@ pnpm run skills:test
 pnpm run skills:package
 pnpm run skills:link
 ```
+
+`pnpm run skills:validate` also writes `dist/reports/skills-quality-report.{json,md}` so
+low-fidelity skills and activation collisions can be ranked instead of only pass/fail checked.
 
 ## Plugins
 

@@ -1,7 +1,8 @@
 # busirocket-agents-tools (BRP)
 
 Agent workflow engine + rules/skills orchestrator that enforces planning, testing, and review to
-consistently produce high-quality code across IDEs.
+consistently produce high-quality code across IDEs, with global skills as the primary reusable BRP
+surface.
 
 ## What It Is
 
@@ -9,7 +10,7 @@ BRP consolidates rules, skills, and an orchestration protocol into a single proj
 
 - A **Cursor plugin** (`dist/plugins/cursor/.cursor-plugin/plugin.json`)
 - A **Claude Code plugin** (`dist/plugins/claude/.claude-plugin/plugin.json`)
-- A **multi-IDE rules exporter** (Cursor, Claude, Codex, Antigravity/Gemini, Windsurf)
+- A **multi-IDE rules exporter** for lightweight guidance layers
 - An **AgentSkills-compatible** skill collection (9 validated skills)
 - A **multi-IDE skill linker** for popular agents/editors including Cursor, Claude Code, Codex,
   Continue, Cline, Windsurf, Antigravity, Gemini CLI, Goose, OpenHands, Augment, Roo, Kiro, Copilot,
@@ -26,6 +27,10 @@ pnpm run sync
 
 `sync` is the canonical bootstrap command (install, build, check, rules:link, skills:link). To
 update dependencies and refresh everything: `pnpm run update`.
+
+For Codex and other skill-capable IDEs, the main BRP workflow surface is the global skills pipeline.
+`AGENTS.md` remains useful as lightweight global guidance and routing, but it is not the primary
+delivery mechanism for reusable BRP workflows in this project.
 
 ### As a Cursor Plugin
 
@@ -107,14 +112,14 @@ busirocket-agents-tools/
 │   │   ├── .claude/rules/
 │   │   ├── .agent/rules/        # Antigravity (Gemini)
 │   │   └── .windsurf/rules/
-│   ├── markdown/                # Aggregated markdown outputs
+│   ├── markdown/                # Aggregated markdown outputs (guidance / index layers)
 │   │   ├── ALL_RULES.md         # Full rule reference (all canonical rules)
 │   │   ├── CLAUDE.md
 │   │   ├── AGENTS.md
 │   │   ├── GEMINI.md
 │   │   └── WINDSURF.md
 │   ├── skills/                  # Compiled installable skills with Rules Index
-│   ├── packages/skills/         # Packaged skill zip artifacts
+│   ├── packages/skills/         # Distribution/export zip artifacts
 │   └── reports/                 # Inventory and compatibility reports
 │   └── plugins/                 # Plugin manifests
 │       ├── cursor/.cursor-plugin/plugin.json
@@ -177,15 +182,28 @@ Stack-specific skills may be added in future versions.
 | `integrations` | Supabase, Stripe, Payload CMS, n8n                           |
 | `monorepo`     | Turborepo                                                    |
 
+## Skills-First Delivery Model
+
+BRP uses a dual-layer model for global distribution:
+
+- `~/.agents/skills` is the canonical internal directory managed by this product
+- `pnpm skills:link` fans those compiled skills out to supported IDE targets
+- `AGENTS.md` remains a lightweight guidance layer and should not be treated as the primary BRP
+  workflow surface for Codex
+
+Important:
+
+- the canonical directory above is a product convention
+- IDE target paths are linker-managed distribution destinations
+- do not describe those destinations as vendor-native documented paths unless verified separately
+
 ## Rules Tiers
 
 Rules are structured in three tiers so that the always-loaded context stays small:
 
-- **Tier 0 (always loaded):** The single `CLAUDE.md` file installed to `~/.claude/CLAUDE.md`. It
-  contains only an index (router + paths + short descriptions), no full rule bodies. Target size ≤
-  15k chars; the build fails if this budget is exceeded. Full content is loaded on demand via
-  `@rules/<path>.mdc` or your IDE’s tag conventions. For Gemini/Antigravity, `GEMINI.md` points to
-  synced files under `@.agent/rules/*.md` and `@.agent/workflows/*.md`.
+- **Tier 0 (always loaded guidance):** Generated markdown such as `CLAUDE.md`, `AGENTS.md`,
+  `GEMINI.md`, and `WINDSURF.md`. These are index-only guidance layers and routing aids, not the
+  main reusable workflow surface for skill-capable IDEs.
 - **Tier 1 (umbrella / reference):** Rule files such as `core.mdc`, `api.mdc`, `nextjs.mdc` that act
   as indices or pointers to other rules. They list references rather than duplicating content.
 - **Tier 2 (full content):** All other `.mdc` files under `src/rules/`. Full content lives here and
@@ -196,12 +214,12 @@ and recompile.
 
 **Markdown outputs:** Generated under `dist/markdown/` by `pnpm rules:compile`. `ALL_RULES.md`
 aggregates all canonical rules into a single reference. `CLAUDE.md`, `AGENTS.md`, `GEMINI.md`, and
-`WINDSURF.md` are generated as index-only files: they list rule references and short descriptions
-only; no rule bodies are inlined. `CLAUDE.md`, `AGENTS.md`, and `WINDSURF.md` use `@rules/...`,
-while `GEMINI.md` uses `@.agent/rules/...` and `@.agent/workflows/...`. This keeps the always-loaded
-context small. Full rule content lives in `src/rules/` and is synced to each IDE’s rules directory.
-To verify outputs against the Definition of Done (no inline mdc blocks, refs count, size budget),
-run `pnpm rules:verify`.
+`WINDSURF.md` are generated as index-only guidance files: they list rule references and short
+descriptions only; no rule bodies are inlined. `CLAUDE.md`, `AGENTS.md`, and `WINDSURF.md` use
+`@rules/...`, while `GEMINI.md` uses `@.agent/rules/...` and `@.agent/workflows/...`. This keeps the
+always-loaded context small. Full rule content lives in `src/rules/` and is synced to each IDE’s
+rules directory. To verify outputs against the Definition of Done (no inline mdc blocks, refs count,
+size budget), run `pnpm rules:verify`.
 
 ## Rule Precedence
 
@@ -228,7 +246,7 @@ Task > Project > Stack > Global
 | `pnpm run rules:link`           | Link rules to all supported IDEs                                        |
 | `pnpm run skills:compile`       | Compile skills from `src/skills/` to `dist/skills/`                     |
 | `pnpm run skills:inventory`     | Generate compatibility report for source skills                         |
-| `pnpm run skills:link`          | Link compiled skills to supported IDEs                                  |
+| `pnpm run skills:link`          | Stage compiled skills canonically, then distribute to supported IDEs    |
 | `pnpm run skills:package`       | Package compiled skills as zip artifacts                                |
 | `pnpm run rules:verify`         | Verify index-only outputs (DoD + CLAUDE golden master)                  |
 | `pnpm run rules:check`          | Verify compiled output is current                                       |
@@ -253,6 +271,8 @@ Task > Project > Stack > Global
   `references/`, `scripts/`, and `assets/`, no compiled Rules Index and no inline rule bundles.
 - `dist/skills` is the installable artifact and receives generated `Rules Index` sections from
   `src/skills/skill-rules.map.json`.
+- `pnpm skills:link` stages `dist/skills` into the product-managed canonical directory
+  `~/.agents/skills` and then distributes those artifacts to IDE-specific targets.
 - Each source skill must define only `name` and `description` in frontmatter.
 - Richer behavior metadata belongs in `agents/openai.yaml`, not in `SKILL.md` frontmatter.
 

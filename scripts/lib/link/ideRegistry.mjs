@@ -26,8 +26,11 @@ const getOpenClawRootDir = () => {
 const getOpenClawSkillsDir = () => path.join(getOpenClawRootDir(), "skills")
 
 /**
- * Canonical skills directory — single source of truth for skills.
- * Project skills symlink here first, then fan out to IDE targets.
+ * Canonical product-managed skills directory.
+ *
+ * This is an internal distribution root used by this project. Compiled skills are linked here
+ * first, then fanned out to IDE-specific targets. Do not describe this path as an OpenAI- or
+ * vendor-documented requirement unless that claim is verified separately.
  */
 export const CANONICAL_SKILLS_DIR = path.join(HOME, ".agents", "skills")
 
@@ -37,7 +40,7 @@ export const CANONICAL_SKILLS_DIR = path.join(HOME, ".agents", "skills")
  * - id: short identifier for logs
  * - rootDir: IDE root directory (used to detect if installed)
  * - detectPaths: optional alternative paths that count as installed
- * - skillsDir: where skills go (null for IDEs that only support rules)
+ * - skillsDir: product-managed distribution target for skills (null for IDEs that only support rules)
  */
 export const IDE_REGISTRY = [
   {

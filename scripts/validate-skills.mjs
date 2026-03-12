@@ -180,6 +180,17 @@ const descriptionBoundaryWarnings = (description) => {
   return warnings
 }
 
+const descriptionBoundaryErrors = (description) => {
+  const errors = []
+  if (!/trigger when/i.test(description)) {
+    errors.push("description must include an explicit 'Trigger when ...' activation boundary")
+  }
+  if (!/do not use/i.test(description)) {
+    errors.push("description must include an explicit 'Do not use ...' exclusion boundary")
+  }
+  return errors
+}
+
 const semanticCoherenceWarning = (description, rules) => {
   const descriptionTokens = new Set(tokenize(description))
   const ruleTokens = new Set(
@@ -333,6 +344,9 @@ const main = async () => {
     } else {
       const specificity = descriptionSpecificityWarning(description)
       if (specificity) warnings.push(`${skillName}: ${specificity}`)
+      for (const error of descriptionBoundaryErrors(description)) {
+        hardErrors.push(`${skillName}: ${error}`)
+      }
       for (const warning of descriptionBoundaryWarnings(description)) {
         warnings.push(`${skillName}: ${warning}`)
       }
@@ -619,6 +633,9 @@ const main = async () => {
   }
 
   console.log(`Quality report: ${qualityMdPath}`)
+  console.log(
+    "Validation coverage: discovery shape, activation quality, and compiled artifact spec.",
+  )
   console.log(`\nValidated ${distSkillDirs.length} compiled skill(s).`)
 }
 

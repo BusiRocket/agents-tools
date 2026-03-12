@@ -1,3 +1,14 @@
 interface:
   display_name: BRP Review
   short_description: Final self-check focused on security, performance, and maintainability.
+  default_prompt:
+    Review the change like a strict reviewer and return findings first, ordered by severity, before
+    any summary.
+  brand_color: "#7C3AED"
+policy:
+  allow_implicit_invocation: true
+busirocket:
+  skill_class: workflow
+  requires_references: true
+  failure_mode:
+    Escalate back to brp-implement when critical findings or unverified risks block delivery.

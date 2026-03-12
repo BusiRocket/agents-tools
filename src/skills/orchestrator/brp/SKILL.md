@@ -1,9 +1,12 @@
 ---
 name: brp
 description:
-  Main BRP orchestrator. Routes /brp-* commands, detects project stack, selects the minimal ruleset
-  and skill chain, and enforces the BRP workflow protocol. Use as the entry point for all BRP
-  commands.
+  Route BRP requests to the right workflow by detecting project context, selecting the minimal rule
+  set for monorepo, Next.js, and TypeScript contexts, and choosing the correct BRP skill chain
+  before work starts. Trigger when the task needs BRP command routing, protocol enforcement, or
+  workflow selection across planning, implementation, testing, and review. Do not use for
+  stack-specific coding guidance, single-purpose workflows that already have a precise BRP skill, or
+  direct code generation without orchestration.
 ---
 
 ## Rules

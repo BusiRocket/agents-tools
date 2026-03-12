@@ -1,3 +1,15 @@
 interface:
   display_name: BRP Debug
   short_description: Structured debugging workflow from symptoms to root cause and resolution.
+  default_prompt:
+    Investigate the issue before changing code and return symptoms, hypotheses, root cause, fix, and
+    verification.
+  brand_color: "#B45309"
+policy:
+  allow_implicit_invocation: true
+busirocket:
+  skill_class: workflow
+  requires_references: true
+  failure_mode:
+    Escalate to brp-plan when the issue turns into a larger redesign or cross-cutting architectural
+    change.

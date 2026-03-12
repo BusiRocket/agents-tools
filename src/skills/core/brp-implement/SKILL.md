@@ -1,8 +1,10 @@
 ---
 name: brp-implement
 description:
-  Guides incremental implementation following a plan. Enforces minimal diffs, one logical change per
-  step, and convention adherence. Use after brp-plan to execute the approved plan.
+  Execute an approved implementation plan through small, verifiable code changes that preserve scope
+  and project conventions. Trigger when the approach is already decided and the task is to write the
+  code incrementally with validation along the way. Do not use for ambiguous discovery work,
+  root-cause debugging, or final review after implementation is complete.
 ---
 
 ## Rules

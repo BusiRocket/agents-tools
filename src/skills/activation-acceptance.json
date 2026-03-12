@@ -1,0 +1,46 @@
+{
+  "brp-fix": {
+    "positive": [
+      "fix this bug with a minimal patch and verify the regression",
+      "apply a small bug fix now that we know the broken behavior"
+    ],
+    "negative": ["refactor this module into smaller files", "review this change before merge"]
+  },
+  "brp-debug": {
+    "positive": [
+      "debug this flaky runtime error and isolate the root cause",
+      "investigate why this endpoint is slow before changing code"
+    ],
+    "negative": [
+      "refactor this module into smaller files without changing behavior",
+      "generate README content for this package from code context"
+    ]
+  },
+  "brp-plan": {
+    "positive": [
+      "make a decision complete plan for this migration",
+      "scope this feature and produce milestones, risks, and acceptance criteria"
+    ],
+    "negative": ["debug this production error", "review this patch for regressions"]
+  },
+  "brp-review": {
+    "positive": [
+      "review this change for bugs, regressions, and missing tests",
+      "perform a final findings first code review on this implementation"
+    ],
+    "negative": [
+      "write automated tests for this feature",
+      "debug this runtime exception before changing code"
+    ]
+  },
+  "brp-test": {
+    "positive": [
+      "add unit and integration tests for this change",
+      "design a validation plan and write deterministic coverage for this implementation"
+    ],
+    "negative": [
+      "plan this feature before implementation",
+      "write a technical architecture overview for this codebase"
+    ]
+  }
+}

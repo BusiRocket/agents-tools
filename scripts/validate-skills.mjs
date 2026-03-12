@@ -6,12 +6,14 @@ import path from "node:path"
 import { parseDescription, parseFrontmatter, stripQuotes } from "./lib/skills/frontmatter.mjs"
 import { listSkillDirs } from "./lib/skills/listSkillDirs.mjs"
 import { loadSkillRulesManifest, validateSkillRulesManifestShape } from "./lib/skills/manifest.mjs"
+import { parseOpenAiYaml } from "./lib/skills/openaiYaml.mjs"
 import { listFilesRecursive } from "./lib/fs/listFilesRecursive.mjs"
 
 const ROOT = process.cwd()
 const RULES_DIR = path.join(ROOT, "src", "rules")
 const SRC_SKILLS_DIR = path.join(ROOT, "src", "skills")
 const DIST_SKILLS_DIR = path.join(ROOT, "dist", "skills")
+const REPORTS_DIR = path.join(ROOT, "dist", "reports")
 const MANIFEST_PATH = path.join(SRC_SKILLS_DIR, "skill-rules.map.json")
 const VENV_DIR = path.join(ROOT, ".venv-validate")
 const VENV_BIN = path.join(VENV_DIR, process.platform === "win32" ? "Scripts" : "bin")
@@ -53,6 +55,8 @@ const ACTION_WORDS = new Set([
   "update",
   "migrate",
 ])
+
+const VALID_SKILL_CLASSES = new Set(["workflow", "domain", "execution-assist"])
 
 const tokenize = (value) =>
   value
@@ -113,19 +117,6 @@ const runValidate = (skillPath, method) => {
   return { ok: r.status === 0, stderr: (r.stderr || "").trim() }
 }
 
-const parseOpenAiYaml = async (filePath) => {
-  const content = await fs.readFile(filePath, "utf8")
-  const interfaceLine = content.match(/^interface:\s*$/m)
-  const displayName = content.match(/^\s{2}display_name:\s*(.+)\s*$/m)
-  const shortDescription = content.match(/^\s{2}short_description:\s*(.+)\s*$/m)
-
-  return {
-    hasInterface: Boolean(interfaceLine),
-    hasDisplayName: Boolean(displayName && displayName[1].trim().length > 0),
-    hasShortDescription: Boolean(shortDescription && shortDescription[1].trim().length > 0),
-  }
-}
-
 const countOccurrences = (content, pattern) => {
   let count = 0
   let start = 0
@@ -178,6 +169,17 @@ const descriptionSpecificityWarning = (description) => {
   return null
 }
 
+const descriptionBoundaryWarnings = (description) => {
+  const warnings = []
+  if (!/trigger when/i.test(description)) {
+    warnings.push("description should include an explicit 'Trigger when ...' boundary")
+  }
+  if (!/do not use/i.test(description)) {
+    warnings.push("description should include an explicit 'Do not use ...' boundary")
+  }
+  return warnings
+}
+
 const semanticCoherenceWarning = (description, rules) => {
   const descriptionTokens = new Set(tokenize(description))
   const ruleTokens = new Set(
@@ -200,9 +202,78 @@ const semanticCoherenceWarning = (description, rules) => {
   return null
 }
 
+const extractActivationSection = (description, startPattern, endPattern) => {
+  const match = description.match(startPattern)
+  if (!match) return ""
+  const start = match.index + match[0].length
+  const endMatch = description.slice(start).match(endPattern)
+  const end = endMatch ? start + endMatch.index : description.length
+  return description.slice(start, end).trim()
+}
+
+const activationSignature = (description) => {
+  const trigger = extractActivationSection(description, /trigger when/i, /do not use/i)
+  const exclusion = extractActivationSection(description, /do not use/i, /$/)
+  const triggerTokens = new Set(tokenize(trigger).filter((token) => token.length > 2))
+  const exclusionTokens = new Set(tokenize(exclusion).filter((token) => token.length > 2))
+  return { triggerTokens, exclusionTokens }
+}
+
+const jaccardSimilarity = (left, right) => {
+  const union = new Set([...left, ...right])
+  if (union.size === 0) return 0
+
+  let intersection = 0
+  for (const token of left) {
+    if (right.has(token)) intersection += 1
+  }
+
+  return intersection / union.size
+}
+
+const mentionsTooling = (content) =>
+  /\bMCP\b|codex mcp|tool call|tool calls|remote MCP|OAuth/i.test(content)
+
+const createSkillQuality = (skill) => ({
+  name: skill.name,
+  relativePath: skill.relative,
+  skillClass: skill.skillClass,
+  score: 100,
+  warnings: [],
+})
+
+const addQualityWarning = (quality, warning, penalty = 5) => {
+  quality.warnings.push(warning)
+  quality.score = Math.max(0, quality.score - penalty)
+}
+
+const renderQualityMarkdown = (entries) => {
+  const lines = ["# Skills Quality Report", ""]
+
+  for (const entry of entries) {
+    lines.push(`## ${entry.name}`)
+    lines.push("")
+    lines.push(`- path: ${entry.relativePath}`)
+    lines.push(`- skillClass: ${entry.skillClass || "unknown"}`)
+    lines.push(`- score: ${entry.score}`)
+    if (entry.warnings.length === 0) {
+      lines.push("- warnings: none")
+    } else {
+      lines.push("- warnings:")
+      for (const warning of entry.warnings) {
+        lines.push(`  - ${warning}`)
+      }
+    }
+    lines.push("")
+  }
+
+  return `${lines.join("\n")}\n`
+}
+
 const main = async () => {
   const hardErrors = []
   const warnings = []
+  const qualityEntries = []
 
   const manifest = await loadSkillRulesManifest(MANIFEST_PATH)
   const manifestShape = validateSkillRulesManifestShape(manifest)
@@ -262,6 +333,9 @@ const main = async () => {
     } else {
       const specificity = descriptionSpecificityWarning(description)
       if (specificity) warnings.push(`${skillName}: ${specificity}`)
+      for (const warning of descriptionBoundaryWarnings(description)) {
+        warnings.push(`${skillName}: ${warning}`)
+      }
     }
 
     if (content.includes(RULES_INDEX_START) || content.includes(RULES_INDEX_END)) {
@@ -275,23 +349,62 @@ const main = async () => {
     }
 
     const openAiPath = path.join(skillDir, "agents", "openai.yaml")
+    let openAi = null
     if (!existsSync(openAiPath)) {
       hardErrors.push(`${skillName}: missing agents/openai.yaml`)
     } else {
-      const openAi = await parseOpenAiYaml(openAiPath)
-      if (!openAi.hasInterface) {
+      openAi = await parseOpenAiYaml(openAiPath)
+      if (!openAi.interface.hasSection) {
         hardErrors.push(`${skillName}: agents/openai.yaml missing 'interface' section`)
       }
-      if (!openAi.hasDisplayName) {
+      if (!openAi.interface.displayName) {
         hardErrors.push(`${skillName}: agents/openai.yaml missing interface.display_name`)
       }
-      if (!openAi.hasShortDescription) {
+      if (!openAi.interface.shortDescription) {
         hardErrors.push(`${skillName}: agents/openai.yaml missing interface.short_description`)
+      }
+
+      if (!openAi.busirocket.hasSection) {
+        hardErrors.push(`${skillName}: agents/openai.yaml missing 'busirocket' section`)
+      }
+
+      if (!VALID_SKILL_CLASSES.has(openAi.busirocket.skillClass)) {
+        hardErrors.push(
+          `${skillName}: agents/openai.yaml must set busirocket.skill_class to one of ${Array.from(
+            VALID_SKILL_CLASSES,
+          ).join(", ")}`,
+        )
+      }
+
+      if (openAi.busirocket.skillClass === "workflow" && !openAi.interface.defaultPrompt) {
+        warnings.push(`${skillName}: workflow skills should define interface.default_prompt`)
+      }
+      if (
+        openAi.busirocket.skillClass === "workflow" &&
+        openAi.policy.allowImplicitInvocation !== true
+      ) {
+        warnings.push(
+          `${skillName}: workflow skills should set policy.allow_implicit_invocation: true`,
+        )
+      }
+      if (openAi.busirocket.skillClass === "workflow" && !openAi.busirocket.failureMode) {
+        warnings.push(`${skillName}: workflow skills should declare busirocket.failure_mode`)
+      }
+      if (
+        openAi.busirocket.skillClass === "execution-assist" &&
+        openAi.dependencies.toolDependencyCount === 0
+      ) {
+        warnings.push(
+          `${skillName}: execution-assist skills should declare dependencies.tools when they rely on tools`,
+        )
+      }
+      if (openAi.interface.defaultPrompt && openAi.interface.defaultPrompt.length < 20) {
+        warnings.push(`${skillName}: interface.default_prompt should be descriptive, not a label`)
       }
     }
 
-    const sourceFiles = await listFilesRecursive(skillDir)
-    for (const file of sourceFiles) {
+    const skillFiles = await listFilesRecursive(skillDir)
+    for (const file of skillFiles) {
       if (file.endsWith(".zip")) {
         hardErrors.push(
           `${skillName}: source purity violation (packaging artifact in source): ${file}`,
@@ -299,11 +412,49 @@ const main = async () => {
       }
     }
 
+    const hasReferencesDir = skillFiles.some((file) => file.includes("/references/"))
+    const quality = createSkillQuality({
+      name: skillName,
+      relative,
+      skillClass: openAi?.busirocket.skillClass || "",
+    })
+
+    const specificity = description ? descriptionSpecificityWarning(description) : null
+    if (specificity) addQualityWarning(quality, specificity, 8)
+    for (const warning of descriptionBoundaryWarnings(description || "")) {
+      addQualityWarning(quality, warning, 10)
+    }
+    if (openAi?.busirocket.skillClass === "workflow" && !openAi.interface.defaultPrompt) {
+      addQualityWarning(quality, "workflow skill missing interface.default_prompt", 6)
+    }
+    if (
+      openAi?.busirocket.skillClass === "workflow" &&
+      openAi.policy.allowImplicitInvocation !== true
+    ) {
+      addQualityWarning(quality, "workflow skill should opt into implicit invocation", 6)
+    }
+    if (openAi?.busirocket.skillClass === "workflow" && !openAi.busirocket.failureMode) {
+      addQualityWarning(quality, "workflow skill missing failure_mode guidance", 6)
+    }
+    if (mentionsTooling(content) && (!openAi || openAi.dependencies.toolDependencyCount === 0)) {
+      warnings.push(`${skillName}: mentions MCP/tool usage but does not declare dependencies.tools`)
+      addQualityWarning(quality, "mentions MCP/tool usage without dependencies.tools", 8)
+    }
+    if (openAi?.busirocket.requiresReferences === true && !hasReferencesDir) {
+      warnings.push(`${skillName}: complex workflow skill should include references/ content`)
+      addQualityWarning(quality, "complex workflow skill missing references/", 10)
+    }
+
+    qualityEntries.push(quality)
+
     srcByName.set(skillName, {
       dir: skillDir,
       relative,
       description,
       rules: manifest.skills[skillName]?.rules || [],
+      skillClass: openAi?.busirocket.skillClass || "",
+      quality,
+      activation: activationSignature(description || ""),
     })
   }
 
@@ -330,6 +481,7 @@ const main = async () => {
     const semanticWarning = semanticCoherenceWarning(skill.description || "", skill.rules)
     if (semanticWarning) {
       warnings.push(`${skillName}: ${semanticWarning}`)
+      addQualityWarning(skill.quality, semanticWarning, 8)
     }
 
     const distSkillDir = path.join(DIST_SKILLS_DIR, skill.relative)
@@ -382,6 +534,45 @@ const main = async () => {
     }
   }
 
+  const workflowSkills = Array.from(srcByName.values()).filter(
+    (skill) => skill.skillClass === "workflow",
+  )
+  for (let i = 0; i < workflowSkills.length; i++) {
+    for (let j = i + 1; j < workflowSkills.length; j++) {
+      const left = workflowSkills[i]
+      const right = workflowSkills[j]
+      const similarity = jaccardSimilarity(
+        left.activation.triggerTokens,
+        right.activation.triggerTokens,
+      )
+      if (similarity >= 0.45) {
+        const message = `activation collision risk with ${right.relative} (trigger-token similarity ${similarity.toFixed(2)})`
+        warnings.push(`${left.relative}: ${message}`)
+        warnings.push(
+          `${right.relative}: activation collision risk with ${left.relative} (trigger-token similarity ${similarity.toFixed(2)})`,
+        )
+        addQualityWarning(left.quality, message, 12)
+        addQualityWarning(
+          right.quality,
+          `activation collision risk with ${left.relative} (trigger-token similarity ${similarity.toFixed(2)})`,
+          12,
+        )
+      }
+    }
+  }
+
+  await fs.mkdir(REPORTS_DIR, { recursive: true })
+  const qualityJsonPath = path.join(REPORTS_DIR, "skills-quality-report.json")
+  const qualityMdPath = path.join(REPORTS_DIR, "skills-quality-report.md")
+  const qualityPayload = {
+    generatedAt: new Date().toISOString(),
+    skills: qualityEntries
+      .slice()
+      .sort((a, b) => a.score - b.score || a.name.localeCompare(b.name)),
+  }
+  await fs.writeFile(qualityJsonPath, `${JSON.stringify(qualityPayload, null, 2)}\n`, "utf8")
+  await fs.writeFile(qualityMdPath, renderQualityMarkdown(qualityPayload.skills), "utf8")
+
   if (hardErrors.length > 0) {
     console.error("Hard errors:")
     for (const error of hardErrors) {
@@ -427,6 +618,7 @@ const main = async () => {
     }
   }
 
+  console.log(`Quality report: ${qualityMdPath}`)
   console.log(`\nValidated ${distSkillDirs.length} compiled skill(s).`)
 }
 

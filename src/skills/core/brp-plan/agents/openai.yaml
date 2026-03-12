@@ -1,3 +1,15 @@
 interface:
   display_name: BRP Plan
   short_description: Build decision-ready implementation plans with milestones, risks, and criteria.
+  default_prompt:
+    Produce a decision-complete implementation plan with discovery, milestones, interfaces,
+    validation, and explicit assumptions.
+  brand_color: "#1D4ED8"
+policy:
+  allow_implicit_invocation: true
+busirocket:
+  skill_class: workflow
+  requires_references: true
+  failure_mode:
+    Narrow the scope and record assumptions when the environment cannot answer every implementation
+    detail.

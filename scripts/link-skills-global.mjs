@@ -1,7 +1,10 @@
 #!/usr/bin/env node
 /**
- * Link skills globally: project source → canonical → all IDE targets.
- * Cleans stale brp-* and busirocket-* entries before re-linking.
+ * Link skills globally: compiled product artifacts -> canonical directory -> IDE distribution targets.
+ *
+ * The canonical directory is an internal product-managed location. IDE destinations are also
+ * managed by this linker and should not be described as vendor-documented native paths unless that
+ * has been verified independently.
  */
 import { promises as fs } from "node:fs"
 import path from "node:path"
@@ -30,11 +33,10 @@ const main = async () => {
     return
   }
 
-  // We want to link all skills into CANONICAL_SKILLS_DIR flat
+  // Stage compiled skills into the canonical product-managed directory first.
   await fs.mkdir(CANONICAL_SKILLS_DIR, { recursive: true })
 
-  // Custom logic to copy/symlink from various source dirs into the single CANONICAL dir
-  // Then we can use the CANONICAL dir as the source for all IDEs.
+  // Then use the canonical directory as the source for product-managed IDE fan-out.
   const { cleanGlobalPrefix } = await import("./lib/link/cleanGlobalPrefix.mjs")
   const { linkOneWithBackup } = await import("./lib/link/linkOneWithBackup.mjs")
 
@@ -53,9 +55,11 @@ const main = async () => {
     await linkOneWithBackup({ source: skillDir, target })
   }
 
-  console.log(`Canonical: ${skillNames.length} skills linked to ${CANONICAL_SKILLS_DIR}`)
+  console.log(
+    `Canonical product directory: ${skillNames.length} skills linked to ${CANONICAL_SKILLS_DIR}`,
+  )
 
-  // Step 2: canonical → each IDE target
+  // Step 2: canonical -> IDE distribution targets managed by this product.
   const skillTargets = IDE_REGISTRY.filter((ide) => ide.skillsDir !== null)
   let linked = 0
   let skipped = 0
@@ -66,7 +70,7 @@ const main = async () => {
     const detectResults = await Promise.all(detectPaths.map((candidate) => pathExists(candidate)))
     const ideExists = detectResults.some(Boolean)
     if (!ideExists) {
-      console.log(`- ${target.id}: skipped (not installed)`)
+      console.log(`- ${target.id}: skipped (target root not detected)`)
       skipped++
       continue
     }
@@ -87,7 +91,7 @@ const main = async () => {
         prefix: "", // We just cleaned above, and pass "" to avoid re-cleaning inside with a single prefix
       })
       const verb = result.copied.length > 0 ? "copied" : "unchanged"
-      console.log(`+ ${target.id}: ${skillNames.length} skills (${verb})`)
+      console.log(`+ ${target.id}: ${skillNames.length} skills distributed via copy (${verb})`)
     } else {
       await linkSkillsToTarget({
         sourceDir: CANONICAL_SKILLS_DIR,
@@ -95,14 +99,14 @@ const main = async () => {
         skillNames,
         prefix: "",
       })
-      console.log(`+ ${target.id}: ${skillNames.length} skills`)
+      console.log(`+ ${target.id}: ${skillNames.length} skills distributed via symlink`)
     }
 
     linked++
   }
 
   console.log(
-    `\nDone: ${skillNames.length} skills → canonical + ${linked} IDEs` +
+    `\nDone: ${skillNames.length} skills -> canonical product directory + ${linked} IDE targets` +
       (skipped > 0 ? ` (${skipped} skipped)` : ""),
   )
 }

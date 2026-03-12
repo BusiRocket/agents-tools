@@ -5,13 +5,13 @@
 ```
 ┌──────────────────────────────────────────────────────────┐
 │                    BRP Orchestrator                       │
-│  (detects stack, selects rules/skills, enforces protocol) │
+│  (detects stack, selects skills/rules, enforces protocol) │
 ├──────────────┬────────────────┬──────────────────────────┤
 │  Core Skills │  Stack Skills  │     Canonical Rules      │
 │  (9 skills)  │  (future)      │     (.mdc source)        │
 ├──────────────┴────────────────┴──────────────────────────┤
 │              Compile Pipeline (scripts/)                  │
-│  parse → bundle → render → sync per IDE target           │
+│  compile skills → stage canonical dir → distribute to IDEs │
 ├──────────────────────────────────────────────────────────┤
 │  IDE Outputs: Cursor | Claude | Codex | Antigravity |    │
 │               Windsurf | Claude Code Plugin              │
@@ -25,8 +25,8 @@
 The entry point for all `/brp-*` commands. Responsibilities:
 
 1. **Stack detection** — Scan project files for stack signals (see `core/policy.json`)
-2. **Rule selection** — Apply precedence: Task > Project > Stack > Global
-3. **Skill chain resolution** — Map intent to skill sequence
+2. **Skill chain resolution** — Map intent to skill sequence
+3. **Rule selection** — Apply precedence: Task > Project > Stack > Global
 4. **Protocol enforcement** — Ensure all 6 steps are followed
 
 ### Core Skills (`skills/core/`)
@@ -62,7 +62,7 @@ Stack-specific conventions and patterns. Selected by the orchestrator based on d
 - `busirocket-typescript-standards` — TypeScript projects
 - etc.
 
-### Canonical Rules (`rules/source/`)
+### Canonical Rules (`src/rules/`)
 
 IDE-agnostic rules written in `.mdc` format (Markdown with YAML frontmatter). The compile pipeline
 reads these and produces IDE-specific outputs.
@@ -70,29 +70,23 @@ reads these and produces IDE-specific outputs.
 ### Compile Pipeline (`scripts/`)
 
 ```
-rules/source/*.mdc
+src/skills/**/SKILL.md + agents/openai.yaml + manifest
        │
        ▼
-  parseMdc()        → extract frontmatter + content
+  compile-skills    → copy pure skill sources into dist/skills
        │
        ▼
-  generateBundle()  → collect all rules into a bundle
+  inject rules index → add generated Rules Index blocks to compiled skills
        │
        ▼
-  validateSkills()  → score descriptions, metadata, collisions, and references
+  link-skills       → stage skills in ~/.agents/skills
        │
        ▼
-  render*()         → transform to each IDE format
-       │
-       ├─→ syncCursorRules()       → .cursor/rules/
-       ├─→ syncClaudeRules()       → .claude/rules/
-       ├─→ syncAntigravityRules()  → .agent/rules/
-       ├─→ syncWindsurfRules()     → .windsurf/rules/
-       ├─→ renderClaude()          → CLAUDE.md
-       ├─→ renderAgents()          → AGENTS.md
-       ├─→ renderAntigravity()     → GEMINI.md
-       └─→ renderWindsurf()        → WINDSURF.md
+  IDE distribution  → product-managed targets per IDE
 ```
+
+Rules still compile into `dist/markdown/` and per-IDE rule outputs, but for Codex and other
+skill-capable IDEs the main reusable BRP surface is the global skills pipeline, not `AGENTS.md`.
 
 ## Data Flow
 
@@ -144,5 +138,7 @@ needed — the rules appear in Cursor's Rules settings.
 
 ### Other IDEs
 
-Codex, Antigravity (Gemini), and Windsurf use their respective global link scripts
-(`pnpm rules:link:*`) to symlink the generated markdown files.
+Rule-capable IDEs can still receive generated markdown/rule outputs. Skill-capable IDEs are handled
+through the product-managed linker, which stages compiled skills in `~/.agents/skills` first and
+then distributes them to IDE-specific targets. Those targets are product conventions unless their
+vendor documentation is confirmed separately.

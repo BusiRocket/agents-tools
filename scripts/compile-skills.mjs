@@ -128,7 +128,7 @@ const validateManifestReferences = (manifest, validRuleRefs, skillNames) => {
 }
 
 const main = async () => {
-  console.log("Compiling skills...")
+  console.log("Compiling skills into deterministic product-managed artifacts...")
 
   const manifest = await loadSkillRulesManifest(MANIFEST_PATH)
   const shapeValidation = validateSkillRulesManifestShape(manifest)
@@ -188,6 +188,7 @@ const main = async () => {
   }
 
   console.log(`Successfully compiled skills to ${SKILLS_DIST_DIR}`)
+  console.log("dist/skills is the installable artifact used by the linker for IDE distribution.")
 }
 
 main().catch((error) => {

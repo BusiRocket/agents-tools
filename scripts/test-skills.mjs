@@ -277,6 +277,9 @@ const main = async () => {
   }
   pass("source metadata checks passed")
 
+  console.log(
+    "\nTest coverage summary: compiled artifact stability, discovery shape, activation smoke, activation acceptance, and workflow metadata.",
+  )
   console.log("\nAll skills tests passed.")
 }
 

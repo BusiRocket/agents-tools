@@ -9,7 +9,7 @@
   git clone https://github.com/BusiRocket/busirocket-agents-tools.git
   cd busirocket-agents-tools
   pnpm install
-  pnpm rules:compile
+  pnpm build
   ```
 
 ---
@@ -60,15 +60,46 @@ Cursor Marketplace when BRP is published there.
 
 ## Codex (OpenAI)
 
-Link the `AGENTS.md` and Codex rules globally:
+### Global Guidance
 
 ```bash
-pnpm rules:link:codex
+pnpm rules:link
 ```
 
-This creates symlinks at `~/.codex/AGENTS.md` and `~/.codex/rules/default.rules`.
+This links the generated `AGENTS.md` into your Codex config as lightweight global guidance. In this
+project, `AGENTS.md` is not the primary delivery mechanism for reusable BRP workflows; global skills
+are.
 
-Restart Codex to pick up the new rules.
+### Global Skills (Primary for BRP)
+
+```bash
+pnpm skills:link
+```
+
+`pnpm skills:link` uses a dual-layer product model:
+
+- compiled skills are staged into the product-managed canonical directory `~/.agents/skills`
+- the linker then distributes those compiled skills to each detected IDE target
+- Codex is treated as one of those product-managed IDE targets
+
+Important:
+
+- `~/.agents/skills` is this product's canonical internal directory for global skills
+- IDE-specific destinations are linker-managed distribution targets
+- unless separately verified, do not treat any IDE target path as an OpenAI-documented native path
+
+For Codex specifically, this means the project treats skills as the primary BRP surface and keeps
+`~/.codex/AGENTS.md` as minimal policy/routing guidance.
+
+### What To Validate In Codex
+
+After linking, verify three separate behaviors:
+
+1. discovery: the skill is visible or available to Codex
+2. activation: the skill is selected for representative prompts
+3. execution quality: the skill produces better behavior than the no-skill baseline
+
+Restart Codex after linking if changes are not picked up immediately.
 
 ---
 
@@ -96,9 +127,10 @@ Antigravity workspace skills live under `<workspace-root>/.agents/skills`. This 
 Gemini CLI's shared global skills directory at `~/.gemini/skills`, which `pnpm skills:link` also
 populates when Gemini CLI is installed.
 
-`pnpm skills:link` also installs skills into all detected supported IDEs with skill directories,
-including Cursor, Claude Code, Codex, Continue, Cline, Windsurf, Gemini CLI, Goose, OpenHands,
-Augment, Roo, Kiro, Copilot, OpenCode, OpenClaw, Crush, Zencoder, AdaL, Trae, Qoder, and Qwen Code.
+`pnpm skills:link` also distributes compiled skills into all detected supported IDE targets managed
+by this product, including Cursor, Claude Code, Codex, Continue, Cline, Windsurf, Gemini CLI, Goose,
+OpenHands, Augment, Roo, Kiro, Copilot, OpenCode, OpenClaw, Crush, Zencoder, AdaL, Trae, Qoder, and
+Qwen Code.
 
 ---
 
@@ -141,7 +173,8 @@ pnpm skills:validate
 
 1. Ensure the skill has a valid `SKILL.md` with proper YAML frontmatter
 2. Run `pnpm skills:validate` to check for formatting issues
-3. For Claude Code plugins, ensure the plugin is loaded with `--plugin-dir`
+3. Run `pnpm skills:test` to verify discovery and activation checks
+4. For Claude Code plugins, ensure the plugin is loaded with `--plugin-dir`
 
 ### Compilation errors
 

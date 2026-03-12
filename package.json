@@ -4,7 +4,7 @@
   "private": true,
   "description": "Agent workflow engine + rules/skills orchestrator for high-quality code across IDEs",
   "scripts": {
-    "build": "pnpm run rules:compile && pnpm run skills:compile",
+    "build": "pnpm run clean:dist && pnpm run rules:compile && pnpm run skills:compile",
     "check:all": "pnpm run format && pnpm run lint:fix && pnpm run rules:check && pnpm run skills:validate && pnpm run skills:test",
     "check:ci": "pnpm run check:all",
     "check": "pnpm run check:all",
@@ -12,6 +12,7 @@
     "format": "prettier --write . --list-different",
     "lint:fix": "eslint . --fix",
     "lint": "eslint .",
+    "clean:dist": "node -e \"require('node:fs/promises').rm('dist', { recursive: true, force: true })\"",
     "rules:check": "node scripts/compile-rules.mjs --check",
     "rules:compile": "node scripts/compile-rules.mjs",
     "rules:verify": "node scripts/verify-rules-output.mjs",

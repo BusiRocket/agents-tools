@@ -16,6 +16,7 @@ import { renderAgents } from "./lib/rules/renderAgents.mjs"
 import { renderAntigravity } from "./lib/rules/renderAntigravity.mjs"
 import { renderAllRules } from "./lib/rules/renderAllRules.mjs"
 import { renderClaudeIndexOnly } from "./lib/rules/renderClaudeIndexOnly.mjs"
+import { renderCodexDefaultRules } from "./lib/rules/renderCodexDefaultRules.mjs"
 import { renderWindsurf } from "./lib/rules/renderWindsurf.mjs"
 import { syncAntigravityRules } from "./lib/rules/syncAntigravityRules.mjs"
 import { syncClaudeRules } from "./lib/rules/syncClaudeRules.mjs"
@@ -28,6 +29,8 @@ const CURSOR_DIR = path.join(ROOT, "dist", "global", ".cursor", "rules")
 const CLAUDE_RULES_DIR = path.join(ROOT, "dist", "global", ".claude", "rules")
 const ANTIGRAVITY_DIR = path.join(ROOT, "dist", "global", ".agent", "rules")
 const WINDSURF_DIR = path.join(ROOT, "dist", "global", ".windsurf", "rules")
+const CODEX_RULES_DIR = path.join(ROOT, "dist", "global", "codex", "rules")
+const CODEX_DEFAULT_RULES_PATH = path.join(CODEX_RULES_DIR, "default.rules")
 const CLAUDE_PATH = path.join(ROOT, "dist", "markdown", "CLAUDE.md")
 const AGENTS_PATH = path.join(ROOT, "dist", "markdown", "AGENTS.md")
 const GEMINI_PATH = path.join(ROOT, "dist", "markdown", "GEMINI.md")
@@ -76,6 +79,7 @@ const main = async () => {
   const nextGemini = renderAntigravity(bundle)
   const nextWindsurf = renderWindsurf(bundle)
   const nextAllRules = renderAllRules(bundle)
+  const nextCodexDefaultRules = renderCodexDefaultRules()
 
   if (checkOnly) {
     const errors = [
@@ -111,6 +115,11 @@ const main = async () => {
       errors.push("Outdated generated file: ALL_RULES.md")
     }
 
+    const currentCodexDefaultRules = await readIfExists(CODEX_DEFAULT_RULES_PATH)
+    if (currentCodexDefaultRules !== nextCodexDefaultRules) {
+      errors.push("Outdated generated file: codex/rules/default.rules")
+    }
+
     if (errors.length > 0) {
       console.error("Rules are not compiled or are out of date:\n")
       for (const error of errors) {
@@ -127,6 +136,9 @@ const main = async () => {
   await syncClaudeRules(sourceFiles, SOURCE_DIR, CLAUDE_RULES_DIR)
   await syncAntigravityRules(sourceFiles, SOURCE_DIR, ANTIGRAVITY_DIR)
   await syncWindsurfRules(sourceFiles, SOURCE_DIR, WINDSURF_DIR)
+  await fs.mkdir(CODEX_RULES_DIR, { recursive: true })
+  await fs.writeFile(CODEX_DEFAULT_RULES_PATH, nextCodexDefaultRules, "utf8")
+  await fs.mkdir(path.dirname(CLAUDE_PATH), { recursive: true })
   await fs.writeFile(CLAUDE_PATH, nextClaude, "utf8")
   await fs.writeFile(AGENTS_PATH, nextAgents, "utf8")
   await fs.writeFile(GEMINI_PATH, nextGemini, "utf8")

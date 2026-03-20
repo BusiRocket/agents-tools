@@ -13,6 +13,7 @@ export function renderIndexOnly(bundle, options = {}) {
   const referencePrefix = options.referencePrefix ?? "@rules/"
   const title = options.title ?? "# Index"
   const headerIntro = options.headerIntro ?? ""
+  const embedContent = options.embedContent ?? ""
   const getRuleRef =
     typeof options.getRuleRef === "function"
       ? options.getRuleRef
@@ -32,13 +33,14 @@ export function renderIndexOnly(bundle, options = {}) {
 
     const groups = groupByTopSegment(items)
     const header = [title, "", headerIntro].join("\n").trimEnd()
+    const embedded = embedContent ? `\n\n---\n\n${embedContent.trim()}\n\n---` : ""
     const router = renderRouter(groups, {
       getRuleRef,
       getRuleBadges,
       getOneLineDesc: (item) =>
         getOneLineDescription(item, { includeShortSummary: withShortSummary }),
     })
-    return `${header}\n\n${router}\n`
+    return `${header}${embedded}\n\n${router}\n`
   }
 
   const primary = attempt(includeShortSummary)
@@ -212,6 +214,7 @@ function extractShortSummaryLine(content) {
  *   onLimit?: "error" | "truncate"
  *   title?: string
  *   headerIntro?: string
+ *   embedContent?: string
  *   maxChars?: number
  *   includeShortSummary?: boolean
  *   referencePrefix?: string

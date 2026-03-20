@@ -11,6 +11,7 @@ Use **@core** when you need the full set of core project rules in one go.
 
 This rule references the following; for full detail open each:
 
+- **Atomic file rule** *(critical, always on)*: `@rules/core/atomic-file-rule.mdc` — ONE file = ONE export = ONE responsibility; zero helpers; if in doubt, split; use ts-morph for mass refactoring
 - **Project & quality**: `@rules/core/project.mdc` — one-thing-per-file, check script
 - **General**: `@rules/core/general.mdc` — agent defaults, code style, repo hygiene
 - **Pattern selection**: `@rules/core/design-pattern-selection.mdc` — choose Builder/Factory/Adapter/Strategy from real pain points

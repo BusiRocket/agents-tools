@@ -1,0 +1,102 @@
+---
+description: >-
+  ATOMIC FILE RULE — zero tolerance. ONE file = ONE exported unit = ONE
+  responsibility. No helpers, no private functions, no inline utilities. If in
+  doubt, split.
+alwaysApply: true
+priority: critical
+---
+
+# Atomic File Rule (Non-Negotiable)
+
+This rule overrides any "it's cleaner this way" justification. It applies to
+every file in every language, every stack, every context. There are no
+exceptions.
+
+## Hard constraints
+
+A file must contain **exactly one** top-level unit — one of:
+
+- `function`
+- `type` / `interface`
+- `class`
+- `constant`
+- `hook`
+
+Everything else is forbidden.
+
+## Banned patterns (reject immediately)
+
+| Pattern | Why banned |
+| --- | --- |
+| Multiple functions in one file | Violates one-unit rule |
+| Internal / private helpers | Create a new file, import it |
+| Inline utilities | Extract; name it; import it |
+| Grouped utilities (`utils.ts`, `helpers.ts`) | Each util gets its own file |
+| `// cleaner this way` justifications | Not a valid reason |
+| Any implicit coupling | Explicit imports only |
+
+## Decision rule for every line of code
+
+> If a line of code is not the **primary responsibility** of the file, it must
+> be extracted into another file and imported explicitly.
+
+## Function rules
+
+- A function must do **exactly one** thing.
+- `X + Y + Z` = three separate functions, three separate files, three imports.
+- Read a function like a sentence: if the sentence has a conjunction ("and",
+  "then", "also"), split it.
+
+## Helper / dependency rule
+
+If you need a helper:
+
+1. Create a new file for it (name it after what it does).
+2. Import it explicitly.
+3. Never define it in the same file as the caller.
+
+## Architecture principles
+
+- **Atomic SRP** — Single Responsibility enforced at file level, not just
+  function level.
+- **Hyper-modular** — prefer 500 files of 5 lines over 5 files of 500 lines.
+- **Explicit dependency graph** — every dependency is visible as an `import`.
+- **Zero hidden logic** — if it's not in the file's main export, it must not
+  exist in the file.
+
+## Mass-refactoring tool
+
+Use **ts-morph** for automated extraction when splitting existing files:
+
+```ts
+// Example: extract a helper function to its own file with ts-morph
+import { Project } from "ts-morph";
+
+const project = new Project({ tsConfigFilePath: "tsconfig.json" });
+const sourceFile = project.getSourceFileOrThrow("src/foo.ts");
+const helperFn = sourceFile.getFunctionOrThrow("helper");
+
+// Move to new file
+const newFile = project.createSourceFile("src/helper.ts", "");
+newFile.addFunction(helperFn.getStructure());
+helperFn.remove();
+
+// Add import back in original
+sourceFile.addImportDeclaration({
+  namedImports: ["helper"],
+  moduleSpecifier: "./helper",
+});
+
+await project.save();
+```
+
+## Self-check before committing
+
+- [ ] Exactly one exported symbol in this file.
+- [ ] No helper functions defined in this file.
+- [ ] No private/internal functions.
+- [ ] No inline type aliases (move to `types/<area>/`).
+- [ ] Every dependency is an explicit import from another file.
+- [ ] File name matches the exported symbol name exactly.
+- [ ] If in doubt: **split**.

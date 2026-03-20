@@ -18,3 +18,4 @@ rules/compiled/
 
 # Build artifacts
 dist/
+*.log

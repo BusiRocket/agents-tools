@@ -20,6 +20,7 @@
     "skills:compile": "tsx scripts/commands/compile-skills.ts",
     "skills:inventory": "tsx scripts/commands/skills-inventory.ts",
     "skills:link": "tsx scripts/commands/link-skills-global.ts",
+    "skills:link:antigravity": "tsx scripts/commands/runInstallAntigravitySkills.ts",
     "skills:package": "tsx scripts/commands/package-skills.ts",
     "skills:llms": "tsx scripts/commands/generate-llms-txt.ts",
     "skills:prompt:file": "tsx scripts/commands/to-prompt.ts > available_skills.xml",

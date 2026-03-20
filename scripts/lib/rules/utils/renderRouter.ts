@@ -36,8 +36,7 @@ export function renderRouter(
     lines.push(seg === "entrypoints" ? "### entrypoints (start here)" : `### ${seg}`)
     lines.push("")
 
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    for (const item of groups[seg] || []) {
+    for (const item of groups[seg] ?? []) {
       const ref = getRuleRef(item)
 
       const description = getOneLineDesc(item)

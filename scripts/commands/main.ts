@@ -26,8 +26,8 @@ export async function main() {
     ["WINDSURF.md", WINDSURF_PATH, 50_000],
   ] as [string, string, number][]) {
     const content = await readIfExists(filePath)
-    // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
-    if (content && content.includes("## Rules index (router)")) {
+
+    if (content?.includes("## Rules index (router)")) {
       const result = verifyIndexOnlyOutput(content, {
         maxChars,
         minRefs: 40,

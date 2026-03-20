@@ -1,0 +1,3314 @@
+[
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/commands/auto-fix.ts",
+    "messages": [
+      {
+        "ruleId": "unused-imports/no-unused-vars",
+        "severity": 2,
+        "message": "'checker' is assigned a value but never used. Allowed unused vars must match /^_/u.",
+        "line": 4,
+        "column": 7,
+        "messageId": "unusedVar",
+        "endLine": 4,
+        "endColumn": 14
+      }
+    ],
+    "suppressedMessages": [],
+    "errorCount": 1,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "source": "import { Project, SyntaxKind } from \"ts-morph\"\n\nconst project = new Project({ tsConfigFilePath: \"tsconfig.json\" })\nconst checker = project.getTypeChecker()\n\nfor (const sf of project.getSourceFiles()) {\n  let changed = false\n  // Fix 1: @typescript-eslint/restrict-template-expressions\n  for (const templateSpan of sf.getDescendantsOfKind(SyntaxKind.TemplateSpan)) {\n    const expr = templateSpan.getExpression()\n    const type = expr.getType()\n    if (type.isAny() || type.isUnknown() || type.isIntersection() || type.isUnion()) {\n      // If it's a simple identifier, wrap in String()\n      if (\n        expr.getKind() === SyntaxKind.Identifier ||\n        expr.getKind() === SyntaxKind.PropertyAccessExpression ||\n        expr.getKind() === SyntaxKind.ElementAccessExpression ||\n        expr.getKind() === SyntaxKind.CallExpression\n      ) {\n        if (!expr.getText().startsWith(\"String(\")) {\n          expr.replaceWithText(`String(${expr.getText()})`)\n          changed = true\n        }\n      }\n    }\n  }\n\n  // Fix 2: @typescript-eslint/no-explicit-any\n  for (const anyKw of sf.getDescendantsOfKind(SyntaxKind.AnyKeyword)) {\n    anyKw.replaceWithText(\"unknown\")\n    changed = true\n  }\n\n  if (changed) {\n    sf.saveSync()\n  }\n}\nconsole.log(\"Auto-fix complete.\")\n",
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/commands/buildLlmsTxt.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/commands/buildRuleRefSet.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/commands/buildZip.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/commands/check-version.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/require-await",
+        "severity": 2,
+        "message": "Async function 'main' has no 'await' expression.",
+        "line": 7,
+        "column": 8,
+        "messageId": "missingAwait",
+        "endLine": 7,
+        "endColumn": 27,
+        "suggestions": [
+          {
+            "messageId": "removeAsync",
+            "fix": { "range": [256, 262], "text": "" },
+            "desc": "Remove 'async'."
+          }
+        ]
+      },
+      {
+        "ruleId": "@typescript-eslint/restrict-template-expressions",
+        "severity": 2,
+        "message": "Invalid type \"number\" of template literal expression.",
+        "line": 35,
+        "column": 43,
+        "messageId": "invalidType",
+        "endLine": 35,
+        "endColumn": 59
+      }
+    ],
+    "suppressedMessages": [],
+    "errorCount": 2,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "source": "import { readFileSync } from \"node:fs\"\nimport { join } from \"node:path\"\nimport { skillDirs } from \"../constants/skillDirs\"\nimport { violations } from \"../constants/violations\"\nimport { parseFrontmatter } from \"../lib/skills/utils/parseFrontmatter\"\n\nexport async function main() {\n  if (skillDirs.length === 0) {\n    console.error(\"No source skills found under src/skills\")\n    process.exit(1)\n  }\n  for (const skillPath of skillDirs) {\n    const skillMdPath = join(skillPath, \"SKILL.md\")\n    const content = readFileSync(skillMdPath, \"utf8\")\n    const fm = parseFrontmatter(content)\n    if (!fm) {\n      violations.push(`${skillMdPath}: missing frontmatter`)\n      continue\n    }\n\n    const keys = Array.from(fm.fields.keys())\n    const unexpected = keys.filter((key: string) => key !== \"name\" && key !== \"description\")\n    if (unexpected.length > 0) {\n      violations.push(`${skillMdPath}: unexpected frontmatter fields (${unexpected.join(\", \")})`)\n    }\n  }\n  if (violations.length > 0) {\n    console.error(\"Skill frontmatter contract violations detected:\")\n    for (const violation of violations) {\n      console.error(`- ${violation}`)\n    }\n    process.exit(1)\n  }\n\n  console.log(`Frontmatter contract OK (${skillDirs.length} skills).`)\n}\n\nif (import.meta.url === `file://${String(process.argv[1])}`) {\n  main().catch(console.error)\n}\n",
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/commands/compile-rules.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/commands/compile-skills.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/commands/generate-llms-txt.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/require-await",
+        "severity": 2,
+        "message": "Async function 'main' has no 'await' expression.",
+        "line": 11,
+        "column": 8,
+        "messageId": "missingAwait",
+        "endLine": 11,
+        "endColumn": 27,
+        "suggestions": [
+          {
+            "messageId": "removeAsync",
+            "fix": { "range": [492, 498], "text": "" },
+            "desc": "Remove 'async'."
+          }
+        ]
+      },
+      {
+        "ruleId": "@typescript-eslint/prefer-nullish-coalescing",
+        "severity": 2,
+        "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.",
+        "line": 22,
+        "column": 52,
+        "messageId": "preferNullishOverOr",
+        "endLine": 22,
+        "endColumn": 54,
+        "suggestions": [
+          {
+            "messageId": "suggestNullish",
+            "data": { "equals": "" },
+            "fix": { "range": [891, 893], "text": "??" },
+            "desc": "Fix to nullish coalescing operator (`??`)."
+          }
+        ]
+      },
+      {
+        "ruleId": "@typescript-eslint/restrict-template-expressions",
+        "severity": 2,
+        "message": "Invalid type \"number\" of template literal expression.",
+        "line": 32,
+        "column": 37,
+        "messageId": "invalidType",
+        "endLine": 32,
+        "endColumn": 50
+      }
+    ],
+    "suppressedMessages": [],
+    "errorCount": 3,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "source": "import { readFileSync, writeFileSync } from \"node:fs\"\nimport { join } from \"node:path\"\nimport { buildLlmsTxt } from \"./buildLlmsTxt\"\nimport { LLMS_TXT } from \"../constants/LLMS_TXT\"\nimport { skillDirs } from \"../constants/skillDirs\"\nimport { skills } from \"../constants/skills\"\nimport { parseDescription } from \"../lib/skills/utils/parseDescription\"\nimport { parseFrontmatter } from \"../lib/skills/utils/parseFrontmatter\"\nimport { stripQuotes } from \"../lib/skills/utils/stripQuotes\"\n\nexport async function main() {\n  if (skillDirs.length === 0) {\n    console.error(\"No skill directories found under src/skills/\")\n    process.exit(1)\n  }\n  for (const skillPath of skillDirs) {\n    const skillMd = join(skillPath, \"SKILL.md\")\n    const content = readFileSync(skillMd, \"utf-8\")\n    const fm = parseFrontmatter(content)\n    if (!fm) continue\n\n    const name = stripQuotes(fm.fields.get(\"name\") || \"\")\n    const description = parseDescription(fm.raw)\n    if (!name || !description) continue\n\n    skills.push({ name, description, skillPath })\n  }\n\n  skills.sort((a: { name: string }, b: { name: string }) => a.name.localeCompare(b.name))\n  writeFileSync(LLMS_TXT, buildLlmsTxt(skills), \"utf-8\")\n\n  console.log(`Wrote ${LLMS_TXT} (${skills.length} skills).`)\n}\n\nif (import.meta.url === `file://${String(process.argv[1])}`) {\n  main().catch(console.error)\n}\n",
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/commands/link-rules-global.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/commands/link-skills-global.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/commands/main.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/prefer-optional-chain",
+        "severity": 2,
+        "message": "Prefer using an optional chain expression instead, as it's more concise and easier to read.",
+        "line": 30,
+        "column": 9,
+        "messageId": "preferOptionalChain",
+        "endLine": 30,
+        "endColumn": 63,
+        "suggestions": [
+          {
+            "fix": {
+              "range": [1158, 1212],
+              "text": "content?.includes(\"## Rules index (router)\")"
+            },
+            "messageId": "optionalChainSuggest",
+            "desc": "Change to an optional chain."
+          }
+        ]
+      }
+    ],
+    "suppressedMessages": [],
+    "errorCount": 1,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "source": "import { AGENTS_PATH } from \"../constants/AGENTS_PATH\"\nimport { CLAUDE_PATH } from \"../constants/CLAUDE_PATH\"\nimport { GEMINI_PATH } from \"../constants/GEMINI_PATH\"\nimport { verifyClaudeGoldenMaster } from \"./verifyClaudeGoldenMaster\"\nimport { verifyIndexOnlyOutput } from \"./verifyIndexOnlyOutput\"\nimport { WINDSURF_PATH } from \"../constants/WINDSURF_PATH\"\nimport { readIfExists } from \"../lib/fs/utils/readIfExists\"\n\nexport async function main() {\n  const goldenOnly = process.argv.includes(\"--golden-only\")\n  const skipGolden = process.argv.includes(\"--skip-golden\")\n  if (!skipGolden) {\n    const golden = await verifyClaudeGoldenMaster()\n    if (!golden.ok) {\n      console.error(\"[verify] Golden master check failed:\", golden.error)\n      process.exit(1)\n    }\n    console.log(\"[verify] CLAUDE.md golden master OK\")\n    if (goldenOnly) return\n  }\n\n  for (const [name, filePath, maxChars] of [\n    [\"CLAUDE.md\", CLAUDE_PATH, 15_000],\n    [\"AGENTS.md\", AGENTS_PATH, 50_000],\n    [\"GEMINI.md\", GEMINI_PATH, 50_000],\n    [\"WINDSURF.md\", WINDSURF_PATH, 50_000],\n  ] as [string, string, number][]) {\n    const content = await readIfExists(filePath)\n\n    if (content && content.includes(\"## Rules index (router)\")) {\n      const result = verifyIndexOnlyOutput(content, {\n        maxChars,\n        minRefs: 40,\n        ...(name === \"GEMINI.md\"\n          ? {\n              refPattern: /@\\.agent\\/(?:rules|workflows)\\/[^\\s`]+/g,\n              refLabel: \"@.agent/\",\n            }\n          : {}),\n      })\n      if (!result.ok) {\n        console.error(`[verify] DoD check failed for ${name}:`)\n        result.errors.forEach((e: unknown) => {\n          console.error(\"  -\", e)\n        })\n        process.exit(1)\n      }\n      console.log(`[verify] ${name} DoD OK`)\n    }\n  }\n\n  console.log(\"[verify] All checks passed.\")\n}\n",
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/commands/package-skills.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/commands/refactor.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/commands/renderRulesIndex.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/commands/run.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/commands/skills-inventory.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/commands/test-skills.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/commands/to-prompt.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/require-await",
+        "severity": 2,
+        "message": "Async function 'main' has no 'await' expression.",
+        "line": 6,
+        "column": 8,
+        "messageId": "missingAwait",
+        "endLine": 6,
+        "endColumn": 27,
+        "suggestions": [
+          {
+            "messageId": "removeAsync",
+            "fix": { "range": [206, 212], "text": "" },
+            "desc": "Remove 'async'."
+          }
+        ]
+      }
+    ],
+    "suppressedMessages": [],
+    "errorCount": 1,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "source": "import { INSTALL_HINT } from \"../constants/INSTALL_HINT\"\nimport { method } from \"../constants/method\"\nimport { result } from \"../constants/result\"\nimport { skillDirs } from \"../constants/skillDirs\"\n\nexport async function main() {\n  if (skillDirs.length === 0) {\n    console.error(\"No skill directories found under dist/skills/\")\n    process.exit(1)\n  }\n  if (!method) {\n    console.error(\"skills-ref to-prompt not found.\" + INSTALL_HINT)\n    process.exit(1)\n  }\n  if (result.status !== 0) {\n    if (result.stderr) console.error(result.stderr.trim())\n    process.exit(result.status ?? 1)\n  }\n}\n\nif (import.meta.url === `file://${String(process.argv[1])}`) {\n  main().catch(console.error)\n}\n",
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/commands/upsertRulesIndex.ts",
+    "messages": [
+      {
+        "ruleId": "sonarjs/no-nested-template-literals",
+        "severity": 2,
+        "message": "Refactor this code to not use nested template literals.",
+        "line": 25,
+        "column": 58,
+        "messageId": "nestedTemplateLiterals",
+        "endLine": 25,
+        "endColumn": 70
+      }
+    ],
+    "suppressedMessages": [],
+    "errorCount": 1,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "source": "import { renderRulesIndex } from \"./renderRulesIndex\"\nimport { RULES_INDEX_END } from \"../constants/RULES_INDEX_END\"\nimport { RULES_INDEX_HEADING } from \"../constants/RULES_INDEX_HEADING\"\nimport { RULES_INDEX_START } from \"../constants/RULES_INDEX_START\"\n\nexport const upsertRulesIndex = (content: string, rules: string[]) => {\n  const rendered = renderRulesIndex(rules)\n  const startIdx = content.indexOf(RULES_INDEX_START)\n  const endIdx = content.indexOf(RULES_INDEX_END)\n\n  if (startIdx !== -1 || endIdx !== -1) {\n    if (startIdx === -1 || endIdx === -1 || endIdx < startIdx) {\n      throw new Error(\"Malformed generated rules index markers in SKILL.md\")\n    }\n\n    const headingIdx = content.lastIndexOf(RULES_INDEX_HEADING, startIdx)\n    if (headingIdx === -1) {\n      throw new Error(\"Rules index markers found without heading in SKILL.md\")\n    }\n\n    const afterEnd = endIdx + RULES_INDEX_END.length\n    const before = content.slice(0, headingIdx).trimEnd()\n    const after = content.slice(afterEnd).trimStart()\n\n    return `${before}\\n\\n${rendered}${after.length > 0 ? `\\n${after}` : \"\"}`\n  }\n\n  const base = content.trimEnd()\n  return `${base}\\n\\n${rendered}`\n}\n",
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/commands/validate-install.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/require-await",
+        "severity": 2,
+        "message": "Async function 'main' has no 'await' expression.",
+        "line": 6,
+        "column": 8,
+        "messageId": "missingAwait",
+        "endLine": 6,
+        "endColumn": 27,
+        "suggestions": [
+          {
+            "messageId": "removeAsync",
+            "fix": { "range": [181, 187], "text": "" },
+            "desc": "Remove 'async'."
+          }
+        ]
+      }
+    ],
+    "suppressedMessages": [],
+    "errorCount": 1,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "source": "import { PYTHON } from \"../constants/PYTHON\"\nimport { pythonCmd } from \"../constants/pythonCmd\"\nimport { run } from \"./run\"\nimport { VENV_DIR } from \"../constants/VENV_DIR\"\n\nexport async function main() {\n  console.log(\"Creating validation venv at .venv-validate ...\")\n  run(pythonCmd, [\"-m\", \"venv\", VENV_DIR])\n  console.log(\"Installing skills-ref ...\")\n  run(PYTHON, [\"-m\", \"pip\", \"install\", \"--quiet\", \"skills-ref\"])\n  console.log(\"Done. Run yarn validate to check all skills.\")\n}\n\nif (import.meta.url === `file://${String(process.argv[1])}`) {\n  main().catch(console.error)\n}\n",
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/commands/validate-skills.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/commands/validate-uninstall.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/require-await",
+        "severity": 2,
+        "message": "Async function 'main' has no 'await' expression.",
+        "line": 4,
+        "column": 8,
+        "messageId": "missingAwait",
+        "endLine": 4,
+        "endColumn": 27,
+        "suggestions": [
+          {
+            "messageId": "removeAsync",
+            "fix": { "range": [102, 108], "text": "" },
+            "desc": "Remove 'async'."
+          }
+        ]
+      }
+    ],
+    "suppressedMessages": [],
+    "errorCount": 1,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "source": "import { existsSync, rmSync } from \"node:fs\"\nimport { VENV_DIR } from \"../constants/VENV_DIR\"\n\nexport async function main() {\n  if (!existsSync(VENV_DIR)) {\n    console.log(\"No .venv-validate found. Nothing to remove.\")\n    process.exit(0)\n  }\n  rmSync(VENV_DIR, { recursive: true })\n  console.log(\"Removed .venv-validate\")\n}\n\nif (import.meta.url === `file://${String(process.argv[1])}`) {\n  main().catch(console.error)\n}\n",
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/commands/verify-rules-output.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/commands/verifyClaudeGoldenMaster.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/commands/verifyIndexOnlyOutput.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/restrict-template-expressions",
+        "severity": 2,
+        "message": "Invalid type \"number\" of template literal expression.",
+        "line": 34,
+        "column": 38,
+        "messageId": "invalidType",
+        "endLine": 34,
+        "endColumn": 45
+      },
+      {
+        "ruleId": "@typescript-eslint/restrict-template-expressions",
+        "severity": 2,
+        "message": "Invalid type \"number\" of template literal expression.",
+        "line": 34,
+        "column": 77,
+        "messageId": "invalidType",
+        "endLine": 34,
+        "endColumn": 88
+      },
+      {
+        "ruleId": "@typescript-eslint/restrict-template-expressions",
+        "severity": 2,
+        "message": "Invalid type \"number\" of template literal expression.",
+        "line": 43,
+        "column": 34,
+        "messageId": "invalidType",
+        "endLine": 43,
+        "endColumn": 47
+      },
+      {
+        "ruleId": "@typescript-eslint/restrict-template-expressions",
+        "severity": 2,
+        "message": "Invalid type \"number\" of template literal expression.",
+        "line": 43,
+        "column": 68,
+        "messageId": "invalidType",
+        "endLine": 43,
+        "endColumn": 76
+      }
+    ],
+    "suppressedMessages": [],
+    "errorCount": 4,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "source": "import { DEFAULT_MAX_CHARS } from \"../constants/DEFAULT_MAX_CHARS\"\nimport { DEFAULT_MIN_REFS } from \"../constants/DEFAULT_MIN_REFS\"\n\n/**\n * DoD checks on index-only output string.\n * @param {string} output\n * @param {{ maxChars?: number, minRefs?: number, refPattern?: RegExp, refLabel?: string }} options\n * @returns {{ ok: boolean, errors: string[] }}\n */\nexport function verifyIndexOnlyOutput(\n  output: string,\n  options: { maxChars?: number; minRefs?: number; refPattern?: RegExp; refLabel?: string } = {},\n) {\n  const maxChars = options.maxChars ?? DEFAULT_MAX_CHARS\n  const minRefs = options.minRefs ?? DEFAULT_MIN_REFS\n  const refPattern = options.refPattern ?? /@rules\\/[^\\s`]+/g\n  const refLabel = options.refLabel ?? \"@rules/\"\n  const errors = []\n  if (typeof output !== \"string\") {\n    return { ok: false, errors: [\"Output is not a string\"] }\n  }\n\n  if (output.includes(\"```mdc\")) {\n    errors.push('Output must not contain inline mdc blocks (no \"```mdc\")')\n  }\n\n  if (!output.includes(\"## Rules index (router)\")) {\n    errors.push('Output must include \"## Rules index (router)\"')\n  }\n\n  const refMatches = output.match(refPattern)\n  const refs = refMatches ? [...new Set(refMatches)] : []\n  if (refs.length < minRefs) {\n    errors.push(`Expected at least ${minRefs} ${refLabel} references, got ${refs.length}`)\n  }\n\n  const duplicates = refMatches && refMatches.length !== refs.length\n  if (duplicates) {\n    errors.push(`Duplicate ${refLabel} references found`)\n  }\n\n  if (output.length > maxChars) {\n    errors.push(`Output length ${output.length} exceeds maxChars ${maxChars}`)\n  }\n\n  return { ok: errors.length === 0, errors }\n}\n",
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/ACCEPTANCE_PATH.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/ACTION_WORDS.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/AGENTS_PATH.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/ALL_RULES_MAX_CHARS_WARN.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/ALL_RULES_PATH.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/ANTIGRAVITY_DIR.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/BIN.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/CLAUDE_MAX_CHARS.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/CLAUDE_PATH.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/CLAUDE_RULES_DIR.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/CODEX_DEFAULT_RULES_PATH.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/CODEX_RULES_DIR.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/CURSOR_DIR.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/DEFAULT_MAX_CHARS.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/DEFAULT_MIN_REFS.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/DIST_PACKAGES_DIR.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/DIST_SKILLS_DIR.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/GEMINI_PATH.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/INSTALL_HINT.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/JSON_REPORT.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/LLMS_TXT.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/MANIFEST_PATH.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/MD_REPORT.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/PYTHON.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/REPORTS_DIR.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/ROOT.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/RULES_DIR.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/RULES_INDEX_END.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/RULES_INDEX_HEADING.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/RULES_INDEX_ONLY.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/RULES_INDEX_START.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/RULE_MAX_CHARS_WARN.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/SCHEMA_PATH.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/SKILLS_DIR.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/SKILLS_DIST_DIR.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/SKILLS_SRC_DIR.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/SMOKE_PATH.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/SNAPSHOT_DIR.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/SOURCE_DIR.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/SRC_SKILLS_DIR.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/VALID_SKILL_CLASSES.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/VENV_BIN.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/VENV_CLI.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/VENV_DIR.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/VENV_VALIDATOR.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/WINDSURF_DIR.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/WINDSURF_PATH.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/method.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-non-null-assertion",
+        "severity": 2,
+        "message": "Forbidden non-null assertion.",
+        "line": 4,
+        "column": 38,
+        "messageId": "noNonNull",
+        "endLine": 4,
+        "endColumn": 51
+      }
+    ],
+    "suppressedMessages": [],
+    "errorCount": 1,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "source": "import { detectExecutor } from \"../utils/detectExecutor\"\nimport { skillDirs } from \"./skillDirs\"\n\nexport const method = detectExecutor(skillDirs[0]!)\n",
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/pythonCmd.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/result.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/skillDirs.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/skills.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/constants/violations.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/fs/utils/defaultIsIgnored.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/fs/utils/ensureDir.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/fs/utils/listFilesRecursive.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/fs/utils/readIfExists.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/hash/utils/sha256.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/link/constants/CANONICAL_SKILLS_DIR.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/link/constants/CLAUDE_HOME.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/prefer-nullish-coalescing",
+        "severity": 2,
+        "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.",
+        "line": 4,
+        "column": 66,
+        "messageId": "preferNullishOverOr",
+        "endLine": 4,
+        "endColumn": 68,
+        "suggestions": [
+          {
+            "messageId": "suggestNullish",
+            "data": { "equals": "" },
+            "fix": { "range": [125, 127], "text": "??" },
+            "desc": "Fix to nullish coalescing operator (`??`)."
+          }
+        ]
+      }
+    ],
+    "suppressedMessages": [],
+    "errorCount": 1,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "source": "import path from \"node:path\"\nimport { HOME } from \"./HOME\"\n\nexport const CLAUDE_HOME = process.env.CLAUDE_CONFIG_DIR?.trim() || path.join(HOME, \".claude\")\n",
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/link/constants/CODEX_HOME.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/prefer-nullish-coalescing",
+        "severity": 2,
+        "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.",
+        "line": 4,
+        "column": 58,
+        "messageId": "preferNullishOverOr",
+        "endLine": 4,
+        "endColumn": 60,
+        "suggestions": [
+          {
+            "messageId": "suggestNullish",
+            "data": { "equals": "" },
+            "fix": { "range": [117, 119], "text": "??" },
+            "desc": "Fix to nullish coalescing operator (`??`)."
+          }
+        ]
+      }
+    ],
+    "suppressedMessages": [],
+    "errorCount": 1,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "source": "import path from \"node:path\"\nimport { HOME } from \"./HOME\"\n\nexport const CODEX_HOME = process.env.CODEX_HOME?.trim() || path.join(HOME, \".codex\")\n",
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/link/constants/CONFIG_HOME.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/prefer-nullish-coalescing",
+        "severity": 2,
+        "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.",
+        "line": 4,
+        "column": 64,
+        "messageId": "preferNullishOverOr",
+        "endLine": 4,
+        "endColumn": 66,
+        "suggestions": [
+          {
+            "messageId": "suggestNullish",
+            "data": { "equals": "" },
+            "fix": { "range": [123, 125], "text": "??" },
+            "desc": "Fix to nullish coalescing operator (`??`)."
+          }
+        ]
+      }
+    ],
+    "suppressedMessages": [],
+    "errorCount": 1,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "source": "import path from \"node:path\"\nimport { HOME } from \"./HOME\"\n\nexport const CONFIG_HOME = process.env.XDG_CONFIG_HOME?.trim() || path.join(HOME, \".config\")\n",
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/link/constants/HOME.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/link/constants/IDE_REGISTRY.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/link/constants/IDE_RULE_TARGETS.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/link/constants/ROOT.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/link/types/RuleTarget.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-redundant-type-constituents",
+        "severity": 2,
+        "message": "\"copy\" is overridden by string in this union type.",
+        "line": 8,
+        "column": 13,
+        "messageId": "literalOverridden",
+        "endLine": 8,
+        "endColumn": 19
+      },
+      {
+        "ruleId": "@typescript-eslint/no-redundant-type-constituents",
+        "severity": 2,
+        "message": "\"link\" is overridden by string in this union type.",
+        "line": 8,
+        "column": 22,
+        "messageId": "literalOverridden",
+        "endLine": 8,
+        "endColumn": 28
+      }
+    ],
+    "suppressedMessages": [],
+    "errorCount": 2,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "source": "export interface RuleTarget {\n  cleanup?: {\n    dir: string\n    prefix: string\n  }\n  links: {\n    target: string\n    method: \"copy\" | \"link\" | string\n    source: string\n  }[]\n}\n",
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/link/utils/backupExistingPath.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/link/utils/cleanGlobalPrefix.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 2,
+        "message": "Unnecessary optional chain on a non-nullish value.",
+        "line": 31,
+        "column": 12,
+        "messageId": "neverOptionalChain",
+        "endLine": 31,
+        "endColumn": 14,
+        "suggestions": [
+          {
+            "messageId": "suggestRemoveOptionalChain",
+            "fix": { "range": [679, 681], "text": "." },
+            "desc": "Remove unnecessary optional chain"
+          }
+        ]
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 2,
+        "message": "Unnecessary optional chain on a non-nullish value.",
+        "line": 31,
+        "column": 38,
+        "messageId": "neverOptionalChain",
+        "endLine": 31,
+        "endColumn": 40,
+        "suggestions": [
+          {
+            "messageId": "suggestRemoveOptionalChain",
+            "fix": { "range": [705, 707], "text": "." },
+            "desc": "Remove unnecessary optional chain"
+          }
+        ]
+      }
+    ],
+    "suppressedMessages": [],
+    "errorCount": 2,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "source": "import { promises as fs } from \"node:fs\"\nimport path from \"node:path\"\nimport { pathExists } from \"./pathExists\"\n\nexport const cleanGlobalPrefix = async (targetDir: string, prefix: string) => {\n  const exists = await pathExists(targetDir)\n  if (!exists) {\n    return []\n  }\n\n  const targetStat = await fs.lstat(targetDir)\n  if (targetStat.isSymbolicLink()) {\n    try {\n      await fs.realpath(targetDir)\n    } catch {\n      await fs.unlink(targetDir)\n      return []\n    }\n  }\n\n  if (!targetStat.isDirectory()) {\n    return []\n  }\n\n  let entries\n  try {\n    entries = await fs.readdir(targetDir)\n  } catch (error: unknown) {\n    const err = error as { code?: string }\n\n    if (err?.code === \"ENOENT\" || err?.code === \"ENOTDIR\") {\n      return []\n    }\n    throw error\n  }\n  const removed = []\n\n  for (const entry of entries) {\n    if (!entry.startsWith(prefix)) {\n      continue\n    }\n\n    const fullPath = path.join(targetDir, entry)\n    const stat = await fs.lstat(fullPath)\n\n    if (stat.isSymbolicLink()) {\n      await fs.unlink(fullPath)\n    } else if (stat.isDirectory()) {\n      await fs.rm(fullPath, { recursive: true, force: true })\n    } else {\n      await fs.unlink(fullPath)\n    }\n\n    removed.push(entry)\n  }\n\n  return removed\n}\n",
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/link/utils/copyFileToGlobal.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/link/utils/copySkillsToTarget.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/link/utils/ensureParentDirectory.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/link/utils/findIde.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/link/utils/getOpenClawRootDir.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/link/utils/getOpenClawSkillsDir.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/link/utils/linkManyWithBackup.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/link/utils/linkOneWithBackup.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/link/utils/linkRuleTarget.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/link/utils/linkSkillsToTarget.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/link/utils/pathExists.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/link/utils/runLinkScript.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/antigravity/utils/convertToAntigravityMentions.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/antigravity/utils/detectUmbrellaType.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/prefer-nullish-coalescing",
+        "severity": 2,
+        "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.",
+        "line": 17,
+        "column": 63,
+        "messageId": "preferNullishOverOr",
+        "endLine": 17,
+        "endColumn": 65,
+        "suggestions": [
+          {
+            "messageId": "suggestNullish",
+            "data": { "equals": "" },
+            "fix": { "range": [625, 627], "text": "??" },
+            "desc": "Fix to nullish coalescing operator (`??`)."
+          }
+        ]
+      }
+    ],
+    "suppressedMessages": [],
+    "errorCount": 1,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "source": "/**\n * Detect if umbrella rule should become a workflow or stay as a rule\n * @param {object} parsed - Parsed MDC with frontmatter and content\n * @param {string} _rulePath - Path to the rule file\n * @returns {object} - { isWorkflow: boolean, content: string }\n */\n\nimport type { RuleItem } from \"../../types/RuleItem\"\n\nexport function detectUmbrellaType(parsed: RuleItem, _rulePath: string) {\n  const content = parsed.content ?? \"\"\n\n  const hasSequentialSteps = /(?:step|first|then|next|finally)/i.test(content)\n\n  const hasNumberedList = /^\\d+\\./m.test(content)\n\n  const referenceCount = (content.match(/\\.cursor\\/rules\\//g) || []).length\n  const isMainlyReferences = referenceCount > 3\n  return {\n    isWorkflow: hasSequentialSteps && hasNumberedList && !isMainlyReferences,\n\n    content,\n  }\n}\n",
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/antigravity/utils/generateAntigravityHeader.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/antigravity/utils/getAntigravityActivation.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-type-conversion",
+        "severity": 2,
+        "message": "Passing a string to String() does not change the type or value of the string.",
+        "line": 16,
+        "column": 21,
+        "messageId": "unnecessaryTypeConversion",
+        "endLine": 16,
+        "endColumn": 27,
+        "suggestions": [
+          {
+            "messageId": "suggestRemove",
+            "fix": { "range": [477, 490], "text": "globs" },
+            "desc": "Remove the type conversion."
+          },
+          {
+            "messageId": "suggestSatisfies",
+            "data": { "type": "string" },
+            "fix": { "range": [477, 490], "text": "globs satisfies string" },
+            "desc": "Instead, assert that the value satisfies the string type."
+          }
+        ]
+      }
+    ],
+    "suppressedMessages": [],
+    "errorCount": 1,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "source": "/**\n * Get Antigravity activation mode from frontmatter\n * @param {object} frontmatter - Parsed MDC frontmatter\n * @returns {string} - Antigravity activation mode\n */\n\nimport type { RuleFrontmatter } from \"../../types/RuleFrontmatter\"\n\nexport function getAntigravityActivation(frontmatter?: RuleFrontmatter) {\n  const { alwaysApply, globs } = frontmatter ?? {}\n  if (alwaysApply === true) {\n    return \"Always On\"\n  }\n\n  if (globs && globs.trim() !== \"\") {\n    return `Glob: ${String(globs)}`\n  }\n\n  return \"Model Decision\"\n}\n",
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/antigravity/utils/splitForAntigravity.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/restrict-template-expressions",
+        "severity": 2,
+        "message": "Invalid type \"number\" of template literal expression.",
+        "line": 22,
+        "column": 34,
+        "messageId": "invalidType",
+        "endLine": 22,
+        "endColumn": 43
+      },
+      {
+        "ruleId": "@typescript-eslint/restrict-template-expressions",
+        "severity": 2,
+        "message": "Invalid type \"number\" of template literal expression.",
+        "line": 36,
+        "column": 48,
+        "messageId": "invalidType",
+        "endLine": 36,
+        "endColumn": 57
+      }
+    ],
+    "suppressedMessages": [],
+    "errorCount": 2,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "source": "/**\n * Split content if it exceeds Antigravity's 12,000 character limit\n * @param {string} content - Rule content\n * @param {string} ruleName - Rule name for splitting\n * @returns {Array<{name: string, content: string}>} - Split rules or original\n */\nexport function splitForAntigravity(content: string, ruleName: string) {\n  const MAX_LENGTH = 12000\n  if (content.length <= MAX_LENGTH) {\n    return [{ name: ruleName, content }]\n  }\n\n  const sections = content.split(/(?=\\n## )/g)\n  const parts = []\n  let currentPart: string[] = []\n  let currentLength = 0\n  let partIndex = 1\n  for (const section of sections) {\n    if (currentLength + section.length > MAX_LENGTH && currentPart.length > 0) {\n      // Finalize current part\n      parts.push({\n        name: `${ruleName}-part${partIndex}`,\n        content: currentPart.join(\"\"),\n      })\n      currentPart = [section]\n      currentLength = section.length\n      partIndex++\n    } else {\n      currentPart.push(section)\n      currentLength += section.length\n    }\n  }\n\n  if (currentPart.length > 0) {\n    parts.push({\n      name: partIndex > 1 ? `${ruleName}-part${partIndex}` : ruleName,\n      content: currentPart.join(\"\"),\n    })\n  }\n\n  return parts\n}\n",
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/constants/AGENTS_HEADER_INTRO.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/constants/AGENTS_MAX_CHARS.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/constants/CLAUDE_HEADER_INTRO.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/constants/ENTRYPOINTS.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/constants/GEMINI_HEADER_INTRO.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/constants/GEMINI_MAX_CHARS.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/constants/MAX_DESCRIPTION_CHARS.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/constants/ROOT_FILE_TO_SEGMENT.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/constants/WINDSURF_HEADER_INTRO.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/constants/WINDSURF_MAX_CHARS.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/helpers/utils/compareRuleFile.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/helpers/utils/processSourceFile.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 2,
+        "message": "Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined.",
+        "line": 16,
+        "column": 51,
+        "messageId": "neverNullish",
+        "endLine": 16,
+        "endColumn": 62
+      }
+    ],
+    "suppressedMessages": [],
+    "errorCount": 1,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "source": "import { promises as fs } from \"node:fs\"\nimport path from \"node:path\"\nimport { parseMdc } from \"../../utils/parseMdc\"\n\n/**\n * Process a single source file: read, parse, and get relative path\n * @param {string} file - File path\n * @param {string} sourceDir - Source directory\n * @returns {Promise<{content: string, parsed: object, relativePath: string}>}\n */\nexport async function processSourceFile(file: string, sourceDir: string) {\n  const content = await fs.readFile(file, \"utf8\")\n  const parsed = parseMdc(content)\n  const relativePath = path.relative(sourceDir, file)\n\n  const parsedWithContent = { ...parsed, content: parsed.body ?? \"\" }\n  return { content, parsed: parsedWithContent, relativePath }\n}\n",
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/helpers/utils/writeRuleFile.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/types/RenderIndexOnlyOptions.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/types/RuleFrontmatter.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/types/RuleItem.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/utils/checkAntigravityRules.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 2,
+        "message": "Unnecessary conditional, expected left-hand side of `??` operator to be possibly null or undefined.",
+        "line": 26,
+        "column": 23,
+        "messageId": "neverNullish",
+        "endLine": 26,
+        "endColumn": 79
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-type-conversion",
+        "severity": 2,
+        "message": "Passing a string to String() does not change the type or value of the string.",
+        "line": 34,
+        "column": 38,
+        "messageId": "unnecessaryTypeConversion",
+        "endLine": 34,
+        "endColumn": 44,
+        "suggestions": [
+          {
+            "messageId": "suggestRemove",
+            "fix": { "range": [1183, 1200], "text": "part.name" },
+            "desc": "Remove the type conversion."
+          },
+          {
+            "messageId": "suggestSatisfies",
+            "data": { "type": "string" },
+            "fix": { "range": [1183, 1200], "text": "part.name satisfies string" },
+            "desc": "Instead, assert that the value satisfies the string type."
+          }
+        ]
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-type-conversion",
+        "severity": 2,
+        "message": "Passing a string to String() does not change the type or value of the string.",
+        "line": 35,
+        "column": 35,
+        "messageId": "unnecessaryTypeConversion",
+        "endLine": 35,
+        "endColumn": 41,
+        "suggestions": [
+          {
+            "messageId": "suggestRemove",
+            "fix": { "range": [1241, 1258], "text": "part.name" },
+            "desc": "Remove the type conversion."
+          },
+          {
+            "messageId": "suggestSatisfies",
+            "data": { "type": "string" },
+            "fix": { "range": [1241, 1258], "text": "part.name satisfies string" },
+            "desc": "Instead, assert that the value satisfies the string type."
+          }
+        ]
+      }
+    ],
+    "suppressedMessages": [],
+    "errorCount": 3,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "source": "import path from \"node:path\"\nimport { compareRuleFile } from \"../helpers/utils/compareRuleFile\"\nimport { processSourceFile } from \"../helpers/utils/processSourceFile\"\nimport { toAntigravityRule } from \"./toAntigravityRule\"\n\n/**\n * Check if Antigravity rules are in sync\n * @param {string[]} sourceFiles - Array of source .mdc files\n * @param {string} sourceDir - Source directory path\n * @param {string} targetDir - Target .agent/rules directory\n * @returns {Promise<string[]>} - Array of error messages\n */\nexport async function checkAntigravityRules(\n  sourceFiles: string[],\n  sourceDir: string,\n  targetDir: string,\n) {\n  const errors = []\n  const workflowsDir = path.join(path.dirname(targetDir), \"workflows\")\n  for (const file of sourceFiles) {\n    const { parsed, relativePath } = await processSourceFile(file, sourceDir)\n    const converted = toAntigravityRule(\n      {\n        rel: relativePath,\n        content: parsed.content,\n        frontmatter: (parsed.frontmatter as unknown as Record<string, unknown>) ?? undefined,\n      },\n\n      relativePath,\n    )\n\n    for (const part of converted) {\n      const targetPath = part.isWorkflow\n        ? path.join(workflowsDir, `${String(part.name)}.md`)\n        : path.join(targetDir, `${String(part.name)}.md`)\n\n      const { missing, outdated } = await compareRuleFile(targetPath, part.content)\n      if (missing) errors.push(`Missing Antigravity rule: ${targetPath}`)\n      else if (outdated) errors.push(`Outdated Antigravity rule: ${targetPath}`)\n    }\n  }\n\n  return errors\n}\n",
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/utils/checkClaudeRules.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/utils/checkCursorRules.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/utils/checkWindsurfRules.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/utils/defaultGetRuleRef.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/utils/extractShortSummaryLine.ts",
+    "messages": [
+      {
+        "ruleId": "sonarjs/slow-regex",
+        "severity": 2,
+        "message": "Make sure the regex used here, which is vulnerable to super-linear runtime due to backtracking, cannot lead to denial of service.",
+        "line": 4,
+        "column": 17,
+        "endLine": 4,
+        "endColumn": 71
+      },
+      {
+        "ruleId": "@typescript-eslint/prefer-nullish-coalescing",
+        "severity": 2,
+        "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.",
+        "line": 7,
+        "column": 26,
+        "messageId": "preferNullishOverOr",
+        "endLine": 7,
+        "endColumn": 28,
+        "suggestions": [
+          {
+            "messageId": "suggestNullish",
+            "data": { "equals": "" },
+            "fix": { "range": [222, 224], "text": "??" },
+            "desc": "Fix to nullish coalescing operator (`??`)."
+          }
+        ]
+      },
+      {
+        "ruleId": "@typescript-eslint/prefer-nullish-coalescing",
+        "severity": 2,
+        "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.",
+        "line": 15,
+        "column": 19,
+        "messageId": "preferNullishOverOr",
+        "endLine": 15,
+        "endColumn": 21,
+        "suggestions": [
+          {
+            "messageId": "suggestNullish",
+            "data": { "equals": "" },
+            "fix": { "range": [478, 480], "text": "??" },
+            "desc": "Fix to nullish coalescing operator (`??`)."
+          }
+        ]
+      }
+    ],
+    "suppressedMessages": [],
+    "errorCount": 3,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "source": "export function extractShortSummaryLine(content?: string) {\n  const text = content ?? \"\"\n\n  const match = /##\\s+Short summary\\s*\\n([\\s\\S]*?)(?=\\n##\\s|\\n#\\s|$)/i.exec(text)\n  if (!match) return \"\"\n\n  const block = match[1] || \"\"\n  const lines = block\n    .split(\"\\n\")\n    .map((l: string) => l.trim())\n    .filter(Boolean)\n  const bullet = lines.find((l: string) => l.startsWith(\"- \") || l.startsWith(\"* \"))\n  if (bullet) return bullet.replace(/^[-*]\\s+/, \"\")\n\n  return lines[0] || \"\"\n}\n",
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/utils/generateBundle.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/prefer-nullish-coalescing",
+        "severity": 2,
+        "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.",
+        "line": 20,
+        "column": 39,
+        "messageId": "preferNullishOverOr",
+        "endLine": 20,
+        "endColumn": 41,
+        "suggestions": [
+          {
+            "messageId": "suggestNullish",
+            "data": { "equals": "" },
+            "fix": { "range": [634, 636], "text": "??" },
+            "desc": "Fix to nullish coalescing operator (`??`)."
+          }
+        ]
+      }
+    ],
+    "suppressedMessages": [],
+    "errorCount": 1,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "source": "import { promises as fs } from \"node:fs\"\nimport path from \"node:path\"\nimport { parseMdc } from \"./parseMdc\"\n\nexport const generateBundle = async (sourceFiles: string[], sourceDir: string) => {\n  const mdcFiles = sourceFiles\n    .filter((filePath: string) => filePath.endsWith(\".mdc\"))\n    .sort((a: string, b: string) => a.localeCompare(b))\n\n  const items = []\n\n  for (const filePath of mdcFiles) {\n    const relativePath = path.relative(sourceDir, filePath)\n    const content = await fs.readFile(filePath, \"utf8\")\n    const parsed = parseMdc(content)\n\n    items.push({\n      rel: relativePath,\n\n      frontmatter: parsed.frontmatter || {},\n      content: parsed.body || content.trimEnd(),\n    })\n  }\n\n  return items\n}\n",
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/utils/getActivation.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-type-conversion",
+        "severity": 2,
+        "message": "Passing a string to String() does not change the type or value of the string.",
+        "line": 14,
+        "column": 21,
+        "messageId": "unnecessaryTypeConversion",
+        "endLine": 14,
+        "endColumn": 27,
+        "suggestions": [
+          {
+            "messageId": "suggestRemove",
+            "fix": { "range": [341, 366], "text": "frontmatter.globs" },
+            "desc": "Remove the type conversion."
+          },
+          {
+            "messageId": "suggestSatisfies",
+            "data": { "type": "string" },
+            "fix": { "range": [341, 366], "text": "frontmatter.globs satisfies string" },
+            "desc": "Instead, assert that the value satisfies the string type."
+          }
+        ]
+      }
+    ],
+    "suppressedMessages": [],
+    "errorCount": 1,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "source": "import type { RuleItem } from \"../types/RuleItem\"\n\n/**\n * @param {RuleItem} item\n * @returns {string}\n */\n\nexport function getActivation(item: RuleItem) {\n  const frontmatter = item.frontmatter ?? {}\n\n  if (frontmatter.alwaysApply === true) return \"Always On\"\n\n  if (frontmatter.globs && frontmatter.globs.trim() !== \"\")\n    return `Glob: ${String(frontmatter.globs)}`\n  return \"Model Decision\"\n}\n",
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/utils/getAntigravityReference.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-type-conversion",
+        "severity": 2,
+        "message": "Passing a string to String() does not change the type or value of the string.",
+        "line": 9,
+        "column": 28,
+        "messageId": "unnecessaryTypeConversion",
+        "endLine": 9,
+        "endColumn": 34,
+        "suggestions": [
+          {
+            "messageId": "suggestRemove",
+            "fix": { "range": [364, 380], "text": "ruleName" },
+            "desc": "Remove the type conversion."
+          },
+          {
+            "messageId": "suggestSatisfies",
+            "data": { "type": "string" },
+            "fix": { "range": [364, 380], "text": "ruleName satisfies string" },
+            "desc": "Instead, assert that the value satisfies the string type."
+          }
+        ]
+      },
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-type-conversion",
+        "severity": 2,
+        "message": "Passing a string to String() does not change the type or value of the string.",
+        "line": 10,
+        "column": 24,
+        "messageId": "unnecessaryTypeConversion",
+        "endLine": 10,
+        "endColumn": 30,
+        "suggestions": [
+          {
+            "messageId": "suggestRemove",
+            "fix": { "range": [409, 425], "text": "ruleName" },
+            "desc": "Remove the type conversion."
+          },
+          {
+            "messageId": "suggestSatisfies",
+            "data": { "type": "string" },
+            "fix": { "range": [409, 425], "text": "ruleName satisfies string" },
+            "desc": "Instead, assert that the value satisfies the string type."
+          }
+        ]
+      }
+    ],
+    "suppressedMessages": [],
+    "errorCount": 2,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "source": "import type { RuleItem } from \"../types/RuleItem\"\nimport { detectUmbrellaType } from \"../antigravity/utils/detectUmbrellaType\"\n\nexport function getAntigravityReference(item: RuleItem) {\n  const ruleName = item.rel.replace(/\\.mdc$/, \"\").replace(/\\//g, \"-\")\n  const { isWorkflow } = detectUmbrellaType(item, item.rel)\n\n  return isWorkflow\n    ? `@.agent/workflows/${String(ruleName)}.md`\n    : `@.agent/rules/${String(ruleName)}.md`\n}\n",
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/utils/getOneLineDescription.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/utils/getPriority.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/utils/groupByCategoryAndSubcategory.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-non-null-assertion",
+        "severity": 2,
+        "message": "Forbidden non-null assertion.",
+        "line": 19,
+        "column": 9,
+        "messageId": "noNonNull",
+        "endLine": 19,
+        "endColumn": 18
+      },
+      {
+        "ruleId": "@typescript-eslint/no-non-null-assertion",
+        "severity": 2,
+        "message": "Forbidden non-null assertion.",
+        "line": 19,
+        "column": 26,
+        "messageId": "noNonNull",
+        "endLine": 19,
+        "endColumn": 35
+      },
+      {
+        "ruleId": "@typescript-eslint/no-non-null-assertion",
+        "severity": 2,
+        "message": "Forbidden non-null assertion.",
+        "line": 21,
+        "column": 5,
+        "messageId": "noNonNull",
+        "endLine": 21,
+        "endColumn": 20
+      },
+      {
+        "ruleId": "@typescript-eslint/no-non-null-assertion",
+        "severity": 2,
+        "message": "Forbidden non-null assertion.",
+        "line": 21,
+        "column": 9,
+        "messageId": "noNonNull",
+        "endLine": 21,
+        "endColumn": 18
+      },
+      {
+        "ruleId": "@typescript-eslint/no-non-null-assertion",
+        "severity": 2,
+        "message": "Forbidden non-null assertion.",
+        "line": 21,
+        "column": 21,
+        "messageId": "noNonNull",
+        "endLine": 21,
+        "endColumn": 33
+      },
+      {
+        "ruleId": "@typescript-eslint/no-non-null-assertion",
+        "severity": 2,
+        "message": "Forbidden non-null assertion.",
+        "line": 21,
+        "column": 37,
+        "messageId": "noNonNull",
+        "endLine": 21,
+        "endColumn": 52,
+        "suggestions": [
+          {
+            "messageId": "suggestOptionalChain",
+            "fix": { "range": [689, 690], "text": "?." },
+            "desc": "Consider using the optional chain operator `?.` instead. This operator includes runtime checks, so it is safer than the compile-only non-null assertion operator."
+          }
+        ]
+      },
+      {
+        "ruleId": "@typescript-eslint/no-non-null-assertion",
+        "severity": 2,
+        "message": "Forbidden non-null assertion.",
+        "line": 21,
+        "column": 41,
+        "messageId": "noNonNull",
+        "endLine": 21,
+        "endColumn": 50
+      },
+      {
+        "ruleId": "@typescript-eslint/no-non-null-assertion",
+        "severity": 2,
+        "message": "Forbidden non-null assertion.",
+        "line": 21,
+        "column": 53,
+        "messageId": "noNonNull",
+        "endLine": 21,
+        "endColumn": 65
+      },
+      {
+        "ruleId": "@typescript-eslint/no-non-null-assertion",
+        "severity": 2,
+        "message": "Forbidden non-null assertion.",
+        "line": 23,
+        "column": 5,
+        "messageId": "noNonNull",
+        "endLine": 23,
+        "endColumn": 35,
+        "suggestions": [
+          {
+            "messageId": "suggestOptionalChain",
+            "fix": { "range": [745, 746], "text": "?" },
+            "desc": "Consider using the optional chain operator `?.` instead. This operator includes runtime checks, so it is safer than the compile-only non-null assertion operator."
+          }
+        ]
+      },
+      {
+        "ruleId": "@typescript-eslint/no-non-null-assertion",
+        "severity": 2,
+        "message": "Forbidden non-null assertion.",
+        "line": 23,
+        "column": 5,
+        "messageId": "noNonNull",
+        "endLine": 23,
+        "endColumn": 20,
+        "suggestions": [
+          {
+            "messageId": "suggestOptionalChain",
+            "fix": { "range": [730, 731], "text": "?." },
+            "desc": "Consider using the optional chain operator `?.` instead. This operator includes runtime checks, so it is safer than the compile-only non-null assertion operator."
+          }
+        ]
+      },
+      {
+        "ruleId": "@typescript-eslint/no-non-null-assertion",
+        "severity": 2,
+        "message": "Forbidden non-null assertion.",
+        "line": 23,
+        "column": 9,
+        "messageId": "noNonNull",
+        "endLine": 23,
+        "endColumn": 18
+      },
+      {
+        "ruleId": "@typescript-eslint/no-non-null-assertion",
+        "severity": 2,
+        "message": "Forbidden non-null assertion.",
+        "line": 23,
+        "column": 21,
+        "messageId": "noNonNull",
+        "endLine": 23,
+        "endColumn": 33
+      },
+      {
+        "ruleId": "@typescript-eslint/no-non-null-assertion",
+        "severity": 2,
+        "message": "Forbidden non-null assertion.",
+        "line": 32,
+        "column": 23,
+        "messageId": "noNonNull",
+        "endLine": 32,
+        "endColumn": 37
+      },
+      {
+        "ruleId": "@typescript-eslint/no-non-null-assertion",
+        "severity": 2,
+        "message": "Forbidden non-null assertion.",
+        "line": 41,
+        "column": 21,
+        "messageId": "noNonNull",
+        "endLine": 41,
+        "endColumn": 44,
+        "suggestions": [
+          {
+            "messageId": "suggestOptionalChain",
+            "fix": { "range": [1394, 1395], "text": "?" },
+            "desc": "Consider using the optional chain operator `?.` instead. This operator includes runtime checks, so it is safer than the compile-only non-null assertion operator."
+          }
+        ]
+      }
+    ],
+    "suppressedMessages": [],
+    "errorCount": 14,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "source": "/**\n * @param {Array<{ rel: string, content: string }>} items\n * @returns {Array<{ category: string, subgroups: Array<{ subcategory: string, rules: Array<{ rel: string, content: string }> }> }>}\n */\n\ninterface RuleItem {\n  rel: string\n  content: string\n  [key: string]: unknown\n}\n\nexport function groupByCategoryAndSubcategory(items: RuleItem[]) {\n  const map: Record<string, Record<string, RuleItem[]>> = {}\n  for (const item of items) {\n    const parts = item.rel.split(\"/\")\n    const category = parts.length === 1 ? \"root\" : parts[0]\n    const subcategory = parts.length >= 3 ? parts[1] : \"\"\n\n    map[category!] = map[category!] ?? {}\n\n    map[category!]![subcategory!] = map[category!]![subcategory!] ?? []\n\n    map[category!]![subcategory!]!.push(item)\n  }\n\n  const categories = Object.keys(map).sort((a: string, b: string) => {\n    if (a === \"root\") return -1\n    if (b === \"root\") return 1\n    return a.localeCompare(b)\n  })\n  return categories.map((category: string) => {\n    const subcatMap = map[category]!\n    const subcategories = Object.keys(subcatMap).sort((a: string, b: string) => {\n      // Keep empty subcategory first for readability (rules directly under category).\n      if (a === \"\") return -1\n      if (b === \"\") return 1\n      return a.localeCompare(b)\n    })\n\n    const subgroups = subcategories.map((subcategory: string) => {\n      const rules = subcatMap[subcategory]!.slice().sort((a: RuleItem, b: RuleItem) =>\n        a.rel.localeCompare(b.rel),\n      )\n      return { subcategory, rules }\n    })\n\n    return { category, subgroups }\n  })\n}\n",
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/utils/groupByTopSegment.ts",
+    "messages": [
+      {
+        "ruleId": "no-useless-assignment",
+        "severity": 2,
+        "message": "The value assigned to 'seg' is not used in subsequent statements.",
+        "line": 11,
+        "column": 9,
+        "messageId": "unnecessaryAssignment",
+        "endLine": 11,
+        "endColumn": 12
+      },
+      {
+        "ruleId": "sonarjs/no-dead-store",
+        "severity": 2,
+        "message": "Remove this useless assignment to variable \"seg\".",
+        "line": 11,
+        "column": 9,
+        "messageId": "removeAssignment",
+        "endLine": 11,
+        "endColumn": 12
+      },
+      {
+        "ruleId": "sonarjs/no-redundant-assignments",
+        "severity": 2,
+        "message": "Review this redundant assignment: \"seg\" already holds the assigned value along all execution paths.",
+        "line": 16,
+        "column": 18,
+        "messageId": "reviewAssignment",
+        "endLine": 16,
+        "endColumn": 24
+      },
+      {
+        "ruleId": "@typescript-eslint/prefer-nullish-coalescing",
+        "severity": 2,
+        "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.",
+        "line": 18,
+        "column": 22,
+        "messageId": "preferNullishOverOr",
+        "endLine": 18,
+        "endColumn": 24,
+        "suggestions": [
+          {
+            "messageId": "suggestNullish",
+            "data": { "equals": "" },
+            "fix": { "range": [613, 615], "text": "??" },
+            "desc": "Fix to nullish coalescing operator (`??`)."
+          }
+        ]
+      },
+      {
+        "ruleId": "@typescript-eslint/no-non-null-assertion",
+        "severity": 2,
+        "message": "Forbidden non-null assertion.",
+        "line": 22,
+        "column": 5,
+        "messageId": "noNonNull",
+        "endLine": 22,
+        "endColumn": 14,
+        "suggestions": [
+          {
+            "messageId": "suggestOptionalChain",
+            "fix": { "range": [672, 673], "text": "?" },
+            "desc": "Consider using the optional chain operator `?.` instead. This operator includes runtime checks, so it is safer than the compile-only non-null assertion operator."
+          }
+        ]
+      },
+      {
+        "ruleId": "@typescript-eslint/no-non-null-assertion",
+        "severity": 2,
+        "message": "Forbidden non-null assertion.",
+        "line": 26,
+        "column": 5,
+        "messageId": "noNonNull",
+        "endLine": 26,
+        "endColumn": 14,
+        "suggestions": [
+          {
+            "messageId": "suggestOptionalChain",
+            "fix": { "range": [742, 743], "text": "?" },
+            "desc": "Consider using the optional chain operator `?.` instead. This operator includes runtime checks, so it is safer than the compile-only non-null assertion operator."
+          }
+        ]
+      }
+    ],
+    "suppressedMessages": [],
+    "errorCount": 6,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "source": "import { ENTRYPOINTS } from \"../constants/ENTRYPOINTS\"\nimport { ROOT_FILE_TO_SEGMENT } from \"../constants/ROOT_FILE_TO_SEGMENT\"\n\nexport function groupByTopSegment<T extends { rel: string }>(\n  items: T[],\n) {\n  const map: Record<string, T[]> = {}\n  for (const item of items) {\n    const parts = item.rel.split(\"/\")\n\n    let seg = \"misc\"\n    if (parts.length === 1) {\n      if (item.rel in ROOT_FILE_TO_SEGMENT)\n        seg = ROOT_FILE_TO_SEGMENT[item.rel as keyof typeof ROOT_FILE_TO_SEGMENT]\n      else if (ENTRYPOINTS.has(item.rel)) seg = \"entrypoints\"\n      else seg = \"misc\"\n    } else {\n      seg = parts[0] || \"misc\"\n    }\n    map[seg] = map[seg] ?? []\n\n    map[seg]!.push(item)\n  }\n\n  for (const seg of Object.keys(map)) {\n    map[seg]!.sort((a: T, b: T) => a.rel.localeCompare(b.rel))\n  }\n\n  return map\n}\n",
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/utils/normalizeLineEndings.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/utils/normalizeRel.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/utils/parseMdc.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/utils/renderAgents.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/utils/renderAllRules.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/utils/renderAntigravity.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/utils/renderBundleMd.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/utils/renderBundleWithMdcFrontmatter.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/utils/renderClaude.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/utils/renderClaudeIndexOnly.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/utils/renderCodexDefaultRules.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/utils/renderGrouped.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/utils/renderIndexOnly.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-unnecessary-condition",
+        "severity": 2,
+        "message": "Unnecessary optional chain on a non-nullish value.",
+        "line": 52,
+        "column": 37,
+        "messageId": "neverOptionalChain",
+        "endLine": 52,
+        "endColumn": 39,
+        "suggestions": [
+          {
+            "messageId": "suggestRemoveOptionalChain",
+            "fix": { "range": [1789, 1791], "text": "." },
+            "desc": "Remove unnecessary optional chain"
+          }
+        ]
+      },
+      {
+        "ruleId": "@typescript-eslint/restrict-template-expressions",
+        "severity": 2,
+        "message": "Invalid type \"number\" of template literal expression.",
+        "line": 80,
+        "column": 36,
+        "messageId": "invalidType",
+        "endLine": 80,
+        "endColumn": 50
+      },
+      {
+        "ruleId": "@typescript-eslint/restrict-template-expressions",
+        "severity": 2,
+        "message": "Invalid type \"number\" of template literal expression.",
+        "line": 80,
+        "column": 56,
+        "messageId": "invalidType",
+        "endLine": 80,
+        "endColumn": 64
+      }
+    ],
+    "suppressedMessages": [],
+    "errorCount": 3,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "source": "import { defaultGetRuleRef } from \"./defaultGetRuleRef\"\nimport { getOneLineDescription } from \"./getOneLineDescription\"\nimport { groupByTopSegment } from \"./groupByTopSegment\"\nimport { normalizeRel } from \"./normalizeRel\"\nimport { renderRouter } from \"./renderRouter\"\nimport type { RenderIndexOnlyOptions } from \"../types/RenderIndexOnlyOptions\"\nimport type { RuleItem } from \"../types/RuleItem\"\n\n/**\n * Generic index-only renderer engine. Emits only rule references (path + short description).\n * No rule bodies. No IDE-specific logic; wrappers (skins) pass options/callbacks.\n *\n * @param {Array<{ rel: string, frontmatter: object, content: string }>} bundle\n * @param {RenderIndexOnlyOptions} options\n * @returns {string}\n */\n\nexport function renderIndexOnly(bundle: RuleItem[], options: RenderIndexOnlyOptions = {}) {\n  const maxChars = typeof options.maxChars === \"number\" ? options.maxChars : 15_000\n\n  const onLimit = options.onLimit === \"truncate\" ? \"truncate\" : \"error\"\n\n  const includeShortSummary = options.includeShortSummary === true\n\n  const referencePrefix = options.referencePrefix ?? \"@rules/\"\n\n  const title = options.title ?? \"# Index\"\n\n  const headerIntro = options.headerIntro ?? \"\"\n\n  const embedContent = options.embedContent ?? \"\"\n\n  const getRuleRef =\n    typeof options.getRuleRef === \"function\"\n      ? options.getRuleRef\n      :  \n        defaultGetRuleRef(referencePrefix)\n\n  const getRuleBadges =\n    typeof options.getRuleBadges === \"function\" ? options.getRuleBadges : () => []\n  const attempt = (withShortSummary: boolean) => {\n    const items = bundle\n\n      .map((item: RuleItem) => ({\n        rel: normalizeRel(item.rel),\n\n        frontmatter: item.frontmatter ?? {},\n\n        content: item.content ?? \"\",\n      }))\n\n      .filter((i: RuleItem) => i.rel?.endsWith(\".mdc\"))\n\n      .sort((a: RuleItem, b: RuleItem) => a.rel.localeCompare(b.rel))\n\n    const groups = groupByTopSegment(items)\n    const header = [title, \"\", headerIntro].join(\"\\n\").trimEnd()\n\n    const embedded = embedContent ? `\\n\\n---\\n\\n${embedContent.trim()}\\n\\n---` : \"\"\n    const router = renderRouter(groups, {\n      getRuleRef,\n\n      getRuleBadges,\n      getOneLineDesc: (item: RuleItem) => getOneLineDescription(item, { includeShortSummary: withShortSummary }),\n    })\n    return `${header}${embedded}\\n\\n${router}\\n`\n  }\n  const primary = attempt(includeShortSummary)\n  if (primary.length <= maxChars) return primary\n  if (includeShortSummary) {\n    const downgraded = attempt(false)\n    if (downgraded.length <= maxChars) return downgraded\n  }\n\n  if (onLimit === \"truncate\") {\n    return primary.slice(0, maxChars)\n  }\n\n  throw new Error(\n    `Index exceeded size budget: ${primary.length} > ${maxChars} chars. ` +\n      \"Reduce descriptions/summaries or increase maxChars.\",\n  )\n}\n",
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/utils/renderRouter.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/prefer-nullish-coalescing",
+        "severity": 2,
+        "message": "Prefer using nullish coalescing operator (`??`) instead of a logical or (`||`), as it is a safer operator.",
+        "line": 39,
+        "column": 36,
+        "messageId": "preferNullishOverOr",
+        "endLine": 39,
+        "endColumn": 38,
+        "suggestions": [
+          {
+            "messageId": "suggestNullish",
+            "data": { "equals": "" },
+            "fix": { "range": [983, 985], "text": "??" },
+            "desc": "Fix to nullish coalescing operator (`??`)."
+          }
+        ]
+      }
+    ],
+    "suppressedMessages": [],
+    "errorCount": 1,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "source": "interface RuleItem {\n  rel: string\n  content: string\n  frontmatter?: Record<string, unknown>\n  [key: string]: unknown\n}\n\nexport function renderRouter(\n  groups: Record<string, RuleItem[]>,\n  {\n    getRuleRef,\n    getRuleBadges,\n    getOneLineDesc,\n  }: {\n    getRuleRef: (item: RuleItem) => string\n    getRuleBadges: (item: RuleItem) => string[]\n    getOneLineDesc: (item: RuleItem) => string\n  },\n) {\n  const segments = Object.keys(groups).sort((a: string, b: string) => {\n    if (a === \"entrypoints\") return -1\n    if (b === \"entrypoints\") return 1\n    return a.localeCompare(b)\n  })\n  const lines = [\n    \"## Rules index (router)\",\n    \"\",\n    \"Each entry points to the source rule file. Content is intentionally not inlined here.\",\n    \"\",\n    \"### Sections\",\n    \"\",\n    segments.join(\" · \"),\n    \"\",\n  ]\n  for (const seg of segments) {\n    lines.push(seg === \"entrypoints\" ? \"### entrypoints (start here)\" : `### ${seg}`)\n    lines.push(\"\")\n\n    for (const item of groups[seg] || []) {\n      const ref = getRuleRef(item)\n\n      const description = getOneLineDesc(item)\n\n      const primary = `- \\`${ref}\\` — ${description}`\n      lines.push(primary)\n\n      const badges = getRuleBadges(item)\n\n      if (badges.length > 0) {\n        lines.push(`  (${badges.join(\", \")})`)\n      }\n    }\n\n    lines.push(\"\")\n  }\n\n  return lines.join(\"\\n\")\n}\n",
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/utils/renderWindsurf.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/utils/syncAntigravityRules.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/utils/syncClaudeRules.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/utils/syncCursorRules.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/utils/syncWindsurfRules.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/utils/toAntigravityRule.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/utils/toClaudeRule.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/utils/toOneLine.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/utils/toWindsurfRule.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/utils/truncate.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/windsurf/utils/addWindsurfAnnotations.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/windsurf/utils/convertToWindsurfReferences.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/rules/windsurf/utils/formatWindsurfFrontmatter.ts",
+    "messages": [
+      {
+        "ruleId": "@typescript-eslint/no-base-to-string",
+        "severity": 2,
+        "message": "'frontmatter.description' will use Object's default stringification format ('[object Object]') when stringified.",
+        "line": 11,
+        "column": 33,
+        "messageId": "baseToString",
+        "endLine": 11,
+        "endColumn": 56
+      },
+      {
+        "ruleId": "@typescript-eslint/restrict-template-expressions",
+        "severity": 2,
+        "message": "Invalid type \"{}\" of template literal expression.",
+        "line": 11,
+        "column": 33,
+        "messageId": "invalidType",
+        "endLine": 11,
+        "endColumn": 56
+      },
+      {
+        "ruleId": "@typescript-eslint/no-base-to-string",
+        "severity": 2,
+        "message": "'frontmatter.priority' will use Object's default stringification format ('[object Object]') when stringified.",
+        "line": 23,
+        "column": 29,
+        "messageId": "baseToString",
+        "endLine": 23,
+        "endColumn": 49
+      },
+      {
+        "ruleId": "@typescript-eslint/restrict-template-expressions",
+        "severity": 2,
+        "message": "Invalid type \"{}\" of template literal expression.",
+        "line": 23,
+        "column": 29,
+        "messageId": "invalidType",
+        "endLine": 23,
+        "endColumn": 49
+      }
+    ],
+    "suppressedMessages": [],
+    "errorCount": 4,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "source": "import type { RuleFrontmatter } from \"../../types/RuleFrontmatter\"\n\n/**\n * Convert to Windsurf rule frontmatter format\n * @param {object} frontmatter - Parsed MDC frontmatter\n * @returns {string} - Formatted frontmatter for Windsurf\n */\nexport function formatWindsurfFrontmatter(frontmatter: RuleFrontmatter) {\n  const lines = [\"---\"]\n  if (frontmatter.description) {\n    lines.push(`description: \"${frontmatter.description}\"`)\n  }\n\n  if (frontmatter.globs) {\n    lines.push(`globs: \"${frontmatter.globs}\"`)\n  }\n\n  if (frontmatter.alwaysApply !== undefined) {\n    lines.push(`alwaysApply: ${String(frontmatter.alwaysApply)}`)\n  }\n\n  if (frontmatter.priority) {\n    lines.push(`priority: ${frontmatter.priority}`)\n  } else {\n    // Default priority based on alwaysApply\n    lines.push(`priority: ${frontmatter.alwaysApply ? \"high\" : \"medium\"}`)\n  }\n\n  lines.push(\"---\")\n  return lines.join(\"\\n\")\n}\n",
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/skills/constants/FRONTMATTER_RE.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/skills/types/Frontmatter.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/skills/utils/listSkillDirs.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/skills/utils/loadSkillRulesManifest.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/skills/utils/matchBoolean.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/skills/utils/matchValue.ts",
+    "messages": [
+      {
+        "ruleId": "sonarjs/prefer-regexp-exec",
+        "severity": 2,
+        "message": "Use the \"RegExp.exec()\" method instead.",
+        "line": 3,
+        "column": 27,
+        "messageId": "useExec",
+        "endLine": 3,
+        "endColumn": 32,
+        "suggestions": [
+          {
+            "messageId": "suggestExec",
+            "fix": { "range": [130, 152], "text": "RegExp(pattern).exec(content)" },
+            "desc": "Replace with \"RegExp.exec()\""
+          }
+        ]
+      }
+    ],
+    "suppressedMessages": [],
+    "errorCount": 1,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "source": "export const matchValue = (content: string, pattern: RegExp | string) => {\n  if (typeof pattern === \"string\") {\n    const match = content.match(pattern)\n    return match?.[1]?.trim() ?? \"\"\n  }\n  const match = pattern.exec(content)\n  return match?.[1]?.trim() ?? \"\"\n}\n",
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/skills/utils/parseDescription.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/skills/utils/parseFrontmatter.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/skills/utils/parseOpenAiYaml.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/skills/utils/parseOpenAiYamlContent.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/skills/utils/replaceFrontmatter.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/skills/utils/stripQuotes.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/skills/utils/validateSkillEntry.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/lib/skills/utils/validateSkillRulesManifestShape.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/utils/activationSignature.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/utils/addQualityWarning.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/utils/classifySkill.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/utils/copyDirRecursive.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/utils/countOccurrences.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/utils/createSkillQuality.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/utils/descriptionBoundaryErrors.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/utils/descriptionBoundaryWarnings.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/utils/descriptionSpecificityWarning.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/utils/detectExecutor.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/utils/detectValidator.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/utils/extractActivationSection.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/utils/extractRules.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/utils/extractRulesIndexRules.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/utils/fail.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/utils/hasLegacyInlineRules.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/utils/hashDirectory.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/utils/jaccardSimilarity.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/utils/mentionsTooling.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/utils/overlapScore.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/utils/parseSkillNameFromContent.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/utils/pass.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/utils/renderMarkdown.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/utils/renderQualityMarkdown.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/utils/runToPrompt.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/utils/runValidate.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/utils/semanticCoherenceWarning.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/utils/tokenize.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  },
+  {
+    "filePath": "/Users/cristiandeluxe/p/busirocket-agents/scripts/utils/validateManifestReferences.ts",
+    "messages": [],
+    "suppressedMessages": [],
+    "errorCount": 0,
+    "fatalErrorCount": 0,
+    "warningCount": 0,
+    "fixableErrorCount": 0,
+    "fixableWarningCount": 0,
+    "usedDeprecatedRules": []
+  }
+]

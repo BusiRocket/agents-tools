@@ -3,12 +3,13 @@ export const extractActivationSection = (
   startPattern: string | RegExp,
   endPattern: string | RegExp,
 ) => {
-  // eslint-disable-next-line sonarjs/prefer-regexp-exec
-  const match = description.match(startPattern)
+  const startRegex = typeof startPattern === "string" ? new RegExp(startPattern) : startPattern
+  const match = startRegex.exec(description)
   if (!match) return ""
-  const start = (match.index ?? 0) + match[0].length
-  // eslint-disable-next-line sonarjs/prefer-regexp-exec
-  const endMatch = description.slice(start).match(endPattern)
-  const end = endMatch ? start + (endMatch.index ?? 0) : description.length
+  const start = match.index + match[0].length
+
+  const endRegex = typeof endPattern === "string" ? new RegExp(endPattern) : endPattern
+  const endMatch = endRegex.exec(description.slice(start))
+  const end = endMatch ? start + endMatch.index : description.length
   return description.slice(start, end).trim()
 }

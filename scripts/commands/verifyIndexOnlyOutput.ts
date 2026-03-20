@@ -31,8 +31,9 @@ export function verifyIndexOnlyOutput(
   const refMatches = output.match(refPattern)
   const refs = refMatches ? [...new Set(refMatches)] : []
   if (refs.length < minRefs) {
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    errors.push(`Expected at least ${minRefs} ${refLabel} references, got ${refs.length}`)
+    errors.push(
+      `Expected at least ${String(minRefs)} ${refLabel} references, got ${String(refs.length)}`,
+    )
   }
 
   const duplicates = refMatches && refMatches.length !== refs.length
@@ -41,8 +42,7 @@ export function verifyIndexOnlyOutput(
   }
 
   if (output.length > maxChars) {
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    errors.push(`Output length ${output.length} exceeds maxChars ${maxChars}`)
+    errors.push(`Output length ${String(output.length)} exceeds maxChars ${String(maxChars)}`)
   }
 
   return { ok: errors.length === 0, errors }

@@ -3,8 +3,7 @@ import { method } from "../constants/method"
 import { result } from "../constants/result"
 import { skillDirs } from "../constants/skillDirs"
 
-// eslint-disable-next-line @typescript-eslint/require-await
-export async function main() {
+export function main() {
   if (skillDirs.length === 0) {
     console.error("No skill directories found under dist/skills/")
     process.exit(1)
@@ -19,7 +18,6 @@ export async function main() {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-if (import.meta.url === `file://${process.argv[1]}`) {
-  main().catch(console.error)
+if (import.meta.url === `file://${String(process.argv[1])}`) {
+  main()
 }

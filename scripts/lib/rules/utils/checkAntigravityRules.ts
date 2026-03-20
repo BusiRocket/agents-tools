@@ -1,4 +1,5 @@
 import path from "node:path"
+import type { RuleFrontmatter } from "../types/RuleFrontmatter"
 import { compareRuleFile } from "../helpers/utils/compareRuleFile"
 import { processSourceFile } from "../helpers/utils/processSourceFile"
 import { toAntigravityRule } from "./toAntigravityRule"
@@ -19,17 +20,25 @@ export async function checkAntigravityRules(
   const workflowsDir = path.join(path.dirname(targetDir), "workflows")
   for (const file of sourceFiles) {
     const { parsed, relativePath } = await processSourceFile(file, sourceDir)
-    const converted = toAntigravityRule(parsed, relativePath)
+    const converted = toAntigravityRule(
+      {
+        rel: relativePath,
+        content: parsed.content,
+        ...(parsed.frontmatter
+          ? {
+              frontmatter: parsed.frontmatter as RuleFrontmatter,
+            }
+          : {}),
+      },
+
+      relativePath,
+    )
 
     for (const part of converted) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       const targetPath = part.isWorkflow
-        ? // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-member-access
-          path.join(workflowsDir, `${part.name}.md`)
-        : // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-member-access
-          path.join(targetDir, `${part.name}.md`)
+        ? path.join(workflowsDir, `${part.name}.md`)
+        : path.join(targetDir, `${part.name}.md`)
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
       const { missing, outdated } = await compareRuleFile(targetPath, part.content)
       if (missing) errors.push(`Missing Antigravity rule: ${targetPath}`)
       else if (outdated) errors.push(`Outdated Antigravity rule: ${targetPath}`)

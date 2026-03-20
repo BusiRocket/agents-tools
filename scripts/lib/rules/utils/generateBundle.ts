@@ -16,8 +16,8 @@ export const generateBundle = async (sourceFiles: string[], sourceDir: string) =
 
     items.push({
       rel: relativePath,
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-      frontmatter: parsed.frontmatter || {},
+
+      frontmatter: parsed.frontmatter ?? {},
       content: parsed.body || content.trimEnd(),
     })
   }

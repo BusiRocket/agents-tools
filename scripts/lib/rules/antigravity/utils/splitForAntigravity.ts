@@ -19,8 +19,7 @@ export function splitForAntigravity(content: string, ruleName: string) {
     if (currentLength + section.length > MAX_LENGTH && currentPart.length > 0) {
       // Finalize current part
       parts.push({
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-        name: `${ruleName}-part${partIndex}`,
+        name: `${ruleName}-part${String(partIndex)}`,
         content: currentPart.join(""),
       })
       currentPart = [section]
@@ -34,8 +33,7 @@ export function splitForAntigravity(content: string, ruleName: string) {
 
   if (currentPart.length > 0) {
     parts.push({
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      name: partIndex > 1 ? `${ruleName}-part${partIndex}` : ruleName,
+      name: partIndex > 1 ? `${ruleName}-part${String(partIndex)}` : ruleName,
       content: currentPart.join(""),
     })
   }

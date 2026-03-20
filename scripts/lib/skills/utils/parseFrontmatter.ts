@@ -1,14 +1,8 @@
+import type { Frontmatter } from "../types/Frontmatter"
 import { FRONTMATTER_RE } from "../constants/FRONTMATTER_RE"
 
-export interface Frontmatter {
-  raw: string
-  lines: string[]
-  fields: Map<string, string>
-}
-
 export const parseFrontmatter = (content: string): Frontmatter | null => {
-  // eslint-disable-next-line sonarjs/prefer-regexp-exec
-  const match = content.match(FRONTMATTER_RE)
+  const match = FRONTMATTER_RE.exec(content)
   if (!match) return null
 
   const raw = match[1]
@@ -17,11 +11,13 @@ export const parseFrontmatter = (content: string): Frontmatter | null => {
   const fields = new Map<string, string>()
 
   for (const line of lines) {
-    // eslint-disable-next-line sonarjs/slow-regex
-    const simple = /^([A-Za-z0-9_-]+):\s*(.*)$/.exec(line)
-
-    if (simple?.[1] !== undefined && simple[2] !== undefined) {
-      fields.set(simple[1], simple[2].trim())
+    const colonIndex = line.indexOf(":")
+    if (colonIndex > 0) {
+      const key = line.slice(0, colonIndex).trim()
+      const value = line.slice(colonIndex + 1).trim()
+      if (/^[A-Za-z0-9_-]+$/.test(key)) {
+        fields.set(key, value)
+      }
     }
   }
 

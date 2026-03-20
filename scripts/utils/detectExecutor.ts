@@ -11,14 +11,13 @@ export function detectExecutor(firstSkillPath: string) {
     if (r.status === 0) return "venv"
   }
 
-  // eslint-disable-next-line sonarjs/no-os-command-from-path
   const pipx = spawnSync("pipx", ["run", "skills-ref", "to-prompt", firstSkillPath], {
     stdio: "pipe",
     encoding: "utf-8",
     shell: true,
   })
   if (pipx.status === 0) return "pipx"
-  // eslint-disable-next-line sonarjs/no-os-command-from-path
+
   const global = spawnSync("skills-ref", ["to-prompt", firstSkillPath], {
     stdio: "pipe",
     encoding: "utf-8",

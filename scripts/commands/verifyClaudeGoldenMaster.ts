@@ -29,9 +29,7 @@ export async function verifyClaudeGoldenMaster() {
       }
     }
     return { ok: true }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (err: any) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    return { ok: false, error: String(err?.message ?? err) }
+  } catch (err: unknown) {
+    return { ok: false, error: err instanceof Error ? err.message : String(err) }
   }
 }

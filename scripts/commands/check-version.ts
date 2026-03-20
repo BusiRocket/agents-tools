@@ -4,8 +4,7 @@ import { skillDirs } from "../constants/skillDirs"
 import { violations } from "../constants/violations"
 import { parseFrontmatter } from "../lib/skills/utils/parseFrontmatter"
 
-// eslint-disable-next-line @typescript-eslint/require-await
-export async function main() {
+export function main() {
   if (skillDirs.length === 0) {
     console.error("No source skills found under src/skills")
     process.exit(1)
@@ -32,11 +31,10 @@ export async function main() {
     }
     process.exit(1)
   }
-  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-  console.log(`Frontmatter contract OK (${skillDirs.length} skills).`)
+
+  console.log(`Frontmatter contract OK (${String(skillDirs.length)} skills).`)
 }
 
-// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-if (import.meta.url === `file://${process.argv[1]}`) {
-  main().catch(console.error)
+if (import.meta.url === `file://${String(process.argv[1])}`) {
+  main()
 }

@@ -12,7 +12,7 @@ export async function processSourceFile(file: string, sourceDir: string) {
   const content = await fs.readFile(file, "utf8")
   const parsed = parseMdc(content)
   const relativePath = path.relative(sourceDir, file)
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  const parsedWithContent = { ...parsed, content: parsed.body ?? "" }
+
+  const parsedWithContent = { ...parsed, content: parsed.body }
   return { content, parsed: parsedWithContent, relativePath }
 }

@@ -26,8 +26,8 @@ export const cleanGlobalPrefix = async (targetDir: string, prefix: string) => {
   try {
     entries = await fs.readdir(targetDir)
   } catch (error: unknown) {
-    const err = error as { code?: string }
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    const err = error as { code?: string } | null
+
     if (err?.code === "ENOENT" || err?.code === "ENOTDIR") {
       return []
     }

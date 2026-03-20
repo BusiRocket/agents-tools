@@ -11,7 +11,6 @@ export const detectValidator = (firstSkillPath: string) => {
     if (r.status === 0) return "venv"
   }
 
-  // eslint-disable-next-line sonarjs/no-os-command-from-path
   const pipx = spawnSync("pipx", ["run", "skills-ref", "validate", firstSkillPath], {
     stdio: "pipe",
     encoding: "utf-8",
@@ -19,7 +18,6 @@ export const detectValidator = (firstSkillPath: string) => {
   })
   if (pipx.status === 0) return "pipx"
 
-  // eslint-disable-next-line sonarjs/no-os-command-from-path
   const global = spawnSync("skills-ref", ["validate", firstSkillPath], {
     stdio: "pipe",
     encoding: "utf-8",

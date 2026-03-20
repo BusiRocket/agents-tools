@@ -20,16 +20,23 @@ export async function syncAntigravityRules(
   await ensureDir(workflowsDir)
   for (const file of sourceFiles) {
     const { parsed, relativePath } = await processSourceFile(file, sourceDir)
-    const converted = toAntigravityRule(parsed, relativePath)
+    const converted = toAntigravityRule(
+      {
+        rel: relativePath,
+        content: parsed.content,
+        ...(parsed.frontmatter
+          ? { frontmatter: parsed.frontmatter as Record<string, unknown> }
+          : {}),
+      },
+
+      relativePath,
+    )
 
     for (const part of converted) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       const targetPath = part.isWorkflow
-        ? // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-member-access
-          path.join(workflowsDir, `${part.name}.md`)
-        : // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-member-access
-          path.join(targetDir, `${part.name}.md`)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
+        ? path.join(workflowsDir, `${part.name}.md`)
+        : path.join(targetDir, `${part.name}.md`)
+
       await writeRuleFile(targetPath, part.content)
     }
   }

@@ -11,7 +11,6 @@ export const runValidate = (skillPath: string, method: string) => {
   }
 
   if (method === "pipx") {
-    // eslint-disable-next-line sonarjs/no-os-command-from-path
     const r = spawnSync("pipx", ["run", "skills-ref", "validate", skillPath], {
       stdio: "pipe",
       encoding: "utf-8",
@@ -20,7 +19,6 @@ export const runValidate = (skillPath: string, method: string) => {
     return { ok: r.status === 0, stderr: (r.stderr || "").trim() }
   }
 
-  // eslint-disable-next-line sonarjs/no-os-command-from-path
   const r = spawnSync("skills-ref", ["validate", skillPath], {
     stdio: "pipe",
     encoding: "utf-8",

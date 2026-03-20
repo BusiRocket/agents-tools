@@ -11,7 +11,6 @@ export function runToPrompt(skillPaths: string[], method: string) {
   }
 
   if (method === "pipx") {
-    // eslint-disable-next-line sonarjs/no-os-command-from-path
     return spawnSync("pipx", ["run", "skills-ref", "to-prompt", ...skillPaths], {
       stdio: ["inherit", "inherit", "pipe"],
       encoding: "utf-8",
@@ -19,7 +18,6 @@ export function runToPrompt(skillPaths: string[], method: string) {
     })
   }
 
-  // eslint-disable-next-line sonarjs/no-os-command-from-path
   return spawnSync("skills-ref", args, {
     stdio: ["inherit", "inherit", "pipe"],
     encoding: "utf-8",

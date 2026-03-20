@@ -3,6 +3,8 @@ import { getOneLineDescription } from "./getOneLineDescription"
 import { groupByTopSegment } from "./groupByTopSegment"
 import { normalizeRel } from "./normalizeRel"
 import { renderRouter } from "./renderRouter"
+import type { RenderIndexOnlyOptions } from "../types/RenderIndexOnlyOptions"
+import type { RuleItem } from "../types/RuleItem"
 
 /**
  * Generic index-only renderer engine. Emits only rule references (path + short description).
@@ -12,66 +14,54 @@ import { renderRouter } from "./renderRouter"
  * @param {RenderIndexOnlyOptions} options
  * @returns {string}
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function renderIndexOnly(bundle: any[], options: any = {}) {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+
+export function renderIndexOnly(bundle: RuleItem[], options: RenderIndexOnlyOptions = {}) {
   const maxChars = typeof options.maxChars === "number" ? options.maxChars : 15_000
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
   const onLimit = options.onLimit === "truncate" ? "truncate" : "error"
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
   const includeShortSummary = options.includeShortSummary === true
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+
   const referencePrefix = options.referencePrefix ?? "@rules/"
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+
   const title = options.title ?? "# Index"
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+
   const headerIntro = options.headerIntro ?? ""
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+
   const embedContent = options.embedContent ?? ""
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
   const getRuleRef =
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     typeof options.getRuleRef === "function"
-      ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        options.getRuleRef
-      : // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        defaultGetRuleRef(referencePrefix)
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      ? options.getRuleRef
+      : defaultGetRuleRef(referencePrefix)
+
   const getRuleBadges =
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     typeof options.getRuleBadges === "function" ? options.getRuleBadges : () => []
   const attempt = (withShortSummary: boolean) => {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    const items = (bundle ?? [])
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .map((item: any) => ({
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
+    const items = bundle
+
+      .map((item: RuleItem) => ({
         rel: normalizeRel(item.rel),
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+
         frontmatter: item.frontmatter ?? {},
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+
         content: item.content ?? "",
       }))
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-      .filter((i: any) => i.rel?.endsWith(".mdc"))
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-      .sort((a: any, b: any) => a.rel.localeCompare(b.rel))
+
+      .filter((i: RuleItem) => i.rel.endsWith(".mdc"))
+
+      .sort((a: RuleItem, b: RuleItem) => a.rel.localeCompare(b.rel))
 
     const groups = groupByTopSegment(items)
     const header = [title, "", headerIntro].join("\n").trimEnd()
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+
     const embedded = embedContent ? `\n\n---\n\n${embedContent.trim()}\n\n---` : ""
     const router = renderRouter(groups, {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       getRuleRef,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
       getRuleBadges,
-      getOneLineDesc: (item: {
-        rel: string
-        content?: string
-        frontmatter?: Record<string, unknown>
-        [key: string]: unknown
-      }) => getOneLineDescription(item, { includeShortSummary: withShortSummary }),
+      getOneLineDesc: (item: RuleItem) =>
+        getOneLineDescription(item, { includeShortSummary: withShortSummary }),
     })
     return `${header}${embedded}\n\n${router}\n`
   }
@@ -83,13 +73,11 @@ export function renderIndexOnly(bundle: any[], options: any = {}) {
   }
 
   if (onLimit === "truncate") {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     return primary.slice(0, maxChars)
   }
 
   throw new Error(
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    `Index exceeded size budget: ${primary.length} > ${maxChars} chars. ` +
+    `Index exceeded size budget: ${String(primary.length)} > ${String(maxChars)} chars. ` +
       "Reduce descriptions/summaries or increase maxChars.",
   )
 }

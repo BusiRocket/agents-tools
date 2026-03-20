@@ -21,8 +21,9 @@ export const upsertRulesIndex = (content: string, rules: string[]) => {
     const afterEnd = endIdx + RULES_INDEX_END.length
     const before = content.slice(0, headingIdx).trimEnd()
     const after = content.slice(afterEnd).trimStart()
-    // eslint-disable-next-line sonarjs/no-nested-template-literals
-    return `${before}\n\n${rendered}${after.length > 0 ? `\n${after}` : ""}`
+
+    const afterPart = after.length > 0 ? "\n" + after : ""
+    return `${before}\n\n${rendered}${afterPart}`
   }
 
   const base = content.trimEnd()

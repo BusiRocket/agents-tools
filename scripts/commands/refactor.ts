@@ -18,7 +18,7 @@ for (const sourceFile of sourceFiles) {
 
   if (total > 1) {
     console.log(
-      `\nFile has multiple statements (potential unexported helpers): ${sourceFile.getFilePath()}`,
+      `\nFile has multiple statements (potential unexported helpers): ${String(sourceFile.getFilePath())}`,
     )
   }
 }

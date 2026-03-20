@@ -8,13 +8,20 @@ import { formatWindsurfFrontmatter } from "../windsurf/utils/formatWindsurfFront
  * @param {string} _rulePath - Original rule path
  * @returns {string} - Windsurf-formatted rule
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function toWindsurfRule(parsed: any, _rulePath: string) {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
-  const frontmatter = formatWindsurfFrontmatter(parsed.frontmatter)
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
-  let content = convertToWindsurfReferences(parsed.content)
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  content = addWindsurfAnnotations(content, parsed.frontmatter)
+
+import type { RuleFrontmatter } from "../types/RuleFrontmatter"
+
+export function toWindsurfRule(
+  parsed: {
+    content?: string
+    frontmatter?: RuleFrontmatter | null
+  },
+  _rulePath: string,
+) {
+  const frontmatter = formatWindsurfFrontmatter(parsed.frontmatter ?? {})
+
+  let content = convertToWindsurfReferences(parsed.content ?? "")
+
+  content = addWindsurfAnnotations(content, parsed.frontmatter ?? {})
   return `${frontmatter}\n\n${content}`
 }

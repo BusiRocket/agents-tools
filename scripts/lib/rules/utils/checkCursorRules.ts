@@ -36,21 +36,18 @@ export const checkCursorRules = async (
 
   for (const [filePath, hash] of sourceMap.entries()) {
     if (!cursorMap.has(filePath)) {
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      errors.push(`Missing generated file: .cursor/rules/${filePath}`)
+      errors.push(`Missing generated file: .cursor/rules/${String(filePath)}`)
       continue
     }
 
     if (cursorMap.get(filePath) !== hash) {
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      errors.push(`Outdated generated file: .cursor/rules/${filePath}`)
+      errors.push(`Outdated generated file: .cursor/rules/${String(filePath)}`)
     }
   }
 
   for (const filePath of cursorMap.keys()) {
     if (!sourceMap.has(filePath)) {
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      errors.push(`Unexpected generated file: .cursor/rules/${filePath}`)
+      errors.push(`Unexpected generated file: .cursor/rules/${String(filePath)}`)
     }
   }
 

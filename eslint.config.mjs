@@ -129,6 +129,7 @@ export default tseslint.config(
        * SonarJS: bug patterns with high signal
        */
       ...sonarjs.configs.recommended.rules,
+      "sonarjs/no-os-command-from-path": "off",
 
       /**
        * Architecture boundaries (folder-level dependency governance)

@@ -1,10 +1,10 @@
-// eslint-disable-next-line sonarjs/cognitive-complexity
+import { validateSkillEntry } from "./validateSkillEntry"
+
 export const validateSkillRulesManifestShape = (manifest: Record<string, unknown>) => {
   const errors: string[] = []
   const warnings: string[] = []
 
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  if (!manifest || typeof manifest !== "object") {
+  if (typeof manifest !== "object") {
     return { errors: ["Manifest must be a JSON object."], warnings }
   }
 
@@ -17,41 +17,8 @@ export const validateSkillRulesManifestShape = (manifest: Record<string, unknown
     return { errors, warnings }
   }
 
-  for (const [skillName, entry] of Object.entries(manifest.skills)) {
-    if (!entry || typeof entry !== "object" || Array.isArray(entry)) {
-      errors.push(`Manifest entry '${skillName}' must be an object.`)
-      continue
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    if (!Array.isArray(entry.rules)) {
-      errors.push(`Manifest entry '${skillName}' must include a 'rules' array.`)
-      continue
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    if (entry.rules.length === 0) {
-      errors.push(`Manifest entry '${skillName}' must have at least one rule.`)
-      continue
-    }
-
-    const seen = new Set()
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    for (const rule of entry.rules) {
-      if (typeof rule !== "string" || rule.trim().length === 0) {
-        errors.push(`Manifest entry '${skillName}' contains an empty rule reference.`)
-        continue
-      }
-
-      if (!rule.startsWith("@rules/")) {
-        errors.push(`Manifest entry '${skillName}' contains non @rules reference: ${rule}`)
-      }
-
-      if (seen.has(rule)) {
-        errors.push(`Manifest entry '${skillName}' contains duplicate rule reference: ${rule}`)
-      }
-      seen.add(rule)
-    }
+  for (const [skillName, entry] of Object.entries(manifest.skills as Record<string, unknown>)) {
+    validateSkillEntry(skillName, entry, errors)
   }
 
   return { errors, warnings }

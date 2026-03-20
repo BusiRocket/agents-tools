@@ -42,21 +42,18 @@ export const checkClaudeRules = async (
 
   for (const [filePath, hash] of expectedMap.entries()) {
     if (!actualMap.has(filePath)) {
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      errors.push(`Missing generated file: .claude/rules/${filePath}`)
+      errors.push(`Missing generated file: .claude/rules/${String(filePath)}`)
       continue
     }
 
     if (actualMap.get(filePath) !== hash) {
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      errors.push(`Outdated generated file: .claude/rules/${filePath}`)
+      errors.push(`Outdated generated file: .claude/rules/${String(filePath)}`)
     }
   }
 
   for (const filePath of actualMap.keys()) {
     if (!expectedMap.has(filePath)) {
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      errors.push(`Unexpected generated file: .claude/rules/${filePath}`)
+      errors.push(`Unexpected generated file: .claude/rules/${String(filePath)}`)
     }
   }
 

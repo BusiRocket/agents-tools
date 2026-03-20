@@ -8,8 +8,7 @@ import { parseDescription } from "../lib/skills/utils/parseDescription"
 import { parseFrontmatter } from "../lib/skills/utils/parseFrontmatter"
 import { stripQuotes } from "../lib/skills/utils/stripQuotes"
 
-// eslint-disable-next-line @typescript-eslint/require-await
-export async function main() {
+export function main() {
   if (skillDirs.length === 0) {
     console.error("No skill directories found under src/skills/")
     process.exit(1)
@@ -20,8 +19,7 @@ export async function main() {
     const fm = parseFrontmatter(content)
     if (!fm) continue
 
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    const name = stripQuotes(fm.fields.get("name") || "")
+    const name = stripQuotes(fm.fields.get("name") ?? "")
     const description = parseDescription(fm.raw)
     if (!name || !description) continue
 
@@ -30,11 +28,10 @@ export async function main() {
 
   skills.sort((a: { name: string }, b: { name: string }) => a.name.localeCompare(b.name))
   writeFileSync(LLMS_TXT, buildLlmsTxt(skills), "utf-8")
-  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-  console.log(`Wrote ${LLMS_TXT} (${skills.length} skills).`)
+
+  console.log(`Wrote ${LLMS_TXT} (${String(skills.length)} skills).`)
 }
 
-// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-if (import.meta.url === `file://${process.argv[1]}`) {
-  main().catch(console.error)
+if (import.meta.url === `file://${String(process.argv[1])}`) {
+  main()
 }

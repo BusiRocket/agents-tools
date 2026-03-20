@@ -1,0 +1,16 @@
+export const ACTION_WORDS = new Set([
+  "split",
+  "extract",
+  "refactor",
+  "review",
+  "fix",
+  "debug",
+  "plan",
+  "test",
+  "audit",
+  "implement",
+  "generate",
+  "create",
+  "update",
+  "migrate",
+])

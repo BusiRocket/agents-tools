@@ -1,0 +1,40 @@
+import { readFileSync, writeFileSync } from "node:fs"
+import { join } from "node:path"
+import { buildLlmsTxt } from "./buildLlmsTxt"
+import { LLMS_TXT } from "../constants/LLMS_TXT"
+import { skillDirs } from "../constants/skillDirs"
+import { skills } from "../constants/skills"
+import { parseDescription } from "../lib/skills/utils/parseDescription"
+import { parseFrontmatter } from "../lib/skills/utils/parseFrontmatter"
+import { stripQuotes } from "../lib/skills/utils/stripQuotes"
+
+// eslint-disable-next-line @typescript-eslint/require-await
+export async function main() {
+  if (skillDirs.length === 0) {
+    console.error("No skill directories found under src/skills/")
+    process.exit(1)
+  }
+  for (const skillPath of skillDirs) {
+    const skillMd = join(skillPath, "SKILL.md")
+    const content = readFileSync(skillMd, "utf-8")
+    const fm = parseFrontmatter(content)
+    if (!fm) continue
+
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+    const name = stripQuotes(fm.fields.get("name") || "")
+    const description = parseDescription(fm.raw)
+    if (!name || !description) continue
+
+    skills.push({ name, description, skillPath })
+  }
+
+  skills.sort((a: { name: string }, b: { name: string }) => a.name.localeCompare(b.name))
+  writeFileSync(LLMS_TXT, buildLlmsTxt(skills), "utf-8")
+  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+  console.log(`Wrote ${LLMS_TXT} (${skills.length} skills).`)
+}
+
+// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+if (import.meta.url === `file://${process.argv[1]}`) {
+  main().catch(console.error)
+}

@@ -1,0 +1,1 @@
+export const ALL_RULES_MAX_CHARS_WARN = 2_000_000

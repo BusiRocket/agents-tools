@@ -30,6 +30,7 @@ export const linkRuleTarget = async (ruleTarget: RuleTarget) => {
       } else {
         const content = await fs.readFile(link.source, "utf8")
 
+        await fs.rm(link.target, { force: true })
         await fs.writeFile(link.target, content, "utf8")
       }
 

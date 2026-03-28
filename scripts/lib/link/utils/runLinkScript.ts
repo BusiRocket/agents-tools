@@ -16,9 +16,6 @@ export async function runLinkScript(
       console.log(`= ${result.target} already linked to ${result.source}`)
       continue
     }
-    if (result.backupPath) {
-      console.log(`~ Existing file moved to ${result.backupPath}`)
-    }
     console.log(`+ Linked ${result.target} -> ${result.source}`)
   }
 

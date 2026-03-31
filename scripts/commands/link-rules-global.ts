@@ -38,10 +38,3 @@ export const main = async () => {
       (skipped > 0 ? ` (${String(skipped)} skipped)` : ""),
   )
 }
-
-if (import.meta.url === `file://${String(process.argv[1])}`) {
-  main().catch((error: unknown) => {
-    console.error(error)
-    process.exit(1)
-  })
-}

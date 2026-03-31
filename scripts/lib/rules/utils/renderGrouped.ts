@@ -1,4 +1,5 @@
 import type { groupByCategoryAndSubcategory } from "./groupByCategoryAndSubcategory"
+import { renderRuleBlock } from "./renderRuleBlock"
 
 export function renderGrouped(grouped: ReturnType<typeof groupByCategoryAndSubcategory>): string {
   const lines: string[] = []
@@ -13,17 +14,7 @@ export function renderGrouped(grouped: ReturnType<typeof groupByCategoryAndSubca
       }
 
       for (const rule of rules) {
-        lines.push(`#### ${rule.rel}`)
-        lines.push("")
-        lines.push("```mdc")
-        // Keep rule content verbatim; do not trim.
-
-        lines.push(rule.content)
-        // Ensure a newline before closing fence even if content doesn't end with one.
-
-        if (!rule.content.endsWith("\n")) lines.push("")
-        lines.push("```")
-        lines.push("")
+        renderRuleBlock(rule, lines)
       }
     }
   }

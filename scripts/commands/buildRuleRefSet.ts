@@ -4,7 +4,7 @@ import { listFilesRecursive } from "../lib/fs/utils/listFilesRecursive"
 
 export const buildRuleRefSet = async () => {
   const files = await listFilesRecursive(RULES_DIR)
-  const refs = new Set()
+  const refs = new Set<string>()
   for (const file of files) {
     if (!file.endsWith(".mdc")) continue
 

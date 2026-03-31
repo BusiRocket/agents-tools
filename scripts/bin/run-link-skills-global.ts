@@ -1,4 +1,4 @@
-import { main } from "../commands/link-skills-global"
+import { main } from "../commands/linkSkillsGlobal"
 
 main().catch((error: unknown) => {
   console.error(error)

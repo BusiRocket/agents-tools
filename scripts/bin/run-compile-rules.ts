@@ -1,3 +1,3 @@
-import { main } from "../commands/compile-rules"
+import { main } from "../commands/compileRules"
 
 main().catch(console.error)

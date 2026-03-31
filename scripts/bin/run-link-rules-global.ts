@@ -1,3 +1,3 @@
-import { main } from "../commands/link-rules-global"
+import { main } from "../commands/linkRulesGlobal"
 
 main().catch(console.error)

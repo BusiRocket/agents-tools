@@ -1,3 +1,3 @@
-import { main } from "../commands/auto-fix"
+import { main } from "../commands/autoFix"
 
 main()

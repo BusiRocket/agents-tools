@@ -26,6 +26,9 @@ importers:
       eslint-plugin-boundaries:
         specifier: ^6.0.2
         version: 6.0.2(@typescript-eslint/parser@8.58.0(eslint@10.1.0)(typescript@6.0.2))(eslint-import-resolver-typescript@4.4.4)(eslint@10.1.0)
+      eslint-plugin-check-file:
+        specifier: ^3.3.1
+        version: 3.3.1(eslint@10.1.0)
       eslint-plugin-code-policy:
         specifier: ^0.2.1
         version: 0.2.1(eslint@10.1.0)(typescript@6.0.2)
@@ -771,6 +774,12 @@ packages:
     engines: {node: '>=18.18'}
     peerDependencies:
       eslint: '>=6.0.0'
+
+  eslint-plugin-check-file@3.3.1:
+    resolution: {integrity: sha512-b7fDkp8Y0T9vloTYSrkMnb5Cqpk1bc6+jDQdgKIhzdwb47NmLAvMFYo3SzHOPF8u4SEsOVhmrNSbo6Sp633syg==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      eslint: '>=9.0.0'
 
   eslint-plugin-code-policy@0.2.1:
     resolution: {integrity: sha512-xnFB1WHqkI9BwK5OsBZgGqNMy6zw3eLyyueI2g1b2Y0rL5ECUqVRduyZGQlL0p/nSRt4OQfqYWOyEyuI+ObYPA==}
@@ -2247,6 +2256,12 @@ snapshots:
       - eslint-import-resolver-typescript
       - eslint-import-resolver-webpack
       - supports-color
+
+  eslint-plugin-check-file@3.3.1(eslint@10.1.0):
+    dependencies:
+      eslint: 10.1.0
+      is-glob: 4.0.3
+      micromatch: 4.0.8
 
   eslint-plugin-code-policy@0.2.1(eslint@10.1.0)(typescript@6.0.2):
     dependencies:

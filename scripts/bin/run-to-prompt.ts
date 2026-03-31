@@ -1,3 +1,3 @@
-import { main } from "../commands/to-prompt"
+import { main } from "../commands/toPrompt"
 
 main()

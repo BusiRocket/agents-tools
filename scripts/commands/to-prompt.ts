@@ -3,7 +3,7 @@ import { method } from "../constants/method"
 import { result } from "../constants/result"
 import { skillDirs } from "../constants/skillDirs"
 
-export function main() {
+export const main = () => {
   if (skillDirs.length === 0) {
     console.error("No skill directories found under dist/skills/")
     process.exit(1)
@@ -16,8 +16,4 @@ export function main() {
     if (result.stderr) console.error(result.stderr.trim())
     process.exit(result.status ?? 1)
   }
-}
-
-if (import.meta.url === `file://${String(process.argv[1])}`) {
-  main()
 }

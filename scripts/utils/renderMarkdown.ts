@@ -1,22 +1,4 @@
-export interface SkillReport {
-  name: string
-  relativePath: string
-  classification: string
-  frontmatterFields: string[]
-  hasOpenAiYaml: boolean
-  hasLegacyInlineRules: boolean
-}
-
-export interface Report {
-  generatedAt: string
-  summary: {
-    totalSkills: number
-    classificationCounts: Record<string, number>
-  }
-  exceptions: { skill: string; reason: string }[]
-  migrationOrder: string[]
-  skills: SkillReport[]
-}
+import type { Report } from "./types/Report"
 
 export const renderMarkdown = (report: Report) => {
   const lines = []

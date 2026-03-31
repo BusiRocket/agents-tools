@@ -1,10 +1,4 @@
-export interface QualityEntry {
-  name: string
-  relativePath: string
-  skillClass?: string
-  score: number | string
-  warnings: string[]
-}
+import type { QualityEntry } from "./types/QualityEntry"
 
 export const renderQualityMarkdown = (entries: QualityEntry[]) => {
   const lines = ["# Skills Quality Report", ""]

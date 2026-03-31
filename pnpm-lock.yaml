@@ -26,6 +26,9 @@ importers:
       eslint-plugin-boundaries:
         specifier: ^6.0.2
         version: 6.0.2(@typescript-eslint/parser@8.58.0(eslint@10.1.0)(typescript@6.0.2))(eslint-import-resolver-typescript@4.4.4)(eslint@10.1.0)
+      eslint-plugin-code-policy:
+        specifier: ^0.2.1
+        version: 0.2.1(eslint@10.1.0)(typescript@6.0.2)
       eslint-plugin-import:
         specifier: ^2.32.0
         version: 2.32.0(@typescript-eslint/parser@8.58.0(eslint@10.1.0)(typescript@6.0.2))(eslint-import-resolver-typescript@4.4.4)(eslint@10.1.0)
@@ -768,6 +771,15 @@ packages:
     engines: {node: '>=18.18'}
     peerDependencies:
       eslint: '>=6.0.0'
+
+  eslint-plugin-code-policy@0.2.1:
+    resolution: {integrity: sha512-xnFB1WHqkI9BwK5OsBZgGqNMy6zw3eLyyueI2g1b2Y0rL5ECUqVRduyZGQlL0p/nSRt4OQfqYWOyEyuI+ObYPA==}
+    peerDependencies:
+      eslint: '>=9.0.0'
+      typescript: ^5.4.0
+    peerDependenciesMeta:
+      typescript:
+        optional: true
 
   eslint-plugin-import@2.32.0:
     resolution: {integrity: sha512-whOE1HFo/qJDyX4SnXzP4N6zOWn79WhnCUY/iDR0mPfQZO8wcYE4JClzI2oZrhBnnMUCBCHZhO6VQyoBU95mZA==}
@@ -2235,6 +2247,12 @@ snapshots:
       - eslint-import-resolver-typescript
       - eslint-import-resolver-webpack
       - supports-color
+
+  eslint-plugin-code-policy@0.2.1(eslint@10.1.0)(typescript@6.0.2):
+    dependencies:
+      eslint: 10.1.0
+    optionalDependencies:
+      typescript: 6.0.2
 
   eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.58.0(eslint@10.1.0)(typescript@6.0.2))(eslint-import-resolver-typescript@4.4.4)(eslint@10.1.0):
     dependencies:

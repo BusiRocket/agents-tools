@@ -8,7 +8,7 @@ import { parseDescription } from "../lib/skills/utils/parseDescription"
 import { parseFrontmatter } from "../lib/skills/utils/parseFrontmatter"
 import { stripQuotes } from "../lib/skills/utils/stripQuotes"
 
-export function main() {
+export const main = () => {
   if (skillDirs.length === 0) {
     console.error("No skill directories found under src/skills/")
     process.exit(1)
@@ -30,8 +30,4 @@ export function main() {
   writeFileSync(LLMS_TXT, buildLlmsTxt(skills), "utf-8")
 
   console.log(`Wrote ${LLMS_TXT} (${String(skills.length)} skills).`)
-}
-
-if (import.meta.url === `file://${String(process.argv[1])}`) {
-  main()
 }

@@ -1,13 +1,9 @@
+import type { RuleItem } from "../types/RuleItem"
+
 /**
  * @param {Array<{ rel: string, content: string }>} items
  * @returns {Array<{ category: string, subgroups: Array<{ subcategory: string, rules: Array<{ rel: string, content: string }> }> }>}
  */
-
-interface RuleItem {
-  rel: string
-  content: string
-  [key: string]: unknown
-}
 
 export function groupByCategoryAndSubcategory(items: RuleItem[]) {
   const map: Record<string, Record<string, RuleItem[]>> = {}

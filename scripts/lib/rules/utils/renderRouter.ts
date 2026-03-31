@@ -1,9 +1,4 @@
-interface RuleItem {
-  rel: string
-  content: string
-  frontmatter?: Record<string, unknown>
-  [key: string]: unknown
-}
+import type { RuleItem } from "../types/RuleItem"
 
 export function renderRouter(
   groups: Record<string, RuleItem[]>,

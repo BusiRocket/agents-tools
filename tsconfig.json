@@ -22,7 +22,6 @@
     "noImplicitOverride": true,
     "useUnknownInCatchVariables": true,
 
-    "baseUrl": ".",
     "paths": {
       "@/*": ["./*"]
     },

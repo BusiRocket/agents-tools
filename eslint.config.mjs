@@ -8,6 +8,7 @@ import unusedImports from "eslint-plugin-unused-imports"
 import unicorn from "eslint-plugin-unicorn"
 import sonarjs from "eslint-plugin-sonarjs"
 import boundaries from "eslint-plugin-boundaries"
+import codePolicy from "eslint-plugin-code-policy"
 
 export default tseslint.config(
   {
@@ -34,6 +35,7 @@ export default tseslint.config(
   // Type-aware linting for TS files
   ...tseslint.configs.strictTypeChecked,
   ...tseslint.configs.stylisticTypeChecked,
+  codePolicy.configs.recommended,
   {
     files: ["**/*.{ts,tsx}"],
     languageOptions: {

@@ -1,4 +1,5 @@
 import type { RuleItem } from "../types/RuleItem"
+import type { RenderClaudeOptions } from "../types/RenderClaudeOptions"
 import { CLAUDE_HEADER_INTRO } from "../constants/CLAUDE_HEADER_INTRO"
 import { renderIndexOnly } from "./renderIndexOnly"
 
@@ -10,11 +11,6 @@ import { renderIndexOnly } from "./renderIndexOnly"
  * @param {{ maxChars?: number, includeShortSummary?: boolean }=} options
  * @returns {string}
  */
-
-interface RenderClaudeOptions {
-  maxChars?: number
-  includeShortSummary?: boolean
-}
 
 export function renderClaudeIndexOnly(bundle: RuleItem[], options: RenderClaudeOptions = {}) {
   const maxChars = typeof options.maxChars === "number" ? options.maxChars : 15_000

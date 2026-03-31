@@ -1,4 +1,5 @@
 import path from "node:path"
+import type { IdeRegistryEntry } from "../types/IdeRegistryEntry"
 import { CLAUDE_HOME } from "./CLAUDE_HOME"
 import { CODEX_HOME } from "./CODEX_HOME"
 import { CONFIG_HOME } from "./CONFIG_HOME"
@@ -6,7 +7,7 @@ import { HOME } from "./HOME"
 import { getOpenClawRootDir } from "../utils/getOpenClawRootDir"
 import { getOpenClawSkillsDir } from "../utils/getOpenClawSkillsDir"
 
-export const IDE_REGISTRY = [
+export const IDE_REGISTRY: IdeRegistryEntry[] = [
   {
     id: "amp",
     rootDir: path.join(CONFIG_HOME, "amp"),
@@ -61,6 +62,7 @@ export const IDE_REGISTRY = [
     rootDir: path.join(HOME, ".gemini", "antigravity"),
     skillsDir: path.join(HOME, ".gemini", "antigravity", "skills"),
     linkStrategy: "copy",
+    flattenSkills: true,
   },
   {
     id: "augment",

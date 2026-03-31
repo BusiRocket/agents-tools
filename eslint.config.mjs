@@ -9,6 +9,7 @@ import unicorn from "eslint-plugin-unicorn"
 import sonarjs from "eslint-plugin-sonarjs"
 import boundaries from "eslint-plugin-boundaries"
 import codePolicy from "eslint-plugin-code-policy"
+import checkFile from "eslint-plugin-check-file"
 
 export default tseslint.config(
   {
@@ -150,6 +151,32 @@ export default tseslint.config(
               allow: [{ to: { type: "lib" } }, { to: { type: "scripts" } }],
             },
           ],
+        },
+      ],
+    },
+  },
+
+  // Filename and folder naming conventions (check-file)
+  {
+    files: ["scripts/**/*.ts"],
+    plugins: {
+      "check-file": checkFile,
+    },
+    rules: {
+      // bin/ entrypoints: kebab-case (run-compile-rules.ts)
+      "check-file/filename-naming-convention": [
+        "error",
+        {
+          "scripts/bin/*.ts": "KEBAB_CASE",
+          // All other scripts: camelCase | PascalCase | SCREAMING_SNAKE_CASE
+          "scripts/!(bin)/**/*.ts": "+([A-Z_a-z])*([A-Za-z0-9_])",
+        },
+      ],
+      // All folders must be kebab-case
+      "check-file/folder-naming-convention": [
+        "error",
+        {
+          "scripts/**/": "KEBAB_CASE",
         },
       ],
     },

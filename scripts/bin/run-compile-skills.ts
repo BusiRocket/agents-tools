@@ -1,4 +1,4 @@
-import { main } from "../commands/compile-skills"
+import { main } from "../commands/compileSkills"
 
 main().catch((error: unknown) => {
   console.error(error)

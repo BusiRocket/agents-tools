@@ -1,3 +1,3 @@
-import { main } from "../commands/validate-install"
+import { main } from "../commands/validateInstall"
 
 main()

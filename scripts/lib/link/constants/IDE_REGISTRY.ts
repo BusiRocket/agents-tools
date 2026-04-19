@@ -4,8 +4,8 @@ import { CLAUDE_HOME } from "./CLAUDE_HOME"
 import { CODEX_HOME } from "./CODEX_HOME"
 import { CONFIG_HOME } from "./CONFIG_HOME"
 import { HOME } from "./HOME"
-import { getOpenClawRootDir } from "../utils/getOpenClawRootDir"
-import { getOpenClawSkillsDir } from "../utils/getOpenClawSkillsDir"
+import { getOpenClawRootDir } from "../operations/getOpenClawRootDir"
+import { getOpenClawSkillsDir } from "../operations/getOpenClawSkillsDir"
 
 export const IDE_REGISTRY: IdeRegistryEntry[] = [
   {
@@ -25,6 +25,8 @@ export const IDE_REGISTRY: IdeRegistryEntry[] = [
     rootDir: CLAUDE_HOME,
     skillsDir: path.join(CLAUDE_HOME, "skills"),
     linkStrategy: "symlink",
+    flattenSkills: true,
+    skillsBundle: "claude",
   },
   {
     id: "codex",

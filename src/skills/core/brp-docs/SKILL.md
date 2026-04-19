@@ -6,6 +6,7 @@ description:
   content, API docs, architecture overviews, or technical specs from code context with strong text
   hygiene and consistent engineering terminology. Do not use for implementing features, debugging
   runtime issues, or performing findings-first code review.
+allowed-tools: Read, Grep, Glob, Edit, Write
 ---
 
 ## Rules

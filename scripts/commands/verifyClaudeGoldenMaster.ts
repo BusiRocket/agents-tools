@@ -1,9 +1,9 @@
 import { CLAUDE_PATH } from "../constants/CLAUDE_PATH"
 import { SOURCE_DIR } from "../constants/SOURCE_DIR"
-import { listFilesRecursive } from "../lib/fs/utils/listFilesRecursive"
-import { readIfExists } from "../lib/fs/utils/readIfExists"
-import { generateBundle } from "../lib/rules/utils/generateBundle"
-import { renderClaudeIndexOnly } from "../lib/rules/utils/renderClaudeIndexOnly"
+import { listFilesRecursive } from "../lib/fs/operations/listFilesRecursive"
+import { readIfExists } from "../lib/fs/operations/readIfExists"
+import { generateBundle } from "../lib/rules/generators/generateBundle"
+import { renderClaudeIndexOnly } from "../lib/rules/renderers/renderClaudeIndexOnly"
 
 /**
  * Assert CLAUDE.md on disk is byte-identical to freshly generated output (golden master).

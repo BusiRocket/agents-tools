@@ -5,6 +5,7 @@ description:
   extracting helpers, and preserving public interfaces with tight validation. Trigger when the goal
   is structural improvement with no feature change. Do not use for shipping new behavior, fixing
   unknown bugs, or final quality review of already-finished work.
+allowed-tools: Read, Grep, Glob, Edit, Write, Bash, TodoWrite
 ---
 
 ## Rules

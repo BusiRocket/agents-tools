@@ -1,10 +1,14 @@
 ---
 name: brp-code-quality
 description:
-  Audit and harden a project's code-quality infrastructure including strict typing, linting,
-  architectural boundaries, and runtime safety defaults. Trigger when the task is to bootstrap or
-  improve repo-wide quality gates for a TypeScript or Next.js codebase. Do not use for isolated bug
-  fixes, feature delivery, or behavior-preserving refactors inside a single module.
+  Audit and harden a TypeScript or Next.js project's code-quality infrastructure including strict
+  typing, linting, architectural boundaries, and runtime safety defaults. Trigger when the task is
+  to bootstrap or improve repo-wide quality gates for a TypeScript or Next.js codebase and a
+  `tsconfig.json` or `next.config.*` is present. Do not use for Python, Go, Rust, PHP, or any
+  non-TypeScript project, isolated bug fixes, feature delivery, or behavior-preserving refactors
+  inside a single module.
+allowed-tools: Read, Grep, Glob, Edit, Write, Bash
+paths: tsconfig.json, next.config.*
 ---
 
 ## Rules

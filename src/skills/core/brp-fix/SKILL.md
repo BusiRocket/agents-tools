@@ -6,6 +6,7 @@ description:
   enough to change code safely while preserving code quality and useful observability signals. Do
   not use for open-ended root-cause investigations, behavior-preserving refactors, or broad
   code-quality audits.
+allowed-tools: Read, Grep, Glob, Edit, Write, Bash, TodoWrite
 ---
 
 ## Rules

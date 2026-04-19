@@ -7,6 +7,8 @@ description:
   workflow selection across planning, implementation, testing, and review. Do not use for
   stack-specific coding guidance, single-purpose workflows that already have a precise BRP skill, or
   direct code generation without orchestration.
+user-invocable: false
+allowed-tools: Read, Grep, Glob
 ---
 
 ## Rules

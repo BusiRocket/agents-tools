@@ -1,7 +1,7 @@
 import path from "node:path"
 import { HOME } from "./HOME"
 import { ROOT } from "./ROOT"
-import { findIde } from "../utils/findIde"
+import { findIde } from "../operations/findIde"
 
 export const IDE_RULE_TARGETS = [
   {

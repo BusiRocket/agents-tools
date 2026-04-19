@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs"
 import { join } from "node:path"
 import { skillDirs } from "../constants/skillDirs"
 import { violations } from "../constants/violations"
-import { parseFrontmatter } from "../lib/skills/utils/parseFrontmatter"
+import { parseFrontmatter } from "../lib/skills/parsers/parseFrontmatter"
 
 export const main = () => {
   if (skillDirs.length === 0) {

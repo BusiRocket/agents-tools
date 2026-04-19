@@ -6,6 +6,7 @@ description:
   high-risk or ambiguous, or multiple implementation paths involving project structure, design
   patterns, or architecture need to be compared. Do not use for straightforward low-risk edits that
   can be implemented immediately, active debugging, or final review after code is already written.
+allowed-tools: Read, Grep, Glob, TodoWrite
 ---
 
 ## Rules

@@ -1,17 +1,19 @@
 import { promises as fs } from "node:fs"
 import path from "node:path"
 import { DIST_SKILLS_DIR } from "../constants/DIST_SKILLS_DIR"
+import { DIST_SKILLS_PORTABLE_DIR } from "../constants/DIST_SKILLS_PORTABLE_DIR"
 import { MANIFEST_PATH } from "../constants/MANIFEST_PATH"
 import { SRC_SKILLS_DIR } from "../constants/SRC_SKILLS_DIR"
-import { listSkillDirs } from "../lib/skills/utils/listSkillDirs"
-import { loadSkillRulesManifest } from "../lib/skills/utils/loadSkillRulesManifest"
-import { validateSkillRulesManifestShape } from "../lib/skills/utils/validateSkillRulesManifestShape"
+import { emitPortableSkillsFromDist } from "../lib/skills/emitters/emitPortableSkillsFromDist"
+import { listSkillDirs } from "../lib/skills/loaders/listSkillDirs"
+import { loadSkillRulesManifest } from "../lib/skills/loaders/loadSkillRulesManifest"
+import { validateSkillRulesManifestShape } from "../lib/skills/validators/validateSkillRulesManifestShape"
 import type { SkillRulesManifest } from "../lib/skills/types/SkillRulesManifest"
 import { buildRuleRefSet } from "./buildRuleRefSet"
-import { copyDirRecursive } from "../utils/copyDirRecursive"
-import { parseSkillNameFromContent } from "../utils/parseSkillNameFromContent"
+import { copyDirRecursive } from "../operations/copyDirRecursive"
+import { parseSkillNameFromContent } from "../parsers/parseSkillNameFromContent"
 import { upsertRulesIndex } from "./upsertRulesIndex"
-import { validateManifestReferences } from "../utils/validateManifestReferences"
+import { validateManifestReferences } from "../validators/validateManifestReferences"
 
 export const main = async () => {
   console.log("Compiling skills into deterministic product-managed artifacts...")
@@ -76,6 +78,12 @@ export const main = async () => {
     await fs.writeFile(distSkillMdPath, withRulesIndex, "utf8")
   }
 
+  const portableCount = await emitPortableSkillsFromDist({
+    distSkillsDir: DIST_SKILLS_DIR,
+    distSkillsPortableDir: DIST_SKILLS_PORTABLE_DIR,
+  })
+
   console.log(`Successfully compiled skills to ${DIST_SKILLS_DIR}`)
-  console.log("dist/skills is the installable artifact used by the linker for IDE distribution.")
+  console.log(`Emitted ${String(portableCount)} portable skills to ${DIST_SKILLS_PORTABLE_DIR}`)
+  console.log("dist/skills is the Claude variant; dist/skills-portable is for other IDEs.")
 }

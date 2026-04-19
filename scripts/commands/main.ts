@@ -4,7 +4,7 @@ import { GEMINI_PATH } from "../constants/GEMINI_PATH"
 import { verifyClaudeGoldenMaster } from "./verifyClaudeGoldenMaster"
 import { verifyIndexOnlyOutput } from "./verifyIndexOnlyOutput"
 import { WINDSURF_PATH } from "../constants/WINDSURF_PATH"
-import { readIfExists } from "../lib/fs/utils/readIfExists"
+import { readIfExists } from "../lib/fs/operations/readIfExists"
 
 export async function main() {
   const goldenOnly = process.argv.includes("--golden-only")

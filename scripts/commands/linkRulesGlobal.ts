@@ -1,6 +1,6 @@
 import { IDE_RULE_TARGETS } from "../lib/link/constants/IDE_RULE_TARGETS"
-import { linkRuleTarget } from "../lib/link/utils/linkRuleTarget"
-import { pathExists } from "../lib/link/utils/pathExists"
+import { linkRuleTarget } from "../lib/link/operations/linkRuleTarget"
+import { pathExists } from "../lib/link/operations/pathExists"
 
 export const main = async () => {
   let linked = 0

@@ -1,6 +1,6 @@
 import { Project } from "ts-morph"
-import { fixTemplateExpressions } from "./utils/fixTemplateExpressions"
-import { fixAnyKeywords } from "./utils/fixAnyKeywords"
+import { fixTemplateExpressions } from "./processors/fixTemplateExpressions"
+import { fixAnyKeywords } from "./processors/fixAnyKeywords"
 
 export const main = () => {
   const project = new Project({ tsConfigFilePath: "tsconfig.json" })

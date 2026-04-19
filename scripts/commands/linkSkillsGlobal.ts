@@ -1,50 +1,41 @@
-import { promises as fs } from "node:fs"
 import path from "node:path"
-import { listFilesRecursive } from "../lib/fs/utils/listFilesRecursive"
-import { copySkillsToTarget } from "../lib/link/utils/copySkillsToTarget"
+import { SRC_AGENTS_DIR } from "../constants/SRC_AGENTS_DIR"
 import { IDE_REGISTRY } from "../lib/link/constants/IDE_REGISTRY"
 import { CANONICAL_SKILLS_DIR } from "../lib/link/constants/CANONICAL_SKILLS_DIR"
-import { cleanGlobalPrefix } from "../lib/link/utils/cleanGlobalPrefix"
+import { CANONICAL_SKILLS_PORTABLE_DIR } from "../lib/link/constants/CANONICAL_SKILLS_PORTABLE_DIR"
+import { CLAUDE_HOME } from "../lib/link/constants/CLAUDE_HOME"
+import { linkAgentsToClaude } from "../lib/link/operations/linkAgentsToClaude"
 import { SKILLS_DIST_DIR } from "./constants/SKILLS_DIST_DIR"
-import { processTarget } from "./utils/processTarget"
+import { SKILLS_PORTABLE_DIST_DIR } from "./constants/SKILLS_PORTABLE_DIST_DIR"
+import { collectSkillNames } from "./processors/collectSkillNames"
+import { populateCanonicalSkillsDir } from "./processors/populateCanonicalSkillsDir"
+import { processTarget } from "./processors/processTarget"
 
 export const main = async () => {
-  const allFiles = await listFilesRecursive(SKILLS_DIST_DIR)
-  const skillDirsSet = new Set<string>()
-  for (const file of allFiles) {
-    if (file.endsWith("SKILL.md")) {
-      skillDirsSet.add(path.dirname(file))
-    }
-  }
-
-  const skillDirs = Array.from(skillDirsSet)
-  if (skillDirs.length === 0) {
+  const claudeSkillNames = await collectSkillNames(SKILLS_DIST_DIR)
+  if (claudeSkillNames.length === 0) {
     console.log("No skills found in dist/skills/.")
     return
   }
+  const portableSkillNames = await collectSkillNames(SKILLS_PORTABLE_DIST_DIR)
 
-  await fs.mkdir(CANONICAL_SKILLS_DIR, { recursive: true })
-
-  const skillNames = skillDirs.map((dir) => path.relative(SKILLS_DIST_DIR, dir))
-
-  await cleanGlobalPrefix(CANONICAL_SKILLS_DIR, "busirocket-")
-  await cleanGlobalPrefix(CANONICAL_SKILLS_DIR, "brp-")
-  await cleanGlobalPrefix(CANONICAL_SKILLS_DIR, "brp")
-  await cleanGlobalPrefix(CANONICAL_SKILLS_DIR, "react-doctor")
-
-  await copySkillsToTarget({
-    sourceDir: SKILLS_DIST_DIR,
-    targetDir: CANONICAL_SKILLS_DIR,
-    skillNames,
-    prefix: "",
+  await populateCanonicalSkillsDir({
+    source: SKILLS_DIST_DIR,
+    target: CANONICAL_SKILLS_DIR,
+    skillNames: claudeSkillNames,
+  })
+  await populateCanonicalSkillsDir({
+    source: SKILLS_PORTABLE_DIST_DIR,
+    target: CANONICAL_SKILLS_PORTABLE_DIR,
+    skillNames: portableSkillNames,
   })
 
-  // IDE_REGISTRY entries all have skillsDir defined
-  const skillTargets = IDE_REGISTRY
   let linked = 0
   let skipped = 0
 
-  for (const target of skillTargets) {
+  for (const target of IDE_REGISTRY) {
+    const bundle = target.skillsBundle ?? "portable"
+    const skillNames = bundle === "claude" ? claudeSkillNames : portableSkillNames
     const wasLinked = await processTarget(target, skillNames)
     if (wasLinked) {
       linked++
@@ -53,8 +44,16 @@ export const main = async () => {
     }
   }
 
+  const linkedAgents = await linkAgentsToClaude({
+    srcAgentsDir: SRC_AGENTS_DIR,
+    targetAgentsDir: path.join(CLAUDE_HOME, "agents"),
+  })
+  if (linkedAgents.length > 0) {
+    console.log(`+ claude: ${String(linkedAgents.length)} subagents linked into ~/.claude/agents/`)
+  }
+
   console.log(
-    `\nDone: ${String(skillNames.length)} skills -> canonical product directory + ${String(linked)} IDE targets` +
+    `\nDone: ${String(claudeSkillNames.length)} skills -> canonical product directories + ${String(linked)} IDE targets` +
       (skipped > 0 ? ` (${String(skipped)} skipped)` : ""),
   )
 }

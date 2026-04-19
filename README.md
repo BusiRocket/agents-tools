@@ -8,10 +8,12 @@ surface.
 
 BRP consolidates rules, skills, and an orchestration protocol into a single project that works as:
 
-- A **Cursor plugin** (`dist/plugins/cursor/.cursor-plugin/plugin.json`)
-- A **Claude Code plugin** (`dist/plugins/claude/.claude-plugin/plugin.json`)
+- A **Claude Code plugin** (`dist/plugins/claude/.claude-plugin/plugin.json`) with a marketplace
+  manifest, bundled subagents, and opt-in hooks
 - A **multi-IDE rules exporter** for lightweight guidance layers
-- An **AgentSkills-compatible** skill collection (9 validated skills)
+- An **AgentSkills-compatible** skill collection (10 validated skills) with a Claude variant
+  (`dist/skills/`) and a portable variant (`dist/skills-portable/`, Anthropic-only frontmatter
+  stripped) for non-Claude IDEs
 - A **multi-IDE skill linker** for popular agents/editors including Cursor, Claude Code, Codex,
   Continue, Cline, Windsurf, Antigravity, Gemini CLI, Goose, OpenHands, Augment, Roo, Kiro, Copilot,
   OpenCode, OpenClaw, Crush, Zencoder, AdaL, Trae, Qoder, and Qwen Code
@@ -32,16 +34,22 @@ For Codex and other skill-capable IDEs, the main BRP workflow surface is the glo
 `AGENTS.md` remains useful as lightweight global guidance and routing, but it is not the primary
 delivery mechanism for reusable BRP workflows in this project.
 
-### As a Cursor Plugin
-
-Install from the plugin directory or point Cursor to `dist/plugins/cursor/`.
-
 ### As a Claude Code Plugin
 
-```bash
-claude --plugin-dir /path/to/busirocket-agents-tools
-# Then use: /brp-plan, /brp-fix, etc.
-```
+After `pnpm run build` the plugin lives at `dist/plugins/claude/` with manifests under
+`.claude-plugin/`, the 10 BRP skills flattened in `skills/`, the `brp-reviewer` subagent in
+`agents/`, and an opt-in SessionStart hook under `hooks/`. Install it by pointing Claude Code at the
+plugin root or by publishing the included `marketplace.json`. Then use `/brp-plan`,
+`/brp-implement`, `/brp-fix`, etc. The `brp` orchestrator skill is hidden from the `/` menu
+(`user-invocable: false`) so it can only be invoked by the model when routing is needed.
+
+### As a multi-IDE distribution
+
+`pnpm run skills:link` fans skills out to Cursor, Codex, Copilot, Windsurf, Antigravity (Gemini),
+Continue, Cline, Goose, OpenCode, Augment, Roo, Kiro, Junie, Kilo, OpenHands, Zencoder, AdaL, Qoder,
+Qwen Code, Trae, and OpenClaw. Claude Code receives the full `dist/skills/` variant with
+Anthropic-only fields (`allowed-tools`, `paths`, `agent`, etc.). Every other IDE receives the
+stripped `dist/skills-portable/` variant.
 
 ## Workflow Commands
 
@@ -74,35 +82,21 @@ Every task follows 6 steps:
 ```
 busirocket-agents-tools/
 ├── src/                         # Source (canonical content)
-│   ├── rules/                   # Canonical rule definitions (.mdc)
-│   │   ├── core/                # Code quality, boundaries, naming
-│   │   ├── react/               # React patterns
-│   │   ├── nextjs/              # Next.js App Router
-│   │   ├── rust/                # Rust standards
-│   │   ├── typescript/          # TypeScript conventions
-│   │   ├── php/                 # PHP / Laravel / WordPress
-│   │   ├── python/              # Python / Django
-│   │   ├── go/                  # Go microservices
-│   │   ├── bash/                # Shell scripting
-│   │   ├── styling/             # Tailwind, Bootstrap
-│   │   ├── deploy/              # CI/CD, security
-│   │   ├── integrations/        # Supabase, Stripe, n8n, etc.
-│   │   └── ...
-│   ├── skills/                  # Skill source (pure templates + manifest)
-│   │   ├── core/                # 8 BRP workflow skills
-│   │   │   ├── brp-plan/
-│   │   │   ├── brp-implement/
-│   │   │   ├── brp-fix/
-│   │   │   ├── brp-refactor/
-│   │   │   ├── brp-review/
-│   │   │   ├── brp-test/
-│   │   │   ├── brp-debug/
-│   │   │   └── brp-docs/
-│   │   └── orchestrator/        # Command router
-│   │       └── brp/
-│   │   ├── skill-rules.map.json # Skill -> @rules mapping source of truth
-│   │   └── activation-smoke.json # Activation smoke phrases per skill
-│   └── core/                    # Protocol & policy
+│   ├── rules/                   # Canonical rule definitions (.mdc) — core, react, nextjs, rust,
+│   │                            # typescript, php, python, go, bash, styling, deploy,
+│   │                            # integrations (supabase/stripe/n8n), monorepo, …
+│   ├── skills/
+│   │   ├── core/                # 8 BRP workflow skills (plan/implement/fix/refactor/review/
+│   │   │                        # test/debug/docs) + brp-code-quality audit skill
+│   │   ├── orchestrator/brp/    # Model-only router (user-invocable: false)
+│   │   ├── skill-rules.map.json # Skill -> @rules manifest (source of truth)
+│   │   └── activation-smoke.json
+│   ├── agents/                  # Claude Code subagents (.md)
+│   │   └── brp-reviewer.md      # Isolated findings-first PR reviewer used by brp-review
+│   ├── hooks/                   # Plugin-scoped hooks shipped inside the Claude plugin
+│   │   ├── hooks.json           # Declarative hook manifest (SessionStart by default)
+│   │   └── session-start-brp-reminder.sh
+│   └── core/
 │       ├── protocol.md          # 6-step workflow contract
 │       └── policy.json          # Routing, precedence, stack detection
 │
@@ -111,36 +105,36 @@ busirocket-agents-tools/
 │   │   ├── .cursor/rules/
 │   │   ├── .claude/rules/
 │   │   ├── .agent/rules/        # Antigravity (Gemini)
-│   │   └── .windsurf/rules/
-│   ├── markdown/                # Aggregated markdown outputs (guidance / index layers)
-│   │   ├── ALL_RULES.md         # Full rule reference (all canonical rules)
+│   │   ├── .windsurf/rules/
+│   │   └── codex/rules/
+│   ├── markdown/                # Guidance / index layers
+│   │   ├── ALL_RULES.md
 │   │   ├── CLAUDE.md
 │   │   ├── AGENTS.md
 │   │   ├── GEMINI.md
 │   │   └── WINDSURF.md
-│   ├── skills/                  # Compiled installable skills with Rules Index
-│   ├── packages/skills/         # Distribution/export zip artifacts
-│   └── reports/                 # Inventory and compatibility reports
-│   └── plugins/                 # Plugin manifests
-│       ├── cursor/.cursor-plugin/plugin.json
-│       └── claude/.claude-plugin/plugin.json
+│   ├── skills/                  # Claude variant (full Anthropic frontmatter)
+│   ├── skills-portable/         # Portable variant (Anthropic-only fields stripped)
+│   └── plugins/
+│       └── claude/
+│           ├── .claude-plugin/
+│           │   ├── plugin.json
+│           │   └── marketplace.json
+│           ├── skills/          # Flattened from dist/skills
+│           ├── agents/          # Copied from src/agents
+│           └── hooks/           # Copied from src/hooks
 │
-├── scripts/                     # Build, lint, compile, validate, package, link
-│   ├── compile-rules.mjs
-│   ├── compile-skills.mjs
-│   ├── skills-inventory.mjs
-│   ├── validate-skills.mjs
-│   ├── test-skills.mjs
-│   ├── package-skills.mjs
-│   ├── link-rules-global.mjs
-│   └── link-skills-global.mjs
-├── docs/                        # Project documentation
-│   ├── architecture.md
-│   └── ide-setup.md
+├── scripts/                     # TypeScript build/link pipeline (tsx runtime)
+│   ├── bin/                     # CLI entry points (run-compile-rules.ts, run-compile-skills.ts,
+│   │                            # run-compile-plugins.ts, run-link-rules-global.ts,
+│   │                            # run-link-skills-global.ts, …)
+│   ├── commands/                # Orchestrator commands that bins import
+│   ├── lib/                     # Reusable libs (fs, link, rules, skills, plugins)
+│   └── constants/               # Path / limit constants shared across commands
 └── package.json
 ```
 
-## Skills (9 validated)
+## Skills (10 validated)
 
 ### Core Workflow Skills (8)
 
@@ -157,11 +151,21 @@ busirocket-agents-tools/
 
 ### Orchestrator (1)
 
-| Skill | Purpose                                       |
-| ----- | --------------------------------------------- |
-| `brp` | Routes commands to the appropriate core skill |
+| Skill | Purpose                                                            |
+| ----- | ------------------------------------------------------------------ |
+| `brp` | Model-only router for BRP command chains (`user-invocable: false`) |
 
-Stack-specific skills may be added in future versions.
+### Code-quality audit (1)
+
+| Skill              | Purpose                                                          |
+| ------------------ | ---------------------------------------------------------------- |
+| `brp-code-quality` | Audit and harden TS/Next quality gates (path-scoped to TS repos) |
+
+### Subagents (1)
+
+| Subagent       | Purpose                                                                   |
+| -------------- | ------------------------------------------------------------------------- |
+| `brp-reviewer` | Isolated, findings-first PR reviewer invoked by `brp-review` via `agent:` |
 
 ## Rule Categories
 
@@ -234,33 +238,34 @@ Task > Project > Stack > Global
 
 ## Scripts
 
-| Script                          | Description                                                             |
-| ------------------------------- | ----------------------------------------------------------------------- |
-| `pnpm run sync`                 | Full project bootstrap (install, build, check, rules:link, skills:link) |
-| `pnpm run update`               | Update deps then run sync                                               |
-| `pnpm run build`                | Compile rules and skills                                                |
-| `pnpm run check`                | Run all validations                                                     |
-| `pnpm run check:all`            | Format, lint, rules:check, skills:validate                              |
-| `pnpm run check:ci`             | CI alias of check:all                                                   |
-| `pnpm run rules:compile`        | Compile `src/rules/` to `dist/global/` + `dist/markdown/`               |
-| `pnpm run rules:link`           | Link rules to all supported IDEs                                        |
-| `pnpm run skills:compile`       | Compile skills from `src/skills/` to `dist/skills/`                     |
-| `pnpm run skills:inventory`     | Generate compatibility report for source skills                         |
-| `pnpm run skills:link`          | Stage compiled skills canonically, then distribute to supported IDEs    |
-| `pnpm run skills:package`       | Package compiled skills as zip artifacts                                |
-| `pnpm run rules:verify`         | Verify index-only outputs (DoD + CLAUDE golden master)                  |
-| `pnpm run rules:check`          | Verify compiled output is current                                       |
-| `pnpm run skills:validate`      | Validate all 9 skills against AgentSkills spec                          |
-| `pnpm run skills:test`          | Run schema/idempotence/source-purity/snapshot/smoke tests               |
-| `pnpm run skills:llms`          | Generate `llms.txt` for skill discovery                                 |
-| `pnpm run skills:prompt`        | Generate XML prompt with all skills                                     |
-| `pnpm run skills:prompt:file`   | Write prompt to `available_skills.xml`                                  |
-| `pnpm run skills:version:check` | Check skill version consistency                                         |
-| `pnpm run validate:install`     | Install Python venv for skills validation                               |
-| `pnpm run format`               | Format all files with Prettier                                          |
-| `pnpm run format:check`         | Check formatting without writing                                        |
-| `pnpm run lint`                 | ESLint check                                                            |
-| `pnpm run lint:fix`             | ESLint auto-fix                                                         |
+| Script                          | Description                                                              |
+| ------------------------------- | ------------------------------------------------------------------------ |
+| `pnpm run sync`                 | Full project bootstrap (install, build, check, rules:link, skills:link)  |
+| `pnpm run update`               | Update deps then run sync                                                |
+| `pnpm run build`                | Compile rules, skills (Claude + portable), and the Claude plugin         |
+| `pnpm run plugins:compile`      | Generate `dist/plugins/claude/` (plugin manifest + marketplace + bundle) |
+| `pnpm run check`                | Run all validations                                                      |
+| `pnpm run check:all`            | Format, lint, rules:check, skills:validate                               |
+| `pnpm run check:ci`             | CI alias of check:all                                                    |
+| `pnpm run rules:compile`        | Compile `src/rules/` to `dist/global/` + `dist/markdown/`                |
+| `pnpm run rules:link`           | Link rules to all supported IDEs                                         |
+| `pnpm run skills:compile`       | Compile skills from `src/skills/` to `dist/skills/`                      |
+| `pnpm run skills:inventory`     | Generate compatibility report for source skills                          |
+| `pnpm run skills:link`          | Stage compiled skills canonically, then distribute to supported IDEs     |
+| `pnpm run skills:package`       | Package compiled skills as zip artifacts                                 |
+| `pnpm run rules:verify`         | Verify index-only outputs (DoD + CLAUDE golden master)                   |
+| `pnpm run rules:check`          | Verify compiled output is current                                        |
+| `pnpm run skills:validate`      | Validate all 9 skills against AgentSkills spec                           |
+| `pnpm run skills:test`          | Run schema/idempotence/source-purity/snapshot/smoke tests                |
+| `pnpm run skills:llms`          | Generate `llms.txt` for skill discovery                                  |
+| `pnpm run skills:prompt`        | Generate XML prompt with all skills                                      |
+| `pnpm run skills:prompt:file`   | Write prompt to `available_skills.xml`                                   |
+| `pnpm run skills:version:check` | Check skill version consistency                                          |
+| `pnpm run validate:install`     | Install Python venv for skills validation                                |
+| `pnpm run format`               | Format all files with Prettier                                           |
+| `pnpm run format:check`         | Check formatting without writing                                         |
+| `pnpm run lint`                 | ESLint check                                                             |
+| `pnpm run lint:fix`             | ESLint auto-fix                                                          |
 
 `sync` is the primary command used to bootstrap the project locally.
 

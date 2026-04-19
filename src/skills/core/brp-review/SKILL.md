@@ -5,6 +5,8 @@ description:
   security risks, and maintainability issues before delivery. Trigger when implementation is done
   and the next step is to assess change quality like a strict reviewer. Do not use for planning,
   root-cause debugging, or writing the implementation itself.
+allowed-tools: Read, Grep, Glob, Bash, TodoWrite
+agent: brp-reviewer
 ---
 
 ## Rules

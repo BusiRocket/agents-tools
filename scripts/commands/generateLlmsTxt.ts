@@ -4,9 +4,9 @@ import { buildLlmsTxt } from "./buildLlmsTxt"
 import { LLMS_TXT } from "../constants/LLMS_TXT"
 import { skillDirs } from "../constants/skillDirs"
 import { skills } from "../constants/skills"
-import { parseDescription } from "../lib/skills/utils/parseDescription"
-import { parseFrontmatter } from "../lib/skills/utils/parseFrontmatter"
-import { stripQuotes } from "../lib/skills/utils/stripQuotes"
+import { parseDescription } from "../lib/skills/parsers/parseDescription"
+import { parseFrontmatter } from "../lib/skills/parsers/parseFrontmatter"
+import { stripQuotes } from "../lib/skills/transformers/stripQuotes"
 
 export const main = () => {
   if (skillDirs.length === 0) {

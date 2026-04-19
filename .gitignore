@@ -21,3 +21,5 @@ dist/
 *.log
 
 *.tsbuildinfo
+# CocoIndex Code (ccc)
+/.cocoindex_code/

@@ -6,6 +6,7 @@ description:
   then changing code. Trigger when the task is to investigate or explain a problem before applying a
   fix. Do not use for straightforward bug fixes with an already-known cause, planned refactors, or
   final code review.
+allowed-tools: Read, Grep, Glob, Bash, TodoWrite
 ---
 
 ## Rules

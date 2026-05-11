@@ -9,4 +9,12 @@ export const CLAUDE_HEADER_INTRO = [
   "- Use `@rules/<path>.mdc` references (or your local tag conventions) to load full rule content on demand.",
   "- Full rule content is synced to `.claude/rules/` and also exists in the project rule sources.",
   "- Keep this file lean: it is always loaded and impacts performance.",
+  "",
+  "## Git commits (hard rule, no exceptions)",
+  "",
+  "- NEVER add a `Co-Authored-By: Claude <noreply@anthropic.com>` trailer to commit messages.",
+  "- NEVER add a `🤖 Generated with [Claude Code](https://claude.com/claude-code)` footer (or any variant of it).",
+  "- NEVER reference Claude, Anthropic, AI, or any assistant in commit messages, PR titles, or PR descriptions.",
+  "- Write commit messages as if the human author wrote them. Use only the user's existing `user.name` / `user.email` from git config.",
+  "- This rule applies even if the user does not mention it. Do not ask, do not opt-in, do not negotiate.",
 ].join("\n")

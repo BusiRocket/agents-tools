@@ -19,7 +19,7 @@ export const ATOMIC_FILE_RULE_SLIM = [
   "",
   "- A function does exactly one thing.",
   "- `X + Y + Z` = three functions, three files, three imports.",
-  "- If the function reads like a sentence with a conjunction (\"and\", \"then\", \"also\"), split it.",
+  '- If the function reads like a sentence with a conjunction ("and", "then", "also"), split it.',
   "",
-  "Full detail (banned-patterns table, ts-morph extraction example, self-check checklist): `@rules/core/atomic-file-rule.mdc`.",
+  "Full detail (banned-patterns table, ts-morph extraction example, self-check checklist) is listed in the rules index below.",
 ].join("\n")

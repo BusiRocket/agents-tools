@@ -4,6 +4,36 @@ A collection of reusable Agent Skills for TypeScript/React/Next.js/Rust/Tauri pr
 
 ## Skills
 
+- brp: Route BRP requests to the right workflow by detecting project context, selecting the minimal rule set for monorepo, Next.js, and TypeScript contexts, and choosing the correct BRP skill chain before work starts. Trigger when the task needs BRP command routing, protocol enforcement, or workflow selection across planning, implementation, testing, and review. Do not use for stack-specific coding guidance, single-purpose workflows that already have a precise BRP skill, or direct code generation without orchestration.
+  dist/skills/orchestrator/brp/SKILL.md
+
+- brp-code-quality: Audit and harden a TypeScript or Next.js project's code-quality infrastructure including strict typing, linting, architectural boundaries, and runtime safety defaults. Trigger when the task is to bootstrap or improve repo-wide quality gates for a TypeScript or Next.js codebase and a `tsconfig.json` or `next.config.*` is present. Do not use for Python, Go, Rust, PHP, or any non-TypeScript project, isolated bug fixes, feature delivery, or behavior-preserving refactors inside a single module.
+  dist/skills/core/brp-code-quality/SKILL.md
+
+- brp-debug: Diagnose unexpected runtime errors, flaky behavior, failing checks with unclear cause, and performance regressions by collecting symptoms, testing hypotheses, isolating the fault, and only then changing code. Trigger when the task is to investigate or explain a problem before applying a fix. Do not use for straightforward bug fixes with an already-known cause, planned refactors, or final code review.
+  dist/skills/core/brp-debug/SKILL.md
+
+- brp-docs: Generate or update technical documentation, specifications, and ADRs that explain the codebase, interfaces, or design decisions for future readers. Trigger when the task is to write README content, API docs, architecture overviews, or technical specs from code context with strong text hygiene and consistent engineering terminology. Do not use for implementing features, debugging runtime issues, or performing findings-first code review.
+  dist/skills/core/brp-docs/SKILL.md
+
+- brp-fix: Reproduce and patch a known bug with a minimal diff, then verify the broken behavior stays fixed. Trigger when the task is to implement a concrete bug fix and the likely cause is already narrow enough to change code safely while preserving code quality and useful observability signals. Do not use for open-ended root-cause investigations, behavior-preserving refactors, or broad code-quality audits.
+  dist/skills/core/brp-fix/SKILL.md
+
+- brp-implement: Execute an approved implementation plan through small, verifiable code changes that preserve scope and project conventions. Trigger when the approach is already decided and the task is to write the code incrementally with validation along the way. Do not use for ambiguous discovery work, root-cause debugging, or final review after implementation is complete.
+  dist/skills/core/brp-implement/SKILL.md
+
+- brp-plan: Produce a decision-complete implementation plan with discovery, milestones, risks, validation, and acceptance criteria before code changes start. Trigger when the user asks for a plan, the scope is high-risk or ambiguous, or multiple implementation paths involving project structure, design patterns, or architecture need to be compared. Do not use for straightforward low-risk edits that can be implemented immediately, active debugging, or final review after code is already written.
+  dist/skills/core/brp-plan/SKILL.md
+
+- brp-refactor: Refactor existing code into cleaner structure without changing behavior by splitting files, extracting helpers, and preserving public interfaces with tight validation. Trigger when the goal is structural improvement with no feature change. Do not use for shipping new behavior, fixing unknown bugs, or final quality review of already-finished work.
+  dist/skills/core/brp-refactor/SKILL.md
+
+- brp-review: Perform a findings-first self-review of code changes for bugs, regressions, missing tests, security risks, and maintainability issues before delivery. Trigger when implementation is done and the next step is to assess change quality like a strict reviewer. Do not use for planning, root-cause debugging, or writing the implementation itself.
+  dist/skills/core/brp-review/SKILL.md
+
+- brp-test: Design, add, or update validation for a change using deterministic tests and explicit manual checks when automation is not possible. Trigger when code exists and the next job is to prove correctness with unit, integration, end-to-end, or manual verification coverage. Do not use for planning the feature itself, debugging unclear failures, or final findings-first review.
+  dist/skills/core/brp-test/SKILL.md
+
 ## Links
 
 - [Agent Skills specification](https://agentskills.io/specification)

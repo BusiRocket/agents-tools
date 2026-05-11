@@ -2,6 +2,7 @@
   "name": "busirocket-agents-tools",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "description": "Agent workflow engine + rules/skills orchestrator for high-quality code across IDEs",
   "scripts": {
     "build": "pnpm run clean:dist && pnpm run rules:compile && pnpm run skills:compile && pnpm run plugins:compile",

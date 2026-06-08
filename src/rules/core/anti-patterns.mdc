@@ -1,6 +1,7 @@
 ---
+globs: "**/*.ts,**/*.tsx,**/*.js,**/*.jsx,**/*.mjs,**/*.cjs,**/*.py,**/*.php,**/*.rs,**/*.go,**/*.vue,**/*.svelte,**/*.astro,**/*.java,**/*.kt,**/*.rb"
 description: Anti-patterns to avoid (agent-optimized)
-alwaysApply: true
+alwaysApply: false
 ---
 
 # Anti-Patterns (avoid)

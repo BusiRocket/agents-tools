@@ -1,6 +1,7 @@
 ---
+globs: "**/*.ts,**/*.tsx"
 description: Post creating and refactoring checks (run after every meaningful change)
-alwaysApply: true
+alwaysApply: false
 ---
 
 # Post Creating and Refactoring Checks

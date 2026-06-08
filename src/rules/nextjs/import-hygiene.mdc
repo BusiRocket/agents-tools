@@ -1,4 +1,5 @@
 ---
+globs: "**/*.ts,**/*.tsx"
 description: Public API imports, type import consistency, and dead import removal
 alwaysApply: false
 ---

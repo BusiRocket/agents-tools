@@ -1,4 +1,5 @@
 ---
+globs: "**/.github/**,**/*.yml,**/*.yaml,**/*.tf,**/Dockerfile,**/Dockerfile.*"
 description: "Deploy (K8s Helm, agent guidelines)"
 alwaysApply: false
 ---

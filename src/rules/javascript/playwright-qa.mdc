@@ -1,4 +1,5 @@
 ---
+globs: "**/*.js,**/*.jsx,**/*.ts,**/*.tsx,**/*.mjs,**/*.cjs"
 description: Playwright QA standards (locator strategy, determinism, maintainability)
 alwaysApply: false
 ---

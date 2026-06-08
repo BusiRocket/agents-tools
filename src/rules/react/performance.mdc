@@ -1,6 +1,7 @@
 ---
+globs: "**/*.ts,**/*.tsx,**/*.jsx"
 description: React rendering performance rules (pragmatic, measure-first)
-alwaysApply: true
+alwaysApply: false
 ---
 
 # React Performance

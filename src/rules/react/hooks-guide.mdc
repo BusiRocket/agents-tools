@@ -1,6 +1,7 @@
 ---
+globs: "**/*.ts,**/*.tsx,**/*.jsx"
 description: React Hooks best practices (strict one-hook-per-file)
-alwaysApply: true
+alwaysApply: false
 ---
 
 # Hooks Best Practices (strict)

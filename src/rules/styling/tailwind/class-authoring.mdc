@@ -1,6 +1,7 @@
 ---
+globs: "**/*.css,**/*.scss,**/*.sass,**/*.less,**/*.tsx,**/*.jsx,**/*.vue,**/*.svelte,**/*.html,**/*.astro,**/*.blade.php"
 description: Tailwind class authoring conventions (ordering, variants, readability)
-alwaysApply: true
+alwaysApply: false
 ---
 
 # Tailwind Class Authoring

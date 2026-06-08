@@ -1,4 +1,5 @@
 ---
+globs: "**/*.js,**/*.jsx,**/*.ts,**/*.tsx,**/*.mjs,**/*.cjs"
 description: Vite runtime safety — no Node globals in browser bundles
 alwaysApply: false
 ---

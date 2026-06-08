@@ -1,4 +1,5 @@
 ---
+globs: "**/*.css,**/*.scss,**/*.sass,**/*.less,**/*.tsx,**/*.jsx,**/*.vue,**/*.svelte,**/*.html,**/*.astro,**/*.blade.php"
 description: Legacy Tailwind entrypoint (use @tailwind)
 alwaysApply: false
 ---

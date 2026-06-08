@@ -1,4 +1,5 @@
 ---
+globs: "**/*.ts,**/*.tsx,**/*.jsx"
 description: "React standards (architecture, hooks, state, a11y, forms, performance)"
 alwaysApply: false
 ---

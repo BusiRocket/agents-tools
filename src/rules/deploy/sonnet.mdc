@@ -1,4 +1,5 @@
 ---
+globs: "**/.github/**,**/*.yml,**/*.yaml,**/*.tf,**/Dockerfile,**/Dockerfile.*"
 description: Agent guidelines for Sonnet + Cursor (codebase search, rules, output)
 alwaysApply: false
 ---

@@ -1,4 +1,5 @@
 ---
+globs: "**/*.sh,**/*.bash"
 description: "Bash/Shell standards and refactor workflow"
 alwaysApply: false
 ---

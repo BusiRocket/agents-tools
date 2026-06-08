@@ -1,6 +1,7 @@
 ---
+globs: "**/*.md,**/*.mdx,**/*.txt,**/*.json,**/*.yml,**/*.yaml,**/*.toml,**/*.rst"
 description: Text hygiene for docs/config (ASCII punctuation)
-alwaysApply: true
+alwaysApply: false
 ---
 
 # Text Hygiene (ASCII)

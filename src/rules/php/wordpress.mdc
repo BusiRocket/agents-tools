@@ -1,6 +1,7 @@
 ---
+globs: "**/*.php"
 description: WordPress standards (WPCS, hooks/APIs, nonces, escaping, and safe persistence)
-alwaysApply: true
+alwaysApply: false
 ---
 
 # WordPress Standards

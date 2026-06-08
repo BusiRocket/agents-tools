@@ -1,4 +1,5 @@
 ---
+globs: "**/.github/**,**/*.yml,**/*.yaml,**/*.tf,**/Dockerfile,**/Dockerfile.*"
 description: GitHub secret-handling and workflow hardening
 alwaysApply: false
 ---

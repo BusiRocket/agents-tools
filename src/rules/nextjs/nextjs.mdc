@@ -1,6 +1,7 @@
 ---
+globs: "**/*.ts,**/*.tsx"
 description: Next.js App Router rules (agent-optimized)
-alwaysApply: true
+alwaysApply: false
 ---
 
 # Next.js (App Router) Rules

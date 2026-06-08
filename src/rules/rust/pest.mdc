@@ -1,4 +1,5 @@
 ---
+globs: "**/*.rs"
 description: Pest grammar authoring and debugging
 alwaysApply: false
 ---

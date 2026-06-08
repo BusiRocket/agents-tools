@@ -1,6 +1,7 @@
 ---
+globs: "**/*.php"
 description: General PHP standards (security-first, typed code, thin entry layers)
-alwaysApply: true
+alwaysApply: false
 ---
 
 # General PHP Standards

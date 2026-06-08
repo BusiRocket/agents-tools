@@ -1,6 +1,7 @@
 ---
+globs: "**/*.ts,**/*.tsx"
 description: Next.js Route Handlers (thin handlers, service boundaries)
-alwaysApply: true
+alwaysApply: false
 ---
 
 # Route Handlers (App Router)

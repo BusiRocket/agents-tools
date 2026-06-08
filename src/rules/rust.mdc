@@ -1,4 +1,5 @@
 ---
+globs: "**/*.rs"
 description: "Rust + Tauri (layout, SQL/prompt separation, commands checklist)"
 alwaysApply: false
 ---

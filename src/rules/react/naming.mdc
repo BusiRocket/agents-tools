@@ -1,6 +1,7 @@
 ---
+globs: "**/*.ts,**/*.tsx,**/*.jsx"
 description: React naming conventions for handlers, booleans, and hooks
-alwaysApply: true
+alwaysApply: false
 ---
 
 # React Naming

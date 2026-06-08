@@ -1,4 +1,5 @@
 ---
+globs: "**/*.rs"
 description: Rust lint triage and false-positive analysis
 alwaysApply: false
 ---

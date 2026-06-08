@@ -1,4 +1,5 @@
 ---
+globs: "**/*.js,**/*.jsx,**/*.ts,**/*.tsx,**/*.mjs,**/*.cjs"
 description: "JavaScript/TypeScript domain rules (web, extensions, RN, QA, Shopify)"
 alwaysApply: false
 ---

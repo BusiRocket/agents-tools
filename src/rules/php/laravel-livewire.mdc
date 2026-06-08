@@ -1,4 +1,5 @@
 ---
+globs: "**/*.php"
 description: Laravel + Livewire standards (component boundaries and UX state)
 alwaysApply: false
 ---

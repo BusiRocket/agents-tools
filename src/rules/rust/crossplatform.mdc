@@ -1,4 +1,5 @@
 ---
+globs: "**/*.rs"
 description: Cross-platform Rust conditional compilation
 alwaysApply: false
 ---

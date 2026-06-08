@@ -1,4 +1,5 @@
 ---
+globs: "**/*.ts,**/*.tsx"
 description: "Next.js App Router standards (routing, data, actions, performance)"
 alwaysApply: false
 ---

@@ -1,6 +1,7 @@
 ---
+globs: "**/*.php"
 description: Drupal standards (services, entities, Form API, cache metadata, and DI)
-alwaysApply: true
+alwaysApply: false
 ---
 
 # Drupal Standards

@@ -1,4 +1,5 @@
 ---
+globs: "**/*.ts,**/*.tsx"
 description: Next.js server actions standards (validation, response shape, expected errors)
 alwaysApply: false
 ---

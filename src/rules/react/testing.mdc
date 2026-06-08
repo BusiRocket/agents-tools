@@ -1,4 +1,5 @@
 ---
+globs: "**/*.ts,**/*.tsx,**/*.jsx"
 description: React testing strategy (opt-in, risk-based)
 alwaysApply: false
 ---

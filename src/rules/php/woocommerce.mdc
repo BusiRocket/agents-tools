@@ -1,4 +1,5 @@
 ---
+globs: "**/*.php"
 description: WooCommerce standards (hooks, CRUD/data stores, sessions, notices)
 alwaysApply: false
 ---

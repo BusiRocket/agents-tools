@@ -1,4 +1,5 @@
 ---
+globs: "**/*.ts,**/*.tsx"
 description: Supabase access rule (only if Supabase is added)
 alwaysApply: false
 ---

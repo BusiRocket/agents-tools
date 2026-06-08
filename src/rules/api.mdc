@@ -1,4 +1,5 @@
 ---
+globs: "**/*.ts,**/*.tsx"
 description: "API layer — route handlers, validation, response shapes, services"
 alwaysApply: false
 ---

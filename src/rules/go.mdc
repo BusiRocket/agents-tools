@@ -1,4 +1,5 @@
 ---
+globs: "**/*.go"
 description: "Go backend and microservices standards"
 alwaysApply: false
 ---

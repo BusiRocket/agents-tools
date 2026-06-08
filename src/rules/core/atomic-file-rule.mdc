@@ -1,9 +1,10 @@
 ---
+globs: "**/*.ts,**/*.tsx,**/*.js,**/*.jsx,**/*.mjs,**/*.cjs,**/*.py,**/*.php,**/*.rs,**/*.go,**/*.vue,**/*.svelte,**/*.astro,**/*.java,**/*.kt,**/*.rb"
 description: >-
   ATOMIC FILE RULE — zero tolerance. ONE file = ONE exported unit = ONE
   responsibility. No helpers, no private functions, no inline utilities. If in
   doubt, split.
-alwaysApply: true
+alwaysApply: false
 priority: critical
 ---
 

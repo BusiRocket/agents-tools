@@ -1,4 +1,5 @@
 ---
+globs: "**/turbo.json,**/pnpm-workspace.yaml,**/package.json"
 description: Turbo monorepo standards (apps/packages boundaries and pipeline discipline)
 alwaysApply: false
 ---

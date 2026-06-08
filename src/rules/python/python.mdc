@@ -1,4 +1,5 @@
 ---
+globs: "**/*.py"
 description: Python schema-driven development and UV-based tooling
 alwaysApply: false
 ---

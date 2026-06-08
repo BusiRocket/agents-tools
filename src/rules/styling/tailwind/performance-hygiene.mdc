@@ -1,6 +1,7 @@
 ---
+globs: "**/*.css,**/*.scss,**/*.sass,**/*.less,**/*.tsx,**/*.jsx,**/*.vue,**/*.svelte,**/*.html,**/*.astro,**/*.blade.php"
 description: Tailwind performance and output hygiene
-alwaysApply: true
+alwaysApply: false
 ---
 
 # Tailwind Performance and Hygiene

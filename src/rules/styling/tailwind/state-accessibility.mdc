@@ -1,6 +1,7 @@
 ---
+globs: "**/*.css,**/*.scss,**/*.sass,**/*.less,**/*.tsx,**/*.jsx,**/*.vue,**/*.svelte,**/*.html,**/*.astro,**/*.blade.php"
 description: Tailwind state and accessibility styling (focus-visible, disabled, aria/data variants)
-alwaysApply: true
+alwaysApply: false
 ---
 
 # Tailwind State and Accessibility

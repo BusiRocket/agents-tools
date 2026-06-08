@@ -1,6 +1,7 @@
 ---
+globs: "**/*.go"
 description: Go microservices standards (clean architecture, resilience, observability)
-alwaysApply: true
+alwaysApply: false
 ---
 
 # Go Microservices Standards

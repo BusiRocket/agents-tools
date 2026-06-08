@@ -1,6 +1,7 @@
 ---
+globs: "**/*.ts,**/*.tsx,**/*.js,**/*.jsx,**/*.php,**/*.py,**/*.go,**/*.rs"
 description: Security baseline for web features (XSS, secrets, least privilege)
-alwaysApply: true
+alwaysApply: false
 ---
 
 # Security Baseline

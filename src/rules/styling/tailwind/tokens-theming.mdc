@@ -1,6 +1,7 @@
 ---
+globs: "**/*.css,**/*.scss,**/*.sass,**/*.less,**/*.tsx,**/*.jsx,**/*.vue,**/*.svelte,**/*.html,**/*.astro,**/*.blade.php"
 description: Tailwind tokens and theming strategy (semantic tokens + CSS variables)
-alwaysApply: true
+alwaysApply: false
 ---
 
 # Tailwind Tokens and Theming

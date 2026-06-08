@@ -1,4 +1,5 @@
 ---
+globs: "**/*.php"
 description: "PHP standards (general + Laravel + WordPress + Drupal)"
 alwaysApply: false
 ---

@@ -1,4 +1,5 @@
 ---
+globs: "**/*.py"
 description: Django standards (modular apps, ORM-first, security and performance)
 alwaysApply: false
 ---

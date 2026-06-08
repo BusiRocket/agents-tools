@@ -1,4 +1,5 @@
 ---
+globs: "**/*.sh,**/*.bash"
 description: One-shot refactor of a Bash file (@file, .sh)
 alwaysApply: false
 ---

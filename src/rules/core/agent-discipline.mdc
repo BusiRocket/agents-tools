@@ -1,6 +1,7 @@
 ---
+globs: "**/*.ts,**/*.tsx,**/*.js,**/*.jsx,**/*.py,**/*.php,**/*.rs,**/*.go,**/*.vue,**/*.svelte"
 description: Agent discipline for multi-step/long-running work (goals, conflicts, budgets, checkpoints, fail-loud)
-alwaysApply: true
+alwaysApply: false
 ---
 
 # Agent Discipline (multi-step, long-running work)

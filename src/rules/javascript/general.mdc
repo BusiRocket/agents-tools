@@ -1,6 +1,7 @@
 ---
+globs: "**/*.js,**/*.jsx,**/*.ts,**/*.tsx,**/*.mjs,**/*.cjs"
 description: General JavaScript/TypeScript standards (security, structure, error handling)
-alwaysApply: true
+alwaysApply: false
 ---
 
 # General JavaScript / TypeScript Standards

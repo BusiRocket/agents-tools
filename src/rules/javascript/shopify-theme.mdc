@@ -1,4 +1,5 @@
 ---
+globs: "**/*.js,**/*.jsx,**/*.ts,**/*.tsx,**/*.mjs,**/*.cjs"
 description: Shopify theme JavaScript standards (OS 2.0, SSR-first, dependency-light)
 alwaysApply: false
 ---

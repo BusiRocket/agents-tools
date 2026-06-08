@@ -1,4 +1,5 @@
 ---
+globs: "**/*.ts,**/*.tsx"
 description: Next.js + Supabase integration standards (auth, RLS, typed boundaries)
 alwaysApply: false
 ---

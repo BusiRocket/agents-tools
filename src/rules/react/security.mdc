@@ -1,6 +1,7 @@
 ---
+globs: "**/*.ts,**/*.tsx,**/*.jsx"
 description: React UI security baseline (XSS and untrusted HTML)
-alwaysApply: true
+alwaysApply: false
 ---
 
 # React Security

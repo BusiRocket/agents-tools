@@ -1,4 +1,5 @@
 ---
+globs: "**/*.php"
 description: Laravel + Vue standards (API boundaries, SPA contracts, and state)
 alwaysApply: false
 ---

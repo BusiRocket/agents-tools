@@ -1,4 +1,5 @@
 ---
+globs: "**/*.css,**/*.scss,**/*.sass,**/*.less,**/*.tsx,**/*.jsx,**/*.vue,**/*.svelte,**/*.html,**/*.astro,**/*.blade.php"
 description: Tailwind stack-specific notes (React/Next, Blade/Livewire, Ghost/Alpine)
 alwaysApply: false
 ---

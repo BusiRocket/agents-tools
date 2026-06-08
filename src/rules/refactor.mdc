@@ -1,4 +1,5 @@
 ---
+globs: "**/*.ts,**/*.tsx,**/*.js,**/*.jsx,**/*.py,**/*.php,**/*.rs,**/*.go,**/*.vue,**/*.svelte"
 description: "Refactor workflow — @refactor, TypeScript refactoring"
 alwaysApply: false
 ---

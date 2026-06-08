@@ -1,6 +1,7 @@
 ---
+globs: "**/*.ts,**/*.tsx"
 description: TypeScript + React standards (strict one-thing-per-file)
-alwaysApply: true
+alwaysApply: false
 ---
 
 # TypeScript + React Standards (strict)

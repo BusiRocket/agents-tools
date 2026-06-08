@@ -17,12 +17,13 @@ export const IDE_RULE_TARGETS = [
   },
   {
     ide: findIde("claude"),
+    // NOTE: ~/.claude/CLAUDE.md is intentionally NOT linked. It is a hand-maintained
+    // lean always-on file (atomic-file rule, commit hygiene, memory convention).
+    // Claude Code loads ~/.claude/rules/** natively; the rules below carry `paths:`
+    // frontmatter (from each source .mdc `globs:`) so they load lazily, only when
+    // matching files are opened. Linking the generated index here would clobber the
+    // lean file and re-introduce eager context.
     links: [
-      {
-        source: path.join(ROOT, "dist", "markdown", "CLAUDE.md"),
-        target: path.join(HOME, ".claude", "CLAUDE.md"),
-        method: "symlink",
-      },
       {
         source: path.join(ROOT, "dist", "global", ".claude", "rules"),
         target: path.join(HOME, ".claude", "rules", "busirocket"),

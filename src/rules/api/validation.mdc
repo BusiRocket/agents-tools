@@ -1,6 +1,7 @@
 ---
+globs: "**/*.ts,**/*.tsx"
 description: Validation strategy (no new dependencies)
-alwaysApply: true
+alwaysApply: false
 ---
 
 # Validation Strategy (no new dependencies)

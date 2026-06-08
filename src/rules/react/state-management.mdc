@@ -1,4 +1,5 @@
 ---
+globs: "**/*.ts,**/*.tsx,**/*.jsx"
 description: State management (Zustand) - when to use stores vs props, modal pattern
 alwaysApply: false
 ---

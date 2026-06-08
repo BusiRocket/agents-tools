@@ -1,4 +1,5 @@
 ---
+globs: "**/*.ts,**/*.tsx,**/*.jsx"
 description: "Next.js + React + styling (pages, components, hooks, Tailwind); for Vue/Svelte/HTMX/Shopify see @javascript"
 alwaysApply: false
 ---

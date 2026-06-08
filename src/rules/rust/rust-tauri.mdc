@@ -1,6 +1,7 @@
 ---
+globs: "**/*.rs"
 description: Rust + Tauri standards (strict one-thing-per-file)
-alwaysApply: true
+alwaysApply: false
 ---
 
 # Rust + Tauri Standards (strict)

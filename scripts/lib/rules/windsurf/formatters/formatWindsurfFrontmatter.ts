@@ -20,7 +20,7 @@ export function formatWindsurfFrontmatter(frontmatter: RuleFrontmatter) {
   }
 
   if (frontmatter.priority) {
-    lines.push(`priority: ${String(frontmatter.priority as string | number)}`)
+    lines.push(`priority: ${frontmatter.priority as string}`)
   } else {
     // Default priority based on alwaysApply
     lines.push(`priority: ${frontmatter.alwaysApply ? "high" : "medium"}`)

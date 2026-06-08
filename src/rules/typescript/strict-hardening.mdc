@@ -1,4 +1,5 @@
 ---
+globs: "**/*.ts,**/*.tsx"
 description: TypeScript correctness flags beyond strict mode
 alwaysApply: false
 ---

@@ -1,4 +1,5 @@
 ---
+globs: "**/*.ts,**/*.tsx"
 description: Forms and server action integration (Zod, RHF, next-safe-action)
 alwaysApply: false
 ---

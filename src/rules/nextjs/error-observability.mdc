@@ -1,6 +1,7 @@
 ---
+globs: "**/*.ts,**/*.tsx"
 description: Next.js error handling and observability (boundaries, context-rich logs)
-alwaysApply: true
+alwaysApply: false
 ---
 
 # Error Handling and Observability

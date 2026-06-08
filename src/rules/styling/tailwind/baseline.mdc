@@ -1,6 +1,7 @@
 ---
+globs: "**/*.css,**/*.scss,**/*.sass,**/*.less,**/*.tsx,**/*.jsx,**/*.vue,**/*.svelte,**/*.html,**/*.astro,**/*.blade.php"
 description: Tailwind v4 baseline defaults (utility-first, setup, no apply in production)
-alwaysApply: true
+alwaysApply: false
 ---
 
 # Tailwind Baseline

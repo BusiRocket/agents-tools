@@ -1,4 +1,5 @@
 ---
+globs: "**/*.ts,**/*.tsx"
 description: Contracts and naming for services/ vs utils/ (agent-optimized)
 alwaysApply: false
 ---

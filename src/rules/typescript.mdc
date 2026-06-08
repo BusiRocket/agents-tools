@@ -1,4 +1,5 @@
 ---
+globs: "**/*.ts,**/*.tsx"
 description: "TypeScript standards, type conventions, and refactor checks"
 alwaysApply: false
 ---

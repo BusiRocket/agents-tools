@@ -1,4 +1,5 @@
 ---
+globs: "**/*.n8n.json,**/n8n/**"
 description: "n8n workflow design and MCP tools"
 alwaysApply: false
 ---

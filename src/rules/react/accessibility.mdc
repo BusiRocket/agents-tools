@@ -1,6 +1,7 @@
 ---
+globs: "**/*.ts,**/*.tsx,**/*.jsx"
 description: React accessibility baseline (semantic HTML, keyboard support, forms)
-alwaysApply: true
+alwaysApply: false
 ---
 
 # Accessibility Baseline

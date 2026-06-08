@@ -1,4 +1,5 @@
 ---
+globs: "**/*.ts,**/*.tsx"
 description: Stripe subscription integration standards (webhooks, portal, sync)
 alwaysApply: false
 ---

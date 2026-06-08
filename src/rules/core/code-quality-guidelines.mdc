@@ -1,6 +1,7 @@
 ---
+globs: "**/*.ts,**/*.tsx,**/*.js,**/*.jsx,**/*.mjs,**/*.cjs,**/*.py,**/*.php,**/*.rs,**/*.go,**/*.vue,**/*.svelte,**/*.astro,**/*.java,**/*.kt,**/*.rb"
 description: High priority: one symbol per file, one purpose per symbol, many small files. Single source of truth for code quality (creating and refactoring).
-alwaysApply: true
+alwaysApply: false
 priority: high
 ---
 

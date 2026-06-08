@@ -1,6 +1,7 @@
 ---
+globs: "**/*.ts,**/*.tsx,**/*.jsx"
 description: React forms and validation strategy (Zod, RHF optional)
-alwaysApply: true
+alwaysApply: false
 ---
 
 # Forms and Validation

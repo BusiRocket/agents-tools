@@ -5,7 +5,16 @@ export const linkOneWithBackup = async ({ source, target }: { source: string; ta
   await ensureParentDirectory(target)
   await fs.access(source)
 
-  await fs.rm(target, { recursive: true, force: true })
+  const existing = await fs.lstat(target).catch(() => null)
+
+  let backupPath: string | null = null
+  if (existing && !existing.isSymbolicLink()) {
+    backupPath = `${target}.bak`
+    await fs.rm(backupPath, { recursive: true, force: true })
+    await fs.rename(target, backupPath)
+  } else {
+    await fs.rm(target, { recursive: true, force: true })
+  }
 
   await fs.symlink(source, target)
 
@@ -13,6 +22,6 @@ export const linkOneWithBackup = async ({ source, target }: { source: string; ta
     target,
     source,
     status: "linked",
-    backupPath: null,
+    backupPath,
   }
 }

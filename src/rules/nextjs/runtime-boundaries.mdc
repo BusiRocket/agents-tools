@@ -1,4 +1,5 @@
 ---
+globs: "**/*.ts,**/*.tsx"
 description: Server/client/public folder conventions and runtime boundary enforcement
 alwaysApply: false
 ---

@@ -24,9 +24,7 @@ export async function syncAntigravityRules(
       {
         rel: relativePath,
         content: parsed.content,
-        ...(parsed.frontmatter
-          ? { frontmatter: parsed.frontmatter as Record<string, unknown> }
-          : {}),
+        ...(parsed.frontmatter ? { frontmatter: parsed.frontmatter } : {}),
       },
 
       relativePath,

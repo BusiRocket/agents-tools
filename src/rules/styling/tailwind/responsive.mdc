@@ -1,6 +1,7 @@
 ---
+globs: "**/*.css,**/*.scss,**/*.sass,**/*.less,**/*.tsx,**/*.jsx,**/*.vue,**/*.svelte,**/*.html,**/*.astro,**/*.blade.php"
 description: Tailwind responsive strategy (mobile-first and breakpoint discipline)
-alwaysApply: true
+alwaysApply: false
 ---
 
 # Tailwind Responsive Strategy

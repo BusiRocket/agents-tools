@@ -1,6 +1,7 @@
 ---
+globs: "**/*.ts,**/*.tsx,**/*.jsx"
 description: React component patterns (strict one-component-per-file)
-alwaysApply: true
+alwaysApply: false
 ---
 
 # React Component Patterns (strict)

@@ -1,4 +1,5 @@
 ---
+globs: "**/*.js,**/*.jsx,**/*.ts,**/*.tsx,**/*.mjs,**/*.cjs"
 description: Modern web app JS/TS rules (React/Next-agnostic additions)
 alwaysApply: false
 ---

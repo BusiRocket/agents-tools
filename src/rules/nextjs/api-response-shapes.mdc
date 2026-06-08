@@ -1,6 +1,7 @@
 ---
+globs: "**/*.ts,**/*.tsx"
 description: API response shapes (agent-optimized)
-alwaysApply: true
+alwaysApply: false
 ---
 
 # API Response Shapes

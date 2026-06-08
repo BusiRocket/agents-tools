@@ -1,4 +1,5 @@
 ---
+globs: "**/*.py"
 description: Django REST API standards (DRF design, contracts, authz, pagination)
 alwaysApply: false
 ---

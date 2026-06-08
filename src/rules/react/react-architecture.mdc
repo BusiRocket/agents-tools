@@ -1,6 +1,7 @@
 ---
+globs: "**/*.ts,**/*.tsx,**/*.jsx"
 description: React + TypeScript architecture (App Router, strict file discipline)
-alwaysApply: true
+alwaysApply: false
 ---
 
 # React + TypeScript Architecture

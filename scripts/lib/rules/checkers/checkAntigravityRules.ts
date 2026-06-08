@@ -1,5 +1,4 @@
 import path from "node:path"
-import type { RuleFrontmatter } from "../types/RuleFrontmatter"
 import { compareRuleFile } from "../helpers/processors/compareRuleFile"
 import { processSourceFile } from "../helpers/processors/processSourceFile"
 import { toAntigravityRule } from "../converters/toAntigravityRule"
@@ -26,7 +25,7 @@ export async function checkAntigravityRules(
         content: parsed.content,
         ...(parsed.frontmatter
           ? {
-              frontmatter: parsed.frontmatter as RuleFrontmatter,
+              frontmatter: parsed.frontmatter,
             }
           : {}),
       },

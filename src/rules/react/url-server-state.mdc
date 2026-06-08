@@ -1,4 +1,5 @@
 ---
+globs: "**/*.ts,**/*.tsx,**/*.jsx"
 description: URL state and server state strategy (nuqs, RSC-first, TanStack Query optional)
 alwaysApply: false
 ---

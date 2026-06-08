@@ -1,6 +1,7 @@
 ---
+globs: "**/*.ts,**/*.tsx"
 description: When creating or refactoring – follow code quality guidelines
-alwaysApply: true
+alwaysApply: false
 ---
 
 # Refactoring TypeScript/React Code (strict)

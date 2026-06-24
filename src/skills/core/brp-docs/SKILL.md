@@ -14,5 +14,4 @@ allowed-tools: Read, Grep, Glob, Edit, Write
 - Write for the reader who has never seen this code before.
 - Keep documentation close to the code it describes.
 - Avoid time-sensitive references ("recently", "in the next release").
-- Use consistent terminology throughout the project.
 - Include runnable examples wherever possible.

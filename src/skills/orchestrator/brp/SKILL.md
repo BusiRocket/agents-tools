@@ -16,4 +16,5 @@ allowed-tools: Read, Grep, Glob
 - Stack detection is deterministic, based on file presence.
 - Precedence conflicts are resolved by the higher-priority level winning.
 - If multiple stacks are detected, prefer the most specific match.
-- See `core/policy.json` for the full routing configuration.
+- Routing is configured at build time in `src/core/policy.json` (precedence, stack detection,
+  intent-to-skill chains).

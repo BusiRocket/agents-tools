@@ -13,7 +13,6 @@ allowed-tools: Read, Grep, Glob, Edit, Write, Bash, TodoWrite
 - Every implementation MUST have validation commands, even if no test framework exists.
 - If no test framework is available, provide manual verification steps.
 - Tests must be independent and deterministic.
-- Prefer testing behavior over implementation details.
 
 ## Workflow
 

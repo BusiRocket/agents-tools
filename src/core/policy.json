@@ -43,7 +43,8 @@
     "test": ["brp-test"],
     "debug": ["brp-debug", "brp-fix", "brp-test"],
     "migrate": ["brp-plan", "brp-implement", "brp-test", "brp-review"],
-    "docs": ["brp-docs"]
+    "docs": ["brp-docs"],
+    "release": ["brp-review", "brp-release"]
   },
   "skillSelectionLimits": {
     "maxSkillsInContext": 8,

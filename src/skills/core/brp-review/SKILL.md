@@ -12,7 +12,6 @@ agent: brp-reviewer
 ## Rules
 
 - Never skip the self-check, even for small changes.
-- Be honest about limitations. Documenting them is better than hiding them.
 - If critical issues are found, go back to `brp-implement` before delivering.
 
 ## Workflow

@@ -11,8 +11,8 @@ allowed-tools: Read, Grep, Glob, TodoWrite
 
 ## Rules
 
-- Never skip discovery. Reading code first prevents wrong abstractions.
-- Plans must include validation commands. A plan without them is incomplete.
+- Never skip discovery; read the current code before proposing abstractions.
+- Plans must include validation commands.
 - Prefer minimal diffs. Avoid changing files unrelated to the goal.
 
 ## Workflow

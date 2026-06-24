@@ -38,6 +38,7 @@
       "rules": [
         "@rules/core/anti-patterns.mdc",
         "@rules/core/code-quality-guidelines.mdc",
+        "@rules/core/git-workflow.mdc",
         "@rules/typescript/typescript-debug.mdc",
         "@rules/nextjs/error-observability.mdc"
       ]
@@ -47,6 +48,7 @@
         "@rules/core/project.mdc",
         "@rules/core/naming-and-layout.mdc",
         "@rules/core/boundaries.mdc",
+        "@rules/core/git-workflow.mdc",
         "@rules/typescript/standards.mdc",
         "@rules/nextjs/runtime-boundaries.mdc"
       ]
@@ -68,6 +70,14 @@
         "@rules/typescript/refactoring-typescript.mdc"
       ]
     },
+    "brp-release": {
+      "rules": [
+        "@rules/core/git-workflow.mdc",
+        "@rules/deploy/github-security.mdc",
+        "@rules/core/text-hygiene.mdc",
+        "@rules/core/general.mdc"
+      ]
+    },
     "brp-review": {
       "rules": [
         "@rules/core/security-baseline.mdc",
@@ -75,6 +85,15 @@
         "@rules/react/testing.mdc",
         "@rules/nextjs/rendering-performance.mdc",
         "@rules/typescript/typescript-debug.mdc"
+      ]
+    },
+    "brp-rust-quality": {
+      "rules": [
+        "@rules/rust.mdc",
+        "@rules/rust/rust-tauri.mdc",
+        "@rules/rust/async-concurrency.mdc",
+        "@rules/core/code-quality-guidelines.mdc",
+        "@rules/core/boundaries.mdc"
       ]
     },
     "brp-test": {

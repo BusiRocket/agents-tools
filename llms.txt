@@ -28,8 +28,14 @@ A collection of reusable Agent Skills for TypeScript/React/Next.js/Rust/Tauri pr
 - brp-refactor: Refactor existing code into cleaner structure without changing behavior by splitting files, extracting helpers, and preserving public interfaces with tight validation. Trigger when the goal is structural improvement with no feature change. Do not use for shipping new behavior, fixing unknown bugs, or final quality review of already-finished work.
   dist/skills/core/brp-refactor/SKILL.md
 
+- brp-release: Cut a versioned release from trunk by collecting commits since the last tag, choosing the semver bump, updating version and changelog, gating on a green check, and tagging. Trigger when the task is to ship a release, bump a version, or generate release notes/changelog for a repo. Do not use for writing the feature itself, debugging, or general code review unrelated to shipping.
+  dist/skills/core/brp-release/SKILL.md
+
 - brp-review: Perform a findings-first self-review of code changes for bugs, regressions, missing tests, security risks, and maintainability issues before delivery. Trigger when implementation is done and the next step is to assess change quality like a strict reviewer. Do not use for planning, root-cause debugging, or writing the implementation itself.
   dist/skills/core/brp-review/SKILL.md
+
+- brp-rust-quality: Audit and harden a Rust or Tauri project's quality gates including clippy lint level, rustfmt, deny-warnings, feature and unsafe hygiene, and Tauri IPC boundaries. Trigger when the task is to bootstrap or improve repo-wide quality gates for a Rust or Tauri codebase and a `Cargo.toml` is present. Do not use for TypeScript, JavaScript, Python, Go, or PHP projects, isolated bug fixes, feature delivery, or behavior-preserving refactors inside a single module.
+  dist/skills/core/brp-rust-quality/SKILL.md
 
 - brp-test: Design, add, or update validation for a change using deterministic tests and explicit manual checks when automation is not possible. Trigger when code exists and the next job is to prove correctness with unit, integration, end-to-end, or manual verification coverage. Do not use for planning the feature itself, debugging unclear failures, or final findings-first review.
   dist/skills/core/brp-test/SKILL.md

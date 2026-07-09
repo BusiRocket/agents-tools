@@ -34,11 +34,7 @@ export const IDE_RULE_TARGETS = [
   {
     ide: findIde("codex"),
     links: [
-      {
-        source: path.join(ROOT, "dist", "markdown", "AGENTS.md"),
-        target: path.join(HOME, ".codex", "AGENTS.md"),
-        method: "copy",
-      },
+
       {
         source: path.join(ROOT, "dist", "global", "codex", "rules", "default.rules"),
         target: path.join(HOME, ".codex", "rules", "default.rules"),

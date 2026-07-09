@@ -7,4 +7,5 @@ export interface PluginManifest {
   homepage?: string
   license?: string
   keywords?: string[]
+  hooks?: string
 }

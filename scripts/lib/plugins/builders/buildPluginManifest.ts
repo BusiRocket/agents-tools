@@ -25,5 +25,6 @@ export const buildPluginManifest = (pkg: Record<string, unknown>): PluginManifes
       "typescript",
       "nextjs",
     ],
+    hooks: "./hooks/hooks.json",
   }
 }

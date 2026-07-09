@@ -66,9 +66,10 @@ Cursor Marketplace when BRP is published there.
 pnpm rules:link
 ```
 
-This links the generated `AGENTS.md` into your Codex config as lightweight global guidance. In this
-project, `AGENTS.md` is not the primary delivery mechanism for reusable BRP workflows; global skills
-are.
+This copies the generated `AGENTS.md` and Codex `default.rules` into your Codex config. `AGENTS.md`
+is lightweight global guidance; `default.rules` is Codex exec-policy Starlark and must not contain
+Markdown prose. In this project, `AGENTS.md` is not the primary delivery mechanism for reusable BRP
+workflows; global skills are.
 
 ### Global Skills (Primary for BRP)
 
@@ -166,7 +167,8 @@ pnpm skills:validate
 ### Rules not showing up
 
 1. Ensure you ran `pnpm rules:compile` after any rule changes
-2. Check that the link script created the symlink: `ls -la ~/.codex/AGENTS.md`
+2. Check that the link script copied files into Codex config:
+   `ls -la ~/.codex/AGENTS.md ~/.codex/rules/default.rules`
 3. Restart the IDE after linking
 
 ### Skills not recognized

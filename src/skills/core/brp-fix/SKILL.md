@@ -7,6 +7,7 @@ description:
   not use for open-ended root-cause investigations, behavior-preserving refactors, or broad
   code-quality audits.
 allowed-tools: Read, Grep, Glob, Edit, Write, Bash, TodoWrite
+argument-hint: [bug-description]
 ---
 
 ## Rules

@@ -7,6 +7,9 @@ description:
   root-cause debugging, or writing the implementation itself.
 allowed-tools: Read, Grep, Glob, Bash, TodoWrite
 agent: brp-reviewer
+context: fork
+effort: high
+argument-hint: [optional-scope]
 ---
 
 ## Rules

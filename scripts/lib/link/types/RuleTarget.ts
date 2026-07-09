@@ -5,7 +5,7 @@ export interface RuleTarget {
   }
   links: {
     target: string
-    method: "copy" | "link" | (string & {})
+    method: "copy" | "symlink"
     source: string
   }[]
 }

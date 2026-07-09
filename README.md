@@ -32,7 +32,9 @@ update dependencies and refresh everything: `pnpm run update`.
 
 For Codex and other skill-capable IDEs, the main BRP workflow surface is the global skills pipeline.
 `AGENTS.md` remains useful as lightweight global guidance and routing, but it is not the primary
-delivery mechanism for reusable BRP workflows in this project.
+delivery mechanism for reusable BRP workflows in this project. For Codex, `rules:link` copies
+generated config into `~/.codex` instead of symlinking to `dist`, so Codex remains usable after
+`dist` is cleaned or regenerated.
 
 ### As a Claude Code Plugin
 
@@ -225,6 +227,10 @@ always-loaded context small. Full rule content lives in `src/rules/` and is sync
 rules directory. To verify outputs against the Definition of Done (no inline mdc blocks, refs count,
 size budget), run `pnpm rules:verify`.
 
+**Codex exec-policy output:** `dist/global/codex/rules/default.rules` is generated as Starlark, not
+Markdown. Human-readable guidance belongs in `AGENTS.md`; `default.rules` is reserved for Codex
+exec-policy entries such as command prefix rules.
+
 ## Rule Precedence
 
 ```
@@ -248,7 +254,7 @@ Task > Project > Stack > Global
 | `pnpm run check:all`            | Format, lint, rules:check, skills:validate                               |
 | `pnpm run check:ci`             | CI alias of check:all                                                    |
 | `pnpm run rules:compile`        | Compile `src/rules/` to `dist/global/` + `dist/markdown/`                |
-| `pnpm run rules:link`           | Link rules to all supported IDEs                                         |
+| `pnpm run rules:link`           | Install compiled rule outputs into supported IDEs                        |
 | `pnpm run skills:compile`       | Compile skills from `src/skills/` to `dist/skills/`                      |
 | `pnpm run skills:inventory`     | Generate compatibility report for source skills                          |
 | `pnpm run skills:link`          | Stage compiled skills canonically, then distribute to supported IDEs     |
@@ -278,8 +284,12 @@ Task > Project > Stack > Global
   `src/skills/skill-rules.map.json`.
 - `pnpm skills:link` stages `dist/skills` into the product-managed canonical directory
   `~/.agents/skills` and then distributes those artifacts to IDE-specific targets.
-- Each source skill must define only `name` and `description` in frontmatter.
-- Richer behavior metadata belongs in `agents/openai.yaml`, not in `SKILL.md` frontmatter.
+- Each source skill must define `name` and `description` in frontmatter. It may also carry
+  Claude-only execution hints (`allowed-tools`, `agent`, `context`, `model`, `effort`,
+  `argument-hint`, `user-invocable`, etc.); these are listed in `ANTHROPIC_ONLY_FRONTMATTER_FIELDS`
+  and stripped from the `dist/skills-portable` variant for non-Claude IDEs.
+- Richer interface/policy metadata (display name, default prompt, skill class, failure mode) belongs
+  in `agents/openai.yaml`, not in `SKILL.md` frontmatter.
 
 ### Skill Quality Contract
 

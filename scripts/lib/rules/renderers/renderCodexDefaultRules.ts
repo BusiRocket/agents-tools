@@ -2,6 +2,9 @@ export const renderCodexDefaultRules = () =>
   [
     "# Managed by busirocket-agents-tools.",
     "#",
+    "# Codex parses this file as Starlark exec-policy, not Markdown.",
+    "# Keep human-readable agent guidance in AGENTS.md.",
+    "#",
     "# This file intentionally starts with no prefix_rule() entries.",
     "# Add or accept Codex exec-policy rules here when you want to allow, prompt,",
     "# or forbid specific command prefixes outside the sandbox.",

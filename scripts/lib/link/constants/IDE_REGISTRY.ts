@@ -33,7 +33,7 @@ export const IDE_REGISTRY: IdeRegistryEntry[] = [
     rootDir: CODEX_HOME,
     detectPaths: [CODEX_HOME, "/etc/codex"],
     skillsDir: path.join(CODEX_HOME, "skills"),
-    linkStrategy: "symlink",
+    linkStrategy: "copy",
   },
   {
     id: "copilot",
@@ -61,8 +61,8 @@ export const IDE_REGISTRY: IdeRegistryEntry[] = [
   },
   {
     id: "antigravity",
-    rootDir: path.join(HOME, ".gemini", "antigravity"),
-    skillsDir: path.join(HOME, ".gemini", "antigravity", "skills"),
+    rootDir: path.join(HOME, ".gemini"),
+    skillsDir: path.join(HOME, ".gemini", "config", "skills"),
     linkStrategy: "copy",
     flattenSkills: true,
   },
@@ -75,7 +75,7 @@ export const IDE_REGISTRY: IdeRegistryEntry[] = [
   {
     id: "gemini-cli",
     rootDir: path.join(HOME, ".gemini"),
-    skillsDir: path.join(HOME, ".gemini", "skills"),
+    skillsDir: path.join(HOME, ".gemini", "config", "skills"),
     linkStrategy: "symlink",
   },
   {

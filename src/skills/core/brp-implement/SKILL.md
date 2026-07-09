@@ -6,6 +6,7 @@ description:
   code incrementally with validation along the way. Do not use for ambiguous discovery work,
   root-cause debugging, or final review after implementation is complete.
 allowed-tools: Read, Grep, Glob, Edit, Write, Bash, TodoWrite
+argument-hint: [plan-or-task]
 ---
 
 ## Rules

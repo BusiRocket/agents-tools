@@ -7,6 +7,7 @@ description:
   hygiene and consistent engineering terminology. Do not use for implementing features, debugging
   runtime issues, or performing findings-first code review.
 allowed-tools: Read, Grep, Glob, Edit, Write
+argument-hint: [target-or-topic]
 ---
 
 ## Rules

@@ -7,4 +7,9 @@ export const ANTHROPIC_ONLY_FRONTMATTER_FIELDS = [
   "model",
   "effort",
   "shell",
+  "user-invocable",
+  "disable-model-invocation",
+  "disallowed-tools",
+  "argument-hint",
+  "arguments",
 ] as const

@@ -6,6 +6,7 @@ description:
   correctness with unit, integration, end-to-end, or manual verification coverage. Do not use for
   planning the feature itself, debugging unclear failures, or final findings-first review.
 allowed-tools: Read, Grep, Glob, Edit, Write, Bash, TodoWrite
+argument-hint: [target-to-test]
 ---
 
 ## Rules

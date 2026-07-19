@@ -684,9 +684,47 @@ BRP skills for the same pattern - all clean.
 
 **TODO:**
 
-- [ ] Add a validator to `skills:validate` that parses each `SKILL.md` frontmatter with a real YAML
-      parser and fails on an unparseable or empty `description`. This class of bug is invisible
-      otherwise.
+- [x] Done, and it uncovered RC-12 below. `frontmatterDescriptionErrors` targets the exact construct
+      that broke (a plain multi-line scalar containing `": "`) rather than adding a YAML dependency
+      for one lexical rule. Wired into a new `skills:lint` inside `check:all`. Proved it catches the
+      colon bug, a missing description, a description with no boundaries, and does not
+      false-positive on a formatter-wrapped "Do not use".
+
+## RC-12 - the repo has a whole dead validation layer
+
+Wiring the YAML check exposed the pattern behind RC-7. Callers of each validator in
+`scripts/validators/`:
+
+```
+0 callers  descriptionBoundaryErrors
+0 callers  descriptionBoundaryWarnings
+0 callers  descriptionSpecificityWarning
+0 callers  detectValidator
+2 callers  validateManifestReferences
+```
+
+Four of five are dead. Together with the two unused activation fixtures and the unread `SMOKE_PATH`
+/ `ACCEPTANCE_PATH` constants, this repo carries an entire quality layer that is written, committed,
+and never executed. It produces the appearance of rigour - a `validators/` directory, fixtures, a
+green `check` - while checking none of it. That is precisely how a colon-broken description shipped:
+nothing inspected descriptions at all.
+
+`descriptionBoundaryErrors` was correct code, sitting unused. On its first real run it flagged
+`brp-fix` for a missing "Do not use" boundary - a **false positive** caused by the formatter
+wrapping the phrase as `Do\n  not use`, which the regex could not cross. Fixed by extracting and
+normalising the description before validating, rather than editing the skill. Worth noting as a
+general rule: verify a failing check before trusting it, in both directions.
+
+**DONE:**
+
+- [x] `descriptionBoundaryErrors` and `frontmatterDescriptionErrors` now run in `skills:lint`.
+
+**Still open:**
+
+- [ ] Wire or delete the remaining three: `descriptionBoundaryWarnings`,
+      `descriptionSpecificityWarning`, `detectValidator`. Dead code that looks like enforcement is
+      worse than no code.
+- [ ] Same for `SMOKE_PATH` / `ACCEPTANCE_PATH` and their fixtures.
 
 ## Pending — not yet done in this audit
 

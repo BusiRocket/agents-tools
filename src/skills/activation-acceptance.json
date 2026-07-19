@@ -42,5 +42,15 @@
       "plan this feature before implementation",
       "write a technical architecture overview for this codebase"
     ]
+  },
+  "brp-traffic-client": {
+    "positive": [
+      "turn this HAR capture into a client for the invoice download endpoint",
+      "replace this Playwright scraping flow with direct HTTP calls to the private API"
+    ],
+    "negative": [
+      "write an end to end browser test for the checkout flow",
+      "integrate this documented public API using its official SDK"
+    ]
   }
 }

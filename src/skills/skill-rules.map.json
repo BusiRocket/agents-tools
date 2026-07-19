@@ -103,6 +103,14 @@
         "@rules/typescript/typescript-debug.mdc",
         "@rules/nextjs/forms-and-actions.mdc"
       ]
+    },
+    "brp-traffic-client": {
+      "rules": [
+        "@rules/core/security-baseline.mdc",
+        "@rules/api/validation.mdc",
+        "@rules/core/general.mdc",
+        "@rules/core/boundaries.mdc"
+      ]
     }
   }
 }

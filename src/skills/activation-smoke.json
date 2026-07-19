@@ -17,5 +17,9 @@
   "brp-test": [
     "add unit and integration tests for this change",
     "validate this implementation with deterministic tests"
+  ],
+  "brp-traffic-client": [
+    "build a client from this HAR capture",
+    "stop using the browser and call the API directly"
   ]
 }

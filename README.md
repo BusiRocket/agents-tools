@@ -11,7 +11,7 @@ BRP consolidates rules, skills, and an orchestration protocol into a single proj
 - A **Claude Code plugin** (`dist/plugins/claude/.claude-plugin/plugin.json`) with a marketplace
   manifest, bundled subagents, and opt-in hooks
 - A **multi-IDE rules exporter** for lightweight guidance layers
-- An **AgentSkills-compatible** skill collection (10 validated skills) with a Claude variant
+- An **AgentSkills-compatible** skill collection (13 validated skills) with a Claude variant
   (`dist/skills/`) and a portable variant (`dist/skills-portable/`, Anthropic-only frontmatter
   stripped) for non-Claude IDEs
 - A **multi-IDE skill linker** for popular agents/editors including Cursor, Claude Code, Codex,
@@ -39,7 +39,7 @@ generated config into `~/.codex` instead of symlinking to `dist`, so Codex remai
 ### As a Claude Code Plugin
 
 After `pnpm run build` the plugin lives at `dist/plugins/claude/` with manifests under
-`.claude-plugin/`, the 10 BRP skills flattened in `skills/`, the `brp-reviewer` subagent in
+`.claude-plugin/`, the 13 BRP skills flattened in `skills/`, the `brp-reviewer` subagent in
 `agents/`, and an opt-in SessionStart hook under `hooks/`. Install it by pointing Claude Code at the
 plugin root or by publishing the included `marketplace.json`. Then use `/brp-plan`,
 `/brp-implement`, `/brp-fix`, etc. The `brp` orchestrator skill is hidden from the `/` menu
@@ -55,16 +55,20 @@ stripped `dist/skills-portable/` variant.
 
 ## Workflow Commands
 
-| Command          | What it does                                           |
-| ---------------- | ------------------------------------------------------ |
-| `/brp-plan`      | Plan → Define milestones → Risk assessment             |
-| `/brp-implement` | Minimal diffs → Incremental changes                    |
-| `/brp-fix`       | Reproduce → Hypothesize → Fix → Verify                 |
-| `/brp-refactor`  | Assess → Plan → Execute → Quality check                |
-| `/brp-review`    | Self-check + PR review (security/perf/maintainability) |
-| `/brp-test`      | Generate tests + validation commands                   |
-| `/brp-debug`     | Symptoms → Hypotheses → Isolation → Resolution         |
-| `/brp-docs`      | README, API docs, ADRs, specs                          |
+| Command               | What it does                                           |
+| --------------------- | ------------------------------------------------------ |
+| `/brp-plan`           | Plan → Define milestones → Risk assessment             |
+| `/brp-implement`      | Minimal diffs → Incremental changes                    |
+| `/brp-fix`            | Reproduce → Hypothesize → Fix → Verify                 |
+| `/brp-refactor`       | Assess → Plan → Execute → Quality check                |
+| `/brp-review`         | Self-check + PR review (security/perf/maintainability) |
+| `/brp-test`           | Generate tests + validation commands                   |
+| `/brp-debug`          | Symptoms → Hypotheses → Isolation → Resolution         |
+| `/brp-docs`           | README, API docs, ADRs, specs                          |
+| `/brp-traffic-client` | Capture → Endpoint map → Direct HTTP client            |
+| `/brp-release`        | Commits since tag → Semver bump → Changelog → Tag      |
+| `/brp-rust-quality`   | Rust/Tauri quality, async and concurrency review       |
+| `/brp-code-quality`   | Audit and harden TS/Next quality gates                 |
 
 ## Workflow Protocol (Non-Negotiable)
 
@@ -88,10 +92,12 @@ busirocket-agents-tools/
 │   │                            # typescript, php, python, go, bash, styling, deploy,
 │   │                            # integrations (supabase/stripe/n8n), monorepo, …
 │   ├── skills/
-│   │   ├── core/                # 8 BRP workflow skills (plan/implement/fix/refactor/review/
-│   │   │                        # test/debug/docs) + brp-code-quality audit skill
+│   │   ├── core/                # 12 BRP skills — 9 workflow (plan/implement/fix/refactor/review/
+│   │   │                        # test/debug/docs/traffic-client) + release, rust-quality,
+│   │   │                        # code-quality
 │   │   ├── orchestrator/brp/    # Model-only router (user-invocable: false)
 │   │   ├── skill-rules.map.json # Skill -> @rules manifest (source of truth)
+│   │   ├── activation-acceptance.json
 │   │   └── activation-smoke.json
 │   ├── agents/                  # Claude Code subagents (.md)
 │   │   └── brp-reviewer.md      # Isolated findings-first PR reviewer used by brp-review
@@ -136,32 +142,35 @@ busirocket-agents-tools/
 └── package.json
 ```
 
-## Skills (10 validated)
+## Skills (13 validated)
 
-### Core Workflow Skills (8)
+### Core Workflow Skills (9)
 
-| Skill           | Purpose                                             |
-| --------------- | --------------------------------------------------- |
-| `brp-plan`      | Structured planning with milestones and risks       |
-| `brp-implement` | Incremental implementation with minimal diffs       |
-| `brp-fix`       | Bug reproduction, hypothesis, fix, verification     |
-| `brp-refactor`  | Code assessment, planning, execution, quality check |
-| `brp-review`    | Security, performance, maintainability review       |
-| `brp-test`      | Test generation and validation                      |
-| `brp-debug`     | Symptom analysis, hypothesis, isolation, resolution |
-| `brp-docs`      | Documentation generation (README, API, ADR)         |
+| Skill                | Purpose                                             |
+| -------------------- | --------------------------------------------------- |
+| `brp-plan`           | Structured planning with milestones and risks       |
+| `brp-implement`      | Incremental implementation with minimal diffs       |
+| `brp-fix`            | Bug reproduction, hypothesis, fix, verification     |
+| `brp-refactor`       | Code assessment, planning, execution, quality check |
+| `brp-review`         | Security, performance, maintainability review       |
+| `brp-test`           | Test generation and validation                      |
+| `brp-debug`          | Symptom analysis, hypothesis, isolation, resolution |
+| `brp-docs`           | Documentation generation (README, API, ADR)         |
+| `brp-traffic-client` | Traffic capture to maintainable HTTP client         |
+
+### Specialized (3)
+
+| Skill              | Purpose                                                          |
+| ------------------ | ---------------------------------------------------------------- |
+| `brp-release`      | Cut a versioned release from trunk (semver, changelog, tag)      |
+| `brp-rust-quality` | Rust and Tauri quality, async and concurrency review             |
+| `brp-code-quality` | Audit and harden TS/Next quality gates (path-scoped to TS repos) |
 
 ### Orchestrator (1)
 
 | Skill | Purpose                                                            |
 | ----- | ------------------------------------------------------------------ |
 | `brp` | Model-only router for BRP command chains (`user-invocable: false`) |
-
-### Code-quality audit (1)
-
-| Skill              | Purpose                                                          |
-| ------------------ | ---------------------------------------------------------------- |
-| `brp-code-quality` | Audit and harden TS/Next quality gates (path-scoped to TS repos) |
 
 ### Subagents (1)
 
@@ -192,8 +201,9 @@ busirocket-agents-tools/
 
 BRP uses a dual-layer model for global distribution:
 
-- `~/.agents/skills` is the canonical internal directory managed by this product
-- `pnpm skills:link` fans those compiled skills out to supported IDE targets
+- `~/.agents/skills` is the canonical user directory managed by this product and discovered directly
+  by Codex
+- `pnpm skills:link` fans those compiled skills out only to IDEs that require another location
 - `AGENTS.md` remains a lightweight guidance layer and should not be treated as the primary BRP
   workflow surface for Codex
 
@@ -251,7 +261,7 @@ Task > Project > Stack > Global
 | `pnpm run build`                | Compile rules, skills (Claude + portable), and the Claude plugin         |
 | `pnpm run plugins:compile`      | Generate `dist/plugins/claude/` (plugin manifest + marketplace + bundle) |
 | `pnpm run check`                | Run all validations                                                      |
-| `pnpm run check:all`            | Format, lint, rules:check, skills:validate                               |
+| `pnpm run check:all`            | type-check, format, lint, rules:check, skills:validate/test, link:test   |
 | `pnpm run check:ci`             | CI alias of check:all                                                    |
 | `pnpm run rules:compile`        | Compile `src/rules/` to `dist/global/` + `dist/markdown/`                |
 | `pnpm run rules:link`           | Install compiled rule outputs into supported IDEs                        |
@@ -261,7 +271,7 @@ Task > Project > Stack > Global
 | `pnpm run skills:package`       | Package compiled skills as zip artifacts                                 |
 | `pnpm run rules:verify`         | Verify index-only outputs (DoD + CLAUDE golden master)                   |
 | `pnpm run rules:check`          | Verify compiled output is current                                        |
-| `pnpm run skills:validate`      | Validate all 9 skills against AgentSkills spec                           |
+| `pnpm run skills:validate`      | Validate all 13 skills against AgentSkills spec                          |
 | `pnpm run skills:test`          | Run schema/idempotence/source-purity/snapshot/smoke tests                |
 | `pnpm run skills:llms`          | Generate `llms.txt` for skill discovery                                  |
 | `pnpm run skills:prompt`        | Generate XML prompt with all skills                                      |
@@ -272,6 +282,25 @@ Task > Project > Stack > Global
 | `pnpm run format:check`         | Check formatting without writing                                         |
 | `pnpm run lint`                 | ESLint check                                                             |
 | `pnpm run lint:fix`             | ESLint auto-fix                                                          |
+| `pnpm run link:test`            | Unit tests for the IDE link registry                                     |
+| `pnpm run type-check`           | Type-check with the native TypeScript 7 compiler (see below)             |
+
+### TypeScript setup (dual alias)
+
+TypeScript 7 is the native compiler, but it ships no programmatic API until 7.1, so anything that
+does `import ts from "typescript"` — typescript-eslint included — crashes against it. The project
+therefore uses the supported side-by-side layout:
+
+```jsonc
+"typescript": "npm:@typescript/typescript6@^6.0.2",   // API consumers (ESLint)
+"@typescript/native": "npm:typescript@^7.0.2"         // native compiler, type-check only
+```
+
+Do not collapse this to a plain `typescript@7` dependency — ESLint will fail with
+`TypeError: Cannot read properties of undefined (reading 'Cjs')`. The aliases can be merged once
+TypeScript 7.1 is stable and `typescript-eslint` accepts `typescript@7` as a peer. Because both
+packages ship a `tsc` binary, `type-check` calls the native one by explicit path rather than through
+`.bin`.
 
 `sync` is the primary command used to bootstrap the project locally.
 

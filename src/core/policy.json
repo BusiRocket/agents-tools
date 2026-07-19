@@ -44,7 +44,8 @@
     "debug": ["brp-debug", "brp-fix", "brp-test"],
     "migrate": ["brp-plan", "brp-implement", "brp-test", "brp-review"],
     "docs": ["brp-docs"],
-    "release": ["brp-review", "brp-release"]
+    "release": ["brp-review", "brp-release"],
+    "integrate": ["brp-traffic-client", "brp-test", "brp-review"]
   },
   "skillSelectionLimits": {
     "maxSkillsInContext": 8,

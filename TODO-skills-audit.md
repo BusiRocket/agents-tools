@@ -238,9 +238,15 @@ work, ops sessions. Frustration cluster `not_done_claimed` (8 hits) maps directl
       already had one; `verticagtm` (104 sessions) has `package.json` but no `check` script and is
       still uncovered.
 - [ ] Add a `check` script to `verticagtm` - the largest active repo still outside the gate.
-- [ ] Move `verify.sh` into `src/hooks/` so it is versioned, linked by `hooks:link`, and covered by
-      `hooks:test`. It currently lives only in `~/.claude/hooks/`, unmanaged - the same condition
-      that let the dead SessionStart hook rot unnoticed. Backup at `verify.sh.bak-*`.
+- [x] Moved into the repo as `src/hooks/stop-verification-gate.sh`, declared as a `Stop` hook in
+      `hooks.json`, linked by `hooks:link`, and covered by `STOP_GATE_TEST.ts` (4 behaviours: blocks
+      on a failing check for package.json/composer.json/Makefile, silent when the check passes,
+      silent when no `check` target exists, silent when nothing was edited). `settings.json` now
+      points at `~/.agents/hooks/stop-verification-gate.sh`, so the reachability doctor covers it
+      too. The old unmanaged copy is renamed
+      `~/.claude/hooks/verify.sh.retired-superseded-by-agents-hooks`. **All three hooks are now
+      versioned, linked, tested and reachability-checked.** No hook is left in the condition that
+      produced RC-10.
 - [ ] Consider promoting `superpowers:verification-before-completion` into the SessionStart
       injection — it fired **0** times all week.
 

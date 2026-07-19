@@ -70,6 +70,7 @@ ROUTES = [
         r"\b(no funciona|no va\b|sigue (sin|igual|fallando|roto)|falla|fallando|"
         r"est[aá] roto|se ha roto|has roto|crashe|petado|se cuelga|"
         r"no carga|no aparece|no sale|no me deja|da error|sale un error|"
+        r"sale[n]? mal|aparece[n]? mal|se ve[n]? mal|"
         r"el ci .{0,20}falla|tarda much[oí]simo|se queda (lag|colgad|pillad))\b",
     ),
     (

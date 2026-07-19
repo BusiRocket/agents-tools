@@ -6,7 +6,7 @@
   "description": "Agent workflow engine + rules/skills orchestrator for high-quality code across IDEs",
   "scripts": {
     "build": "pnpm run clean:dist && pnpm run rules:compile && pnpm run skills:compile && pnpm run plugins:compile",
-    "check:all": "pnpm run type-check && pnpm run format && pnpm run lint:fix && pnpm run rules:check && pnpm run skills:validate && pnpm run skills:test && pnpm run link:test",
+    "check:all": "pnpm run type-check && pnpm run format && pnpm run lint:fix && pnpm run rules:check && pnpm run skills:validate && pnpm run skills:test && pnpm run link:test && pnpm run hooks:test",
     "check:ci": "pnpm run check:all",
     "check": "pnpm run check:all",
     "format:check": "prettier --check .",
@@ -34,7 +34,8 @@
     "skills:version:check": "tsx scripts/bin/run-check-version.ts",
     "sync": "pnpm install && pnpm run build && pnpm run check && pnpm run rules:link && pnpm run skills:link",
     "update": "pnpm update && pnpm run sync",
-    "validate:install": "python3 -m venv .venv-validate && .venv-validate/bin/pip install skills-ref"
+    "validate:install": "python3 -m venv .venv-validate && .venv-validate/bin/pip install skills-ref",
+    "hooks:test": "tsx --test scripts/lib/hooks/ROUTER_TEST.ts"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

@@ -228,16 +228,39 @@ The real corpus, same tasks:
 - `"vale mira a ver si esto esta causado por otra cosa"`
 - `"vale quiero que crees un plan desde cero para intelifactu.com"`
 
-The fixtures are paraphrases of the descriptions, so they always pass. The suite was green all week
-while the skills fired 0 times. **The tests were measuring description-to-description similarity,
-not activation.** This is why the problem was invisible.
+The fixtures are paraphrases of the descriptions, so they would always pass.
 
-**TODO:**
+**Correction, found while fixing this: it is worse than that. The fixtures are dead files.**
+`SMOKE_PATH` and `ACCEPTANCE_PATH` are declared in `scripts/constants/` and imported by **nothing**
 
-- [ ] Regenerate both fixture files from real prompts in `digest.json`.
-- [ ] Rule for future fixtures: a positive example must be copy-pasted from a real transcript, never
-      written fresh. If no real example exists, the skill has no evidence it is needed.
-- [ ] Add negative examples drawn from real prompts that must NOT trigger.
+- zero importers outside their own definition. `pnpm run skills:test` only diffs the CLAUDE.md /
+  AGENTS.md / GEMINI.md / WINDSURF.md golden masters. The activation fixtures have never been
+  executed by any test.
+
+So the suite was not measuring description-to-description similarity. It was measuring nothing at
+all. Every `[verify] All checks passed` in this repo, including the ones I quoted earlier in this
+document as evidence, said nothing whatsoever about whether a skill can fire.
+
+**DONE:**
+
+- [x] Built a real activation test that runs: `scripts/lib/hooks/ROUTER_TEST.ts`, wired into
+      `check:all` via a new `hooks:test` script. It spawns the actual hook with a `UserPromptSubmit`
+      payload and asserts the lane, so it covers the artifact that ships.
+- [x] Fixtures in `src/hooks/router-fixtures.json` are **verbatim transcript prompts**, with a
+      header explaining why fresh examples are forbidden.
+- [x] Negative fixtures included: bare acks, plus ordinary prompts that must not be hijacked.
+- [x] The test earned its keep on the first run - it failed immediately on
+      `"los nombres de las carpetas salen mal … en vez de Cáceres sale C&AOE-ceres"`. Two bugs at
+      once: I had filed it as `frontend` when it is an encoding bug, and the debug lane matched
+      `se ve mal` but not `sale/salen mal`. Both fixed; corpus routing went 170 -> 172.
+
+**Still open:**
+
+- [ ] Delete or repurpose the two dead fixture files, and either wire or delete `SMOKE_PATH` /
+      `ACCEPTANCE_PATH`. Folded into the BRP demotion, since the fixtures cover skills being
+      demoted.
+- [ ] Rule for any future fixture: a positive example must be copy-pasted from a real transcript,
+      never written fresh. If no real example exists, the skill has no evidence it is needed.
 
 ### RC-8 - the one BRP hook pointed at commands that do not exist
 
@@ -554,9 +577,9 @@ verification failure.
 - [ ] **Build the `invoice-ops` skill** - the router now flags the context (101 prompts) but there
       is still no skill behind it. Biggest single win left.
 - [ ] Build `lovable-sync` and `stakeholder-recap` skills (router lanes exist, skills do not).
-- [ ] Regenerate activation fixtures from real prompts (RC-7). Codex supplied the session ids to
-      copy from: 10, 43, 70, 88, 124, 232, 243, 301, 337, 446, 489, 505, 528, 542, 544, 705, 724,
-      787, 833.
+- [x] Activation testing rebuilt for real (RC-7). Remaining: delete the dead fixture files. Codex
+      session ids to mine when writing skill-level fixtures: copy from: 10, 43, 70, 88, 124, 232,
+      243, 301, 337, 446, 489, 505, 528, 542, 544, 705, 724, 787, 833.
 - [ ] Add `project-continuation` skill behind the new router lane.
 - [ ] Add session-level idempotency so the same skill cannot load twice.
 - [ ] Resolve the runtime/catalog split - 7 fired skills are not in the catalog.

@@ -1,0 +1,41 @@
+{
+  "_comment": "Router activation fixtures. Every prompt here is copy-pasted verbatim from a real transcript in ~/.claude/projects. Do not write fresh examples: a hand-written prompt tests the pattern against itself and always passes, which is how the previous activation fixtures stayed green while nothing fired. If no real prompt exists for a lane, the lane has no evidence it is needed.",
+  "routes": {
+    "invoice-ops": [
+      "esa debería estar cobrada, mira los movimientos otra vez lo mismo no cuadra exactamente",
+      "vale podemos preparar el trimestre para todas las empresas que tengo? ya avanzamos con vibra lab, ahora miremos el resto",
+      "Vale mira los escaneos que hay en el disco duro porque ahí hay tickets y más facturas",
+      "vibra lab abierto en holded",
+      "pulsa el icono de impresora y se abre un html buscate la vida para descargar las facturas"
+    ],
+    "debug": [
+      "el ci de github falla",
+      "o2 parece que falla vamos con los demas y dejemos esto para el final",
+      "vale peor el solr que tienen montado ellos no funciona por algo? podríamos arreglarlo en vez de montar uno para nosotros",
+      "los nombres de las carpetas salen mal por ejemplo en vez de Cáceres sale C&AOE-ceres"
+    ],
+    "frontend": [
+      "vale ya solo falta que el editor se vea igual que el PDF, el PDF está perfecto pero el editor se ve raro, descarga el PDF y modifica el editor para que se vea así (espacios, alineaciones etc)",
+      "Abre el navegador en localhost:3000 y comprueba visualmente que el nuevo header se ve bien en móvil. No hagas nada más."
+    ],
+    "continuation": [
+      "vale siguiendo la sesión anterior, no podemos conectarnos a nuestra cuenta de la SL que es donde están los pagos de pixelpotion vaya fail",
+      "vale mira las conversaciones anteriores y termina los pasos que faltan ya que hemos cambiado la carpeta de nombre",
+      "esto se ha quedado a medias"
+    ],
+    "stakeholder-recap": ["Conéctate a slack y mira los últimos mensajes de todo"],
+    "traffic-client": ["turn this HAR capture into a client for the invoice download endpoint"]
+  },
+  "silent": {
+    "_comment": "Real prompts that must NOT route. Bare acknowledgements cost tokens for nothing, and ordinary work must not be hijacked by a lane.",
+    "prompts": [
+      "sí",
+      "sí por favor",
+      "adelante",
+      "hecho",
+      "continua",
+      "vale dame un prompt para seguir esto en otra sesión",
+      "me puedes dar un prompt para lovable explicando todo lo que hace el programa y para qué es?"
+    ]
+  }
+}

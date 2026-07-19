@@ -15,15 +15,46 @@ rewrite history. Add a `## Round N` section per audit pass.
 - Extraction scripts: `scratchpad/extract.py` → `sessions.json` → `digest.json`. Re-run with
   `python3 extract.py sessions.json <days>`.
 
+> ## ⚠️ HEADLINE CORRECTION (added later the same day)
+>
+> **The 5.4% figure below is wrong by roughly 8x. The real rate is 42%.**
+>
+> 738 of the 845 "sessions" are machine-generated prompts that carry their own complete instructions
+> inline - 627 security reviews, 103 Vexa email classifiers, 10 candidate validations, and assorted
+> subagents. None of them was ever supposed to load a skill, so counting them in the denominator
+> measures nothing.
+>
+> | Window  | Substantive | Machine-prompt | Interactive | Interactive with a skill |
+> | ------- | ----------: | -------------: | ----------: | -----------------------: |
+> | 7 days  |         845 |            738 |     **107** |             **46 (42%)** |
+> | 30 days |        1937 |           1663 |     **274** |            **114 (41%)** |
+>
+> Stable across 30 days, so this is not a sampling artefact. **Skills were firing on roughly two in
+> five real sessions.** The system was not broken the way the rest of this document initially
+> claimed.
+>
+> What survives the correction, because each was verified against a producer or a file rather than
+> inferred from a count:
+>
+> - BRP fired 2 times out of 114 skill loads. The BRP family genuinely does not fire.
+> - superpowers takes the large majority of loads (RC-3).
+> - No hook in this repo had ever executed (RC-10).
+> - The activation fixtures were never run by any test (RC-7).
+> - `policy.json` had no reader (RC-9 area).
+> - Lanes at a genuine 100% miss: frontend, invoice-ops, docs.
+>
+> What does not survive: the framing that the skills system was ~dead, and the Round 2 target of
+> "5.4% -> 40%", which was already met before any change was made. Revised target below.
+
 ### Headline numbers
 
-| Metric                                   | Value                            |
-| ---------------------------------------- | -------------------------------- |
-| Sessions where **any** skill fired       | **46 / 845 (5.4%)**              |
-| Distinct skills that fired all week      | 17                               |
-| `brp-*` skill invocations (13 installed) | **2**, both `brp-traffic-client` |
-| Total `Skill` tool calls                 | 80                               |
-| `Bash` calls, same period                | 10 553                           |
+| Metric                                   | Value                                        |
+| ---------------------------------------- | -------------------------------------------- |
+| Sessions where **any** skill fired       | ~~**46 / 845 (5.4%)**~~ see correction above |
+| Distinct skills that fired all week      | 17                                           |
+| `brp-*` skill invocations (13 installed) | **2**, both `brp-traffic-client`             |
+| Total `Skill` tool calls                 | 80                                           |
+| `Bash` calls, same period                | 10 553                                       |
 
 Skill firings, full list:
 
@@ -365,8 +396,22 @@ artifacts, not the methodology.
 | 8   | Write `stakeholder-recap` skill                                      | M      | Covers verticagtm/zerohedge weekly need      |
 | 9   | Re-run this audit after changes and compare firing rate              | S      | Measures whether any of it worked            |
 
-Success metric for Round 2: **skill-firing rate on human-initiated sessions from 5.4% → >40%**, and
-`brp-*` invocations > 0 per week.
+~~Success metric for Round 2: skill-firing rate from 5.4% → >40%~~ **Void.** The rate was already
+42% before any change was made; the 5.4% baseline counted machine prompts that were never meant to
+load a skill. See the headline correction at the top.
+
+Revised Round 2 metrics, each measurable and none already satisfied:
+
+1. **Router coverage** — share of interactive prompts receiving a directive. Baseline 172/1053
+   (16%). Higher is not automatically better; track precision alongside it.
+2. **Router precision** — sample 30 routed prompts, count wrong lanes. Baseline unmeasured; one
+   known false positive (a job posting listing Playwright).
+3. **`brp-*` invocations** — baseline 2 per week, both `brp-traffic-client`. Any surviving
+   uncontested skill firing organically would be new.
+4. **Directive adherence** — when the router injects a directive, was it followed? The metric that
+   actually matters, and the only one needing transcript reading rather than counting.
+5. **Zero silent-death regressions** — `hooks:test` stays green: hook reachability plus src/linked
+   drift.
 
 ---
 

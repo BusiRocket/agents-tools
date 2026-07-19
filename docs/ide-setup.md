@@ -81,7 +81,7 @@ pnpm skills:link
 
 - compiled skills are staged into the product-managed canonical directory `~/.agents/skills`
 - the linker then distributes those compiled skills to each detected IDE target
-- Codex is treated as one of those product-managed IDE targets
+- Codex reads `~/.agents/skills` directly and must not receive a duplicate copy in `~/.codex/skills`
 
 Important:
 
@@ -89,8 +89,8 @@ Important:
 - IDE-specific destinations are linker-managed distribution targets
 - unless separately verified, do not treat any IDE target path as an OpenAI-documented native path
 
-For Codex specifically, this means the project treats skills as the primary BRP surface and keeps
-`~/.codex/AGENTS.md` as minimal policy/routing guidance.
+For Codex specifically, this means the project treats the canonical user skills directory as the
+primary BRP surface and keeps `~/.codex/AGENTS.md` as minimal policy/routing guidance.
 
 ### What To Validate In Codex
 

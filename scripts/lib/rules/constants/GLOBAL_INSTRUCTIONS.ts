@@ -21,7 +21,7 @@ export const GLOBAL_INSTRUCTIONS = [
   "## Memory",
   "",
   "- Before asking about previously established project conventions, deployment details, credentials locations, CI behavior, or past decisions, check memory first.",
-  "- Prefer `mempalace search \"<topic>\" --wing <project>` for targeted recall.",
+  '- Prefer `mempalace search "<topic>" --wing <project>` for targeted recall.',
   "- Save only high-signal memory: decisions, gotchas, feedback, bugs, and runbooks.",
   "- Do not use the mempalace knowledge graph path; semantic search is the retrieval path.",
   "- Use one canonical wing per project: the repo folder basename, normalized by mempalace.",

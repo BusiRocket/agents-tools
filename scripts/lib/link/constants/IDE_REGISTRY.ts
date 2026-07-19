@@ -1,7 +1,6 @@
 import path from "node:path"
 import type { IdeRegistryEntry } from "../types/IdeRegistryEntry"
 import { CLAUDE_HOME } from "./CLAUDE_HOME"
-import { CODEX_HOME } from "./CODEX_HOME"
 import { CONFIG_HOME } from "./CONFIG_HOME"
 import { HOME } from "./HOME"
 import { getOpenClawRootDir } from "../operations/getOpenClawRootDir"
@@ -27,13 +26,6 @@ export const IDE_REGISTRY: IdeRegistryEntry[] = [
     linkStrategy: "symlink",
     flattenSkills: true,
     skillsBundle: "claude",
-  },
-  {
-    id: "codex",
-    rootDir: CODEX_HOME,
-    detectPaths: [CODEX_HOME, "/etc/codex"],
-    skillsDir: path.join(CODEX_HOME, "skills"),
-    linkStrategy: "copy",
   },
   {
     id: "copilot",

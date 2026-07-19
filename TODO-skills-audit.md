@@ -645,6 +645,12 @@ BRP skills for the same pattern - all clean.
 - [ ] Add `project-continuation` skill behind the new router lane.
 - [ ] Add session-level idempotency so the same skill cannot load twice.
 - [ ] Resolve the runtime/catalog split - 7 fired skills are not in the catalog.
-- [ ] Demote the 7 competing BRP skills to references (decision above).
+- [ ] Demote the 7 competing BRP skills to references (decision above). **Deliberately not done on
+      2026-07-19.** Another session committed `9da58f3` (brp-traffic-client references) into
+      `src/skills/core/` twenty minutes before this work landed, on the same branch. The demotion
+      restructures exactly that tree, so doing it against concurrent edits invites a conflict for no
+      urgency: the router now bypasses description-matching entirely, so the competing skills cost
+      listing tokens but no longer cost correctness. Do it when the repo is quiet, in one pass, with
+      `hooks:test` and `skills:validate` as the safety net.
 - [ ] Re-run this audit in a week and compare the firing rate. The router changes the measurement:
       count sessions where the injected directive was followed, not just `Skill` tool calls.

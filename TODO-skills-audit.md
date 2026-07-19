@@ -755,9 +755,26 @@ general rule: verify a failing check before trusting it, in both directions.
 
 **Still open:**
 
-- [ ] Wire or delete the remaining three: `descriptionBoundaryWarnings`,
-      `descriptionSpecificityWarning`, `detectValidator`. Dead code that looks like enforcement is
-      worse than no code.
+- [x] `descriptionSpecificityWarning` wired into `skills:lint`; all 13 skills pass it.
+- [x] `descriptionBoundaryWarnings` deleted - a warning-level duplicate of
+      `descriptionBoundaryErrors`, which now runs as an error.
+- [ ] `detectValidator` left in place **deliberately**, reasoning recorded rather than acted on.
+      Pulling it exposes a larger dead subsystem: `detectValidator` -> `runValidate` ->
+      `VENV_VALIDATOR` -> the `validate:install` script, none of it invoked from anywhere. Its
+      target is broken too: `.venv-validate/bin/agentskills` still carries the shebang
+      `/Users/cristiandeluxe/p/busirocket-agents/.venv-validate/bin/python3.14`, left from when this
+      repo was named `busirocket-agents`, so it cannot execute at all. Not deleted because
+      `VENV_CLI` is shared with `runToPrompt` and `detectExecutor`, which do look reachable, and
+      another session is active in this repo. Untangling it buys nothing functional today.
+- [ ] `.venv-validate/` is stale and non-functional. **Not removed**: it is gitignored content, and
+      the destructive-deletion rule says gitignored content means stop and ask. Either
+      `pnpm run validate:install` to rebuild it, or drop the directory together with the whole
+      external-validator subsystem - your call.
+
+The wider point stands, and got worse on inspection. Between the four dead validators, the two
+unread activation fixtures, the unused `SMOKE_PATH`/`ACCEPTANCE_PATH`, and this external-validator
+subsystem, a substantial share of this repo's apparent quality tooling has never executed once.
+
 - [ ] Same for `SMOKE_PATH` / `ACCEPTANCE_PATH` and their fixtures.
 
 ## Pending — not yet done in this audit

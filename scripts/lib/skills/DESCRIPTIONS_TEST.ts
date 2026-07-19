@@ -1,6 +1,7 @@
 import assert from "node:assert/strict"
 import test from "node:test"
 import { descriptionBoundaryErrors } from "../../validators/descriptionBoundaryErrors"
+import { descriptionSpecificityWarning } from "../../validators/descriptionSpecificityWarning"
 import { frontmatterDescriptionErrors } from "../../validators/frontmatterDescriptionErrors"
 import { collectSkillFrontmatter } from "./collectSkillFrontmatter"
 import { extractDescription } from "./extractDescription"
@@ -22,5 +23,16 @@ void test("every skill description has activation boundaries", () => {
   const failures = collectSkillFrontmatter().flatMap(({ name, frontmatter }) =>
     descriptionBoundaryErrors(extractDescription(frontmatter)).map((error) => `${name}: ${error}`),
   )
+  assert.deepEqual(failures, [], failures.join("\n"))
+})
+
+void test("every skill description is specific enough to activate", () => {
+  const failures = collectSkillFrontmatter()
+    .map(({ name, frontmatter }) => ({
+      name,
+      warning: descriptionSpecificityWarning(extractDescription(frontmatter)),
+    }))
+    .filter(({ warning }) => warning !== null)
+    .map(({ name, warning }) => `${name}: ${String(warning)}`)
   assert.deepEqual(failures, [], failures.join("\n"))
 })

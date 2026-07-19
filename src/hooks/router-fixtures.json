@@ -24,7 +24,32 @@
       "esto se ha quedado a medias"
     ],
     "stakeholder-recap": ["Conéctate a slack y mira los últimos mensajes de todo"],
-    "traffic-client": ["turn this HAR capture into a client for the invoice download endpoint"]
+    "traffic-client": ["turn this HAR capture into a client for the invoice download endpoint"],
+    "contract-ops": [
+      "hay que hacer contratos para esas 4 fechas",
+      "me han pasado la info que nos faltaba para el contrato a talavan",
+      "vale necesito terminar los contratos, puedes darme un overview de lo que tenemos?",
+      "vale nos falta el último contrato, este es diferente porque vamos 2 DJs",
+      "vale entonces todos los contratos están listos para mandarlos a talavan?"
+    ],
+    "agent-config": [
+      "Arregla mempalace está fallando en todo el ordenador",
+      "vale esa regla hazla global",
+      "una pregunta tenemos mempalace funcionando en este repo?",
+      "me podrias convertir esto en una regla o skill?"
+    ],
+    "environment-ops": [
+      "puedes moverte a la rama webinars y montar un docker o kubernetes local con eso?",
+      "vale hemos instalado este VPS para poder programar con claude desde cualquier lugar, por favor optimiza el sistema",
+      "conectate por ssh que va a ser nuestro servidor para desarrollar con claude",
+      "vale puedes hacer que este repo funcione en local con orbstack?",
+      "Desbloquea la lp 104.28.162.27 en nova.nubenode.com"
+    ],
+    "repo-modernization": [
+      "vale cambia el proyecto a pnpm",
+      "quiero migrar a typescript 7",
+      "vale quiero que apliques esto a este repo https://github.com/BusiRocket/baseline"
+    ]
   },
   "silent": {
     "_comment": "Real prompts that must NOT route. Bare acknowledgements cost tokens for nothing, and ordinary work must not be hijacked by a lane.",
@@ -35,7 +60,9 @@
       "hecho",
       "continua",
       "vale dame un prompt para seguir esto en otra sesión",
-      "me puedes dar un prompt para lovable explicando todo lo que hace el programa y para qué es?"
+      "me puedes dar un prompt para lovable explicando todo lo que hace el programa y para qué es?",
+      "lee el CLAUDE.md antes de construir el pipeline",
+      "sube todo a prod y al repo"
     ]
   }
 }

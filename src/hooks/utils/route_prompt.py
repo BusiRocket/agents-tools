@@ -41,12 +41,44 @@ ROUTES = [
         r"la sesi[oó]n anterior se qued)",
     ),
     (
+        "agent-config",
+        "Agent-configuration work. Change the durable config (rules, CLAUDE.md, "
+        "skills, memory), not just this session, and verify the change actually "
+        "loads rather than assuming it does.",
+        r"(mempalace|"
+        r"(actualiza|pon(lo|gas)?|a[ñn]ade) .{0,30}claude\.md|"
+        r"claude\.md .{0,20}(actualiz|regla|global)|"
+        r"esa regla (hazla|ponla) global|regla global|"
+        r"convertir esto en una (regla|skill)|"
+        r"(crea|haz|escribe) (una |un )?(regla|skill|hook)\b|"
+        r"ponlo como regla)",
+    ),
+    (
         "invoice-ops",
         "Use the invoice-quarter-close skill. Verify amounts and status against "
         "the live source; never infer them from stale context.",
         r"\b(factura|facturas|trimestre|iva\b|irpf|holded|movimientos|"
         r"ep[ií]grafe|hacienda|gastos? deducible|autonomo|aut[oó]nomo|"
         r"modelo 30[03]|modelo 111|cierre trimestral)\b",
+    ),
+    (
+        "contract-ops",
+        "Contract production. Collect the missing facts before drafting, and "
+        "confirm every date, place, fee and party against what the client sent.",
+        r"((generador|generar|hacer|redacta\w*|terminar|falta) .{0,25}contratos?|"
+        # "contrato a <place>" only. "contratos de datos" is a data contract, and
+        # "contratos para X" is too often software talk, so neither routes here.
+        r"contratos? a \w+|"
+        r"(el )?[uú]ltimo contrato|contratos? (listos|finales)|"
+        r"mandarlos (a|al) \w+)",
+    ),
+    (
+        "repo-modernization",
+        "Repo modernization. Apply the baseline or migration deliberately, then "
+        "run the project check and report what it says.",
+        r"(busirocket/baseline|github\.com/busirocket/baseline|"
+        r"cambia el proyecto a pnpm|migrar (el proyecto )?a pnpm|"
+        r"migrar a typescript ?7|typescript ?7\b)",
     ),
     (
         "traffic-client",
@@ -72,6 +104,16 @@ ROUTES = [
         r"no carga|no aparece|no sale|no me deja|da error|sale un error|"
         r"sale[n]? mal|aparece[n]? mal|se ve[n]? mal|"
         r"el ci .{0,20}falla|tarda much[oí]simo|se queda (lag|colgad|pillad))\b",
+    ),
+    (
+        "environment-ops",
+        "Environment/host work. Confirm which host and environment you are on "
+        "before changing anything, and never touch production without saying so.",
+        r"((conectate|conéctate|conecta) .{0,20}(ssh|nova\.|servidor)|"
+        r"acceso ssh|por ssh\b|"
+        r"(monta\w*|montes|levanta\w*) .{0,30}(docker|kubernetes|k8s|dev local)|"
+        r"funcione? en local con (orbstack|docker)|"
+        r"\bvps\b|desbloquea\w* .{0,30}(ip|nova\.))",
     ),
     (
         "release",

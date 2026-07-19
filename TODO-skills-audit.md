@@ -757,7 +757,23 @@ general rule: verify a failing check before trusting it, in both directions.
 ## Pending — not yet done in this audit
 
 - [ ] Merge the codex deep-pass findings (`scratchpad/findings.md`) into Round 1.
-- [ ] Extend the window to 30 days.
+- [x] Extended to 30 days (codex pass, `scratchpad/findings30.md`). Confirms the corrected headline
+      independently: 41.6% of 274 human sessions fired a skill over the month, against 43.0% in the
+      week. **It also corrects me on BRP.** Over 30 days BRP fired 14 times - `brp-plan` x6,
+      `brp-implement` x3, `brp-refactor` x2, `brp-code-quality` x1 - so "BRP never fires" was a
+      one-week artefact. The accurate statement is that BRP fired occasionally and then collapsed to
+      near-zero in the most recent week. The root `brp` router still has 0 invocations.
+- [x] Added four router lanes from the 30-day pass, using its narrow measured rules rather than the
+      tempting broad ones: `contract-ops`, `agent-config`, `environment-ops`, `repo-modernization`.
+      Codex also **rejected** two lanes on precision grounds - `generic-review` (46 matches, ~13%
+      precision, domain lanes must win) and a deterministic `job-search` lane (only 4 prompts). Both
+      rejections accepted.
+- [x] Measured lane precision by hand afterwards, which caught what the aggregate missed:
+      `contratos de datos` - data contracts, a software term - was routing to `contract-ops` via a
+      `contratos? (a|para|de)` alternation. Narrowed to `contrato a <place>`; the lane went 13 -> 7
+      matches, landing on codex's predicted 8. Final precision: `contract-ops` 7/7,
+      `repo-modernization` 8/9 (one long comms prompt mentions "typescript 7" in passing - left
+      alone rather than over-fitting the regex to a single case).
 - [ ] **Build the `invoice-ops` skill** - the router now flags the context (101 prompts) but there
       is still no skill behind it. Biggest single win left.
 - [ ] Build `lovable-sync` and `stakeholder-recap` skills (router lanes exist, skills do not).

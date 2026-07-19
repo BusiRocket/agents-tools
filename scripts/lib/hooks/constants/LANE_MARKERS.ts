@@ -9,4 +9,8 @@ export const LANE_MARKERS: Record<string, string> = {
   continuation: "Resuming earlier work",
   "stakeholder-recap": "Stakeholder-comms",
   "traffic-client": "brp-traffic-client",
+  "contract-ops": "Contract production",
+  "agent-config": "Agent-configuration work",
+  "environment-ops": "Environment/host work",
+  "repo-modernization": "Repo modernization",
 }

@@ -9,7 +9,7 @@ cat <<'JSON'
 {
   "hookSpecificOutput": {
     "hookEventName": "SessionStart",
-    "additionalContext": "BRP workflow active. For non-trivial work: use /brp-plan before editing. Always include validation commands in deliverables. Use /brp-review as a final self-check. Each brp-* skill has its own allow-list for tools."
+    "additionalContext": "BRP active. Deliverables state the command that verifies them; do not claim done without running it. Prefer the skill for a task over improvising: brp-traffic-client (captured traffic to HTTP client), brp-release (versioned release), brp-docs (docs and ADRs)."
   }
 }
 JSON

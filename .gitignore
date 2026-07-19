@@ -25,3 +25,7 @@ dist/
 /.cocoindex_code/
 eslint-report.json
 firebase-debug.log
+
+# Python bytecode from hook helpers
+__pycache__/
+*.pyc

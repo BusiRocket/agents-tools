@@ -210,9 +210,20 @@ work, ops sessions. Frustration cluster `not_done_claimed` (8 hits) maps directl
 
 **TODO:**
 
-- [ ] Extend `verify.sh` to detect `Makefile:check`, `just check`, `composer check`, `cargo check`,
-      `pytest`, so non-Node repos are covered.
-- [ ] Add `check` scripts to the repos that lack them (`vexa`, `contratos`, …).
+- [x] Extended `verify.sh`. It now recognises a `check` target in `package.json`, `composer.json`,
+      `justfile`, or `Makefile`, in that order. **Opt-in is preserved deliberately**: a repo opts in
+      by defining `check` in whatever build system it uses, so the gate never invents a command and
+      never runs an arbitrary build on Stop. `cargo check` and bare `pytest` were considered and
+      rejected for exactly that reason - they would run without the repo having opted in. Verified
+      in all four directions: blocks on a failing check for node/php/make, stays silent when no
+      `check` exists, stays silent when the check passes, and stays silent when the session edited
+      nothing. Coverage of the active repos: `vexa`, `intelifactu`, `contratos`, `zerohedge-mcp`
+      already had one; `verticagtm` (104 sessions) has `package.json` but no `check` script and is
+      still uncovered.
+- [ ] Add a `check` script to `verticagtm` - the largest active repo still outside the gate.
+- [ ] Move `verify.sh` into `src/hooks/` so it is versioned, linked by `hooks:link`, and covered by
+      `hooks:test`. It currently lives only in `~/.claude/hooks/`, unmanaged - the same condition
+      that let the dead SessionStart hook rot unnoticed. Backup at `verify.sh.bak-*`.
 - [ ] Consider promoting `superpowers:verification-before-completion` into the SessionStart
       injection — it fired **0** times all week.
 

@@ -24,9 +24,19 @@ Validate inputs consistently without adding validation libraries.
 
 ## Recommended helpers (examples)
 
-- `utils/validation/isRecord.ts` -> `value is Record<string, unknown>`
-- `utils/validation/coerceFirstString.ts` -> `unknown -> string | null`
+- `utils/validation/isRecord.ts` -> `value is Record<string, unknown>` (arrays are not records; exclude them)
+- `utils/validation/coerceFirstString.ts` -> `unknown -> string | null` (takes the first entry when given a string array)
 - `utils/validation/coerceNumber.ts` -> `unknown -> number | null`
+- `utils/validation/isNonEmptyString.ts` -> `value is string`
+
+Guards must be pure and declare a type predicate (`value is T`) so narrowing survives the call site.
+
+## Zod (when the project already uses it)
+
+- Prefer `.safeParse()` over `.parse()` at boundaries; branch on `result.success` instead of catching.
+- Derive the type from the schema with `z.infer<typeof Schema>`; never hand-write a parallel interface.
+- Keep schemas in `types/<area>/`, named `<Thing>Schema`, exported alongside their inferred type.
+- Use `result.error.format()` to map issues onto field-level messages.
 
 ## Rules
 

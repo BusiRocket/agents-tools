@@ -23,6 +23,8 @@ Route handlers must be thin: validate input, call service, return response. Cano
 
 - Route handlers are **not cached by default**.
 - Only `GET` can opt into caching.
+- Opt in or out explicitly with route segment config: `export const revalidate = 60` for time-based
+  revalidation, `export const dynamic = "force-dynamic"` to force per-request execution.
 
 ## Cache Components Note
 

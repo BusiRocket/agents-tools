@@ -23,3 +23,7 @@ This rule references:
 - New Tauri command: (1) command file, (2) register in `lib.rs`, (3) add to `commands.allow` in permissions.
 - Use `#[cfg]` (not `cfg!`) for platform-specific APIs and imports.
 - Prefer bounded async channels and explicit cancellation/timeout paths.
+- Validate with `cargo check` then `cargo clippy` after meaningful changes; a Rust-only crate has no
+  `pnpm run check` to fall back on.
+- Outside Tauri (crates, CLIs, backend services) the same layout applies under plain `src/`, not
+  `src-tauri/src/`.

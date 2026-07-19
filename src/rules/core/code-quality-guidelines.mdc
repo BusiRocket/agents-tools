@@ -46,6 +46,8 @@ Split immediately if any is true:
 - Any helper function inside a component/hook.
 - Inline `type`/`interface` outside `types/`.
 - File > ~80 lines and still growing.
+- Cognitive complexity above ~15 in a single function or hook.
+- A literal collection past ~10-15 entries sitting inside a logic file.
 
 ## Extraction decision tree
 

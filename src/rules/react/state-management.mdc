@@ -39,6 +39,14 @@ export function SettingsModal() {
 }
 ```
 
+## Store Organization
+
+- One store per domain (`uiStore`, `workspaceStore`, `statusLogStore`); do not accumulate a single global store.
+- Split a store when it grows past one coherent responsibility.
+- Define actions inside the store, not in the components that call them.
+- Subscribe with selectors (`useUiStore((s) => s.field)`). Subscribing to the whole store re-renders on every unrelated change.
+- Do not put server state in a client store; use a query layer (TanStack Query/SWR) for cache and sync.
+
 ## Aggregate Hooks
 
 Consider aggregate hooks to reduce store coupling when many components need related state slices.

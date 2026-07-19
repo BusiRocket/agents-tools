@@ -2,8 +2,9 @@ import path from "node:path"
 import { HOME } from "./HOME"
 import { ROOT } from "./ROOT"
 import { findIde } from "../operations/findIde"
+import type { RuleTarget } from "../types/RuleTarget"
 
-export const IDE_RULE_TARGETS = [
+export const IDE_RULE_TARGETS: RuleTarget[] = [
   {
     ide: findIde("cursor"),
     cleanup: { dir: path.join(HOME, ".cursor", "rules"), prefix: "busirocket-" },
@@ -34,7 +35,6 @@ export const IDE_RULE_TARGETS = [
   {
     ide: findIde("codex"),
     links: [
-
       {
         source: path.join(ROOT, "dist", "global", "codex", "rules", "default.rules"),
         target: path.join(HOME, ".codex", "rules", "default.rules"),

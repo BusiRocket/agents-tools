@@ -9,8 +9,8 @@ export const stripFrontmatterKeys = (
 
   for (const line of lines) {
     const keyMatch = /^([A-Za-z_][\w-]*):/.exec(line)
-    if (keyMatch) {
-      const key = keyMatch[1]
+    const key = keyMatch?.[1]
+    if (key !== undefined) {
       if (stripSet.has(key)) {
         skipUntilNextKey = true
         continue

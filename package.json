@@ -35,7 +35,7 @@
     "sync": "pnpm install && pnpm run build && pnpm run check && pnpm run rules:link && pnpm run skills:link",
     "update": "pnpm update && pnpm run sync",
     "validate:install": "python3 -m venv .venv-validate && .venv-validate/bin/pip install skills-ref",
-    "hooks:test": "tsx --test scripts/lib/hooks/ROUTER_TEST.ts"
+    "hooks:test": "tsx --test scripts/lib/hooks/ROUTER_TEST.ts scripts/lib/hooks/DOCTOR_TEST.ts"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

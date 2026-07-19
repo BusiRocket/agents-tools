@@ -547,8 +547,11 @@ rejecting ceremony ("no se busca un plan").
 
 **TODO:**
 
-- [ ] Either wire `policy.json` into the compile step or delete it. Right now it is documentation
-      masquerading as configuration.
+- [x] Deleted `src/core/policy.json`. Zero readers, never shipped to `dist`, and actively
+      misleading: it declared `alwaysInclude: [brp-plan, brp-review]` and `planRequired: true`,
+      describing a routing system that does not exist and that contradicts both the complement
+      decision and the user's own "no se busca un plan". Recoverable from git history if the
+      intent-to-skill-chain mapping is ever wanted.
 
 ### Other confirmed findings
 
@@ -600,9 +603,11 @@ injection, which is a fight they cannot win.
 - [ ] Decide the long-term mechanism: install the plugin properly, or add a `hooks:link` step
       mirroring `skills:link` so hooks reach `~/.agents/hooks/` and settings points there. Current
       wiring works but hardcodes the repo path.
-- [ ] Nothing verifies that a shipped hook is actually reachable. `check` proves the script behaves,
-      not that anything invokes it. Consider a doctor script that asserts every hook in `hooks.json`
-      is registered somewhere live.
+- [x] Built the reachability doctor: `findUnreachableHooks.ts` + `DOCTOR_TEST.ts`, wired into
+      `hooks:test`. Asserts every hook declared in `hooks.json` is invocable from a live config.
+      Skips silently when no `~/.claude/settings.json` exists, so CI is unaffected.
+- [x] Registered `session-start-brp-reminder.sh` live too. It is the injection layer BRP never had,
+      and now names only the surviving uncontested skills.
 
 ## RC-11 - a colon in a YAML description silently voids it
 

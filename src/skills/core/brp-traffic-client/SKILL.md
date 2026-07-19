@@ -16,6 +16,10 @@ argument-hint: [capture-path-or-target-operation]
 
 - Treat captured traffic as evidence, not as a specification.
 - Derive the protocol before generating code; a single successful replay proves nothing.
+- A response that parses is not a correct response. Server-side view state, cached grids, and echoed
+  result blocks all return HTTP 200 with the wrong data.
+- Absence of a record in one endpoint is not proof it does not exist. Establish what the source
+  covers before reporting anything as missing.
 - Start from the minimum header set and add only headers proven necessary. Never bulk-copy DevTools
   headers to make a failing replay pass.
 - Keep browser or CDP steps only where page execution is genuinely required: interactive login,
@@ -34,9 +38,14 @@ argument-hint: [capture-path-or-target-operation]
 4. Infer the protocol: stable versus dynamic values, token lifetime, cursor semantics, signing.
 5. Pick an authentication strategy, preferring documented auth over scraped session material.
 6. Implement one read-only vertical slice and validate it against a known browser result.
-7. Add resilience only where the capture shows it is needed: refresh, pagination, retry, rate limit.
-8. Test beyond replay: fresh session, expired token, pagination boundaries, header reduction.
-9. Deliver the client plus an endpoint map, `.env.example`, and a recapture procedure.
+7. Probe the parameter space before looping over it: which filters are mandatory, which widen the
+   result set when omitted, and which pairs the server itself declares valid.
+8. Add resilience only where the capture shows it is needed: refresh, pagination, retry, rate limit.
+9. Test beyond replay: fresh session, expired token, pagination boundaries, header reduction, and
+   two different queries back to back on one session.
+10. Establish the source's coverage, and cross-check any absence against a second source before
+    acting on it.
+11. Deliver the client plus an endpoint map, `.env.example`, and a recapture procedure.
 
 ## Output
 
@@ -49,3 +58,5 @@ argument-hint: [capture-path-or-target-operation]
   auth and dynamic-value tracing, validation matrix.
 - `references/browser-to-http-migration.md` — replacing an existing browser automation, hybrid CDP
   bridges, and failure-mode diagnosis when direct replay breaks.
+- `references/stateful-and-bulk-clients.md` — server-side view state, mandatory versus widening
+  filters, source coverage limits, and making a long bulk sweep cheap and restartable.

@@ -42,6 +42,8 @@ background polling unless they participate in the target operation.
 | Pagination   | Cursor, offset, page, date range, continuation token?        |
 | Stability    | Public and documented, private and stable, private and thin? |
 | Side effects | Read-only, idempotent write, destructive write?              |
+| Coverage     | Which record classes does it exclude? Which date range?      |
+| Filters      | Which are mandatory? Which widen results when omitted?       |
 
 ## Header reduction
 
@@ -95,6 +97,10 @@ For each nonce, signature, hash, timestamp, or opaque token:
 - a repeated run from a new process
 - a run after fresh session acquisition
 - output parity with the UI for a representative sample
+- **two different queries back to back on one session**, asserting the second does not return the
+  first one's data (see `stateful-and-bulk-clients.md`)
+- **a known-absent case**, confirming the client reports "not found" rather than the previous
+  result, and that the caller can tell "absent" from "out of this source's scope"
 
 For downloads also validate filename and content disposition, MIME type, file size, interrupted
 download behavior, and checksum or parseability.

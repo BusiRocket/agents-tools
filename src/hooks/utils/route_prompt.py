@@ -42,8 +42,8 @@ ROUTES = [
     ),
     (
         "invoice-ops",
-        "Invoice/tax-ops context. Reconcile against the source of truth before "
-        "reporting; never infer an amount or a status from stale context.",
+        "Use the invoice-quarter-close skill. Verify amounts and status against "
+        "the live source; never infer them from stale context.",
         r"\b(factura|facturas|trimestre|iva\b|irpf|holded|movimientos|"
         r"ep[ií]grafe|hacienda|gastos? deducible|autonomo|aut[oó]nomo|"
         r"modelo 30[03]|modelo 111|cierre trimestral)\b",

@@ -163,9 +163,9 @@ Recurring task types with **no** covering skill:
 
 **TODO:**
 
-- [ ] Write `invoice-quarter-close` skill. Trigger line draft: _"Use when closing a VAT quarter,
-      chasing missing invoices, reconciling bank movements, or classifying expenses per company.
-      Triggers: `trimestre`, `IVA`, `facturas que faltan`, `movimientos`, `Holded`,
+- [x] DONE. Wrote `invoice-quarter-close` skill. Original trigger draft: _"Use when closing a VAT
+      quarter, chasing missing invoices, reconciling bank movements, or classifying expenses per
+      company. Triggers: `trimestre`, `IVA`, `facturas que faltan`, `movimientos`, `Holded`,
       `cerrar el trimestre`."_
 - [ ] Write `lovable-sync` skill (both directions, repo ↔ Lovable).
 - [ ] Write `stakeholder-recap` skill (read channel → diff vs commits → post recap).
@@ -360,7 +360,7 @@ artifacts, not the methodology.
 | 3   | Purge `plugins/cache` duplicates                                     | S      | Cleaner selection ranking                    |
 | 4   | Extend `verify.sh` beyond Node                                       | S      | Kills the `not_done_claimed` cluster         |
 | 5   | Add `/brp-*` slash commands or drop `brp` router                     | S      | Manual escape hatch                          |
-| 6   | Write `invoice-quarter-close` skill                                  | L      | Covers the single largest recurring workload |
+| 6   | ~~Write `invoice-quarter-close` skill~~ DONE                         | L      | Covers the single largest recurring workload |
 | 7   | Write `lovable-sync` skill                                           | M      | Covers vexa's repeated procedure             |
 | 8   | Write `stakeholder-recap` skill                                      | M      | Covers verticagtm/zerohedge weekly need      |
 | 9   | Re-run this audit after changes and compare firing rate              | S      | Measures whether any of it worked            |
@@ -569,6 +569,63 @@ Codex's own frustration pass: 53 genuine corrections across 34 sessions, 118 reg
 discarded. Top mode: **wrong fact / domain assumption (12)**, then ignored scope constraint (11),
 then incomplete work (8). Broadly agrees with my smaller pass but ranks factual error above
 verification failure.
+
+## RC-10 - the plugin was never installed, so no hook in this repo has ever run
+
+Found while checking whether the new router would actually fire.
+
+- `~/.claude/settings.json` `enabledPlugins` does not list this plugin.
+- `~/.claude/plugins/marketplaces/` has no entry for it.
+- No `brp` file exists anywhere under `~/.claude/plugins/`.
+
+Skills still work, because `skills:link` symlinks them:
+`~/.claude/skills/brp-debug -> ~/.agents/skills/core/brp-debug`. **Hooks have no such link - they
+ship only inside the plugin.** So `session-start-brp-reminder.sh` has never executed a single time,
+and the router registered in `src/hooks/hooks.json` would never have executed either.
+
+This retroactively explains RC-8: a SessionStart hook pointing at nonexistent `/brp-plan` and
+`/brp-review` commands sat there harmlessly because nothing ever ran it. It also means the BRP
+family had no enforcement layer at all - only 13 descriptions competing against superpowers' hooked
+injection, which is a fight they cannot win.
+
+**DONE:**
+
+- [x] Registered the router directly in `~/.claude/settings.json` under `UserPromptSubmit`, pointing
+      at `/Users/cristiandeluxe/p/agents-tools/src/hooks/user-prompt-skill-router.sh`. Backed up
+      first to `settings.json.bak-20260719-174807`. Verified live: JSON valid, hook fires, directive
+      injected.
+
+**Still open:**
+
+- [ ] Decide the long-term mechanism: install the plugin properly, or add a `hooks:link` step
+      mirroring `skills:link` so hooks reach `~/.agents/hooks/` and settings points there. Current
+      wiring works but hardcodes the repo path.
+- [ ] Nothing verifies that a shipped hook is actually reachable. `check` proves the script behaves,
+      not that anything invokes it. Consider a doctor script that asserts every hook in `hooks.json`
+      is registered somewhere live.
+
+## RC-11 - a colon in a YAML description silently voids it
+
+The new `invoice-quarter-close` skill first shipped with:
+
+```yaml
+description:
+  Close a VAT quarter across the user's companies: chase missing invoices, ...
+```
+
+The skill listing rendered it as `invoice-quarter-close: Quarter close` - the H1, not the
+description. A plain multi-line YAML scalar cannot contain `colon + space`; the parser gave up and
+something upstream fell back to the heading. A skill whose description does not parse cannot be
+selected by description at all, and fails silently with no warning.
+
+Rewrote the sentence without the colon; the listing then showed the full description. Audited all 13
+BRP skills for the same pattern - all clean.
+
+**TODO:**
+
+- [ ] Add a validator to `skills:validate` that parses each `SKILL.md` frontmatter with a real YAML
+      parser and fails on an unparseable or empty `description`. This class of bug is invisible
+      otherwise.
 
 ## Pending — not yet done in this audit
 

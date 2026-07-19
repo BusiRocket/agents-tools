@@ -165,17 +165,34 @@ Overlapping pairs, all won by superpowers: `brp-plan` ↔ `writing-plans` · `br
 - [ ] Delete or archive the BRP skills that lose their lane, so the catalogue stops diluting
       selection.
 
-### RC-4 — 286 skills installed, most of them duplicate plugin-cache copies
+### RC-4 — 286 skills diluting selection — **FALSE, retracted**
 
-`~/.claude/plugins/cache/` holds ~30 `temp_git_*` / `temp_subdir_*.clone` directories re-exposing
-the same skills. Selection is choosing from a catalogue with heavy near-duplicates, which flattens
-the ranking.
+~~`~/.claude/plugins/cache/` holds ~30 `temp_git_*` / `temp_subdir_*.clone` directories re-exposing
+the same skills, flattening the ranking.~~
+
+**Measured, and it is wrong.** The 38 temp directories contain **zero** `SKILL.md` files, so they
+expose nothing and dilute nothing. And of 1188 `SKILL.md` files on disk under the cache, only **41**
+are reachable from the 17 enabled plugins. The "286 skills" number came from globbing the
+filesystem, not from what the model is actually offered.
+
+This is the **fourth** instance of one error in this audit: measuring an artefact instead of the
+thing it supposedly represents. The others were the 400-char clamp (my digest, not the source), the
+627 security reviews and 103 classifiers (self-contained prompts, not failed triggers), and the 5.4%
+headline (machine sessions in the denominator). All four inflated the sense that the system was
+broken. **Rule for Round 2: measure what is exposed at runtime, never what is on disk.**
+
+The temp directories were still 178 MB of orphaned clone artefacts, so they were removed as disk
+hygiene - explicitly not as a selection fix. Both destructive-deletion gates were run first and
+passed cleanly: 0 untracked or ignored entries across all 38, and no live process holding them (the
+initial `lsof` hit was my own shell's cwd). Afterwards: 1188 `SKILL.md` still present, the four real
+marketplaces intact, `check` green, router still firing.
 
 **TODO:**
 
-- [ ] Audit `~/.claude/plugins/cache/` and purge stale `temp_git_*` / `*.clone` dirs. ⚠️ Follow the
-      destructive-deletion rule first (`git status --ignored`, `lsof +D`).
-- [ ] Count skills after cleanup; target < 60 reachable.
+- [x] Purged the 38 orphaned `temp_git_*` / `temp_subdir_*` dirs after running both safety gates.
+      501 MB -> 323 MB.
+- [x] Counted what is reachable: 41 skills from enabled plugins, plus 14 user-linked skills. Already
+      well under the "< 60" target, which was set against a number that was never real.
 - [ ] Three skills fired that are not in the current catalogue (`migrating-to-typescript-7`,
       `job-search`, `impeccable`) — confirm whether they still exist or were removed mid-week.
 

@@ -1,5 +1,5 @@
 ---
-globs: "**/*.js,**/*.jsx,**/*.ts,**/*.tsx,**/*.mjs,**/*.cjs"
+globs: "**/*.native.ts,**/*.native.tsx,**/metro.config.*,**/app.config.ts,**/expo/**"
 description: React Native / Expo JS/TS standards (state, performance, operations)
 alwaysApply: false
 ---

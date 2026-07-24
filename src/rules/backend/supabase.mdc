@@ -1,5 +1,5 @@
 ---
-globs: "**/*.ts,**/*.tsx"
+globs: "**/supabase/**,**/*supabase*.ts,**/*supabase*.tsx"
 description: Supabase access rule (only if Supabase is added)
 alwaysApply: false
 ---

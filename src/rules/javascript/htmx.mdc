@@ -1,5 +1,5 @@
 ---
-globs: "**/*.js,**/*.jsx,**/*.ts,**/*.tsx,**/*.mjs,**/*.cjs"
+globs: "**/*.html,**/*.htm"
 description: HTMX standards (server-driven interactivity with minimal JS)
 alwaysApply: false
 ---

@@ -1,5 +1,5 @@
 ---
-globs: "**/*.ts,**/*.tsx"
+globs: "**/payload.config.*,**/collections/**,**/*payload*.ts"
 description: Payload CMS + MongoDB standards (collections, hooks, access, integrations)
 alwaysApply: false
 ---

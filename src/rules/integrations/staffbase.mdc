@@ -1,5 +1,5 @@
 ---
-globs: "**/*.ts,**/*.tsx"
+globs: "**/widget/**,**/configuration/**"
 description: Staffbase platform – widgets, APIs/SDK, build and runtime (use when working on Staffbase projects)
 alwaysApply: false
 ---

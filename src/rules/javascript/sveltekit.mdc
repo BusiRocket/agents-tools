@@ -1,5 +1,5 @@
 ---
-globs: "**/*.js,**/*.jsx,**/*.ts,**/*.tsx,**/*.mjs,**/*.cjs"
+globs: "**/*.svelte"
 description: SvelteKit standards (SSR-first, server boundaries, progressive enhancement)
 alwaysApply: false
 ---

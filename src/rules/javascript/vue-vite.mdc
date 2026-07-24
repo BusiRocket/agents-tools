@@ -1,5 +1,5 @@
 ---
-globs: "**/*.js,**/*.jsx,**/*.ts,**/*.tsx,**/*.mjs,**/*.cjs"
+globs: "**/*.vue"
 description: Vue + Vite standards (Composition API, routing/state boundaries, perf)
 alwaysApply: false
 ---

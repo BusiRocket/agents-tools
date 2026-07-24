@@ -1,5 +1,5 @@
 ---
-globs: "**/*.js,**/*.jsx,**/*.ts,**/*.tsx,**/*.mjs,**/*.cjs"
+globs: "**/background.ts,**/background.js,**/content-script*.ts,**/content-script*.js,**/*extension*/**"
 description: Chrome extension MV3 standards (permissions, messaging, CSP, service worker)
 alwaysApply: false
 ---

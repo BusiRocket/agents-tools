@@ -71,8 +71,10 @@ Split immediately if any is true:
 - [ ] No unused imports.
 - [ ] No circular dependencies.
 - [ ] File size 10–50 lines (max ~100).
-- [ ] One function/type/hook per file.
-- [ ] Types in `types/<area>/`; imports per index/barrel policy in this file (no wildcard barrels).
+- [ ] One exported symbol per file, and the file name matches it exactly.
+- [ ] No helper, private, or internal functions defined alongside it.
+- [ ] Types in `types/<area>/`; no inline type aliases.
+- [ ] Every dependency is an explicit import; imports per index/barrel policy in this file (no wildcard barrels).
 
 ## Common issues and fixes
 

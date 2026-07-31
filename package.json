@@ -6,7 +6,7 @@
   "description": "Agent workflow engine + rules/skills orchestrator for high-quality code across IDEs",
   "scripts": {
     "build": "pnpm run clean:dist && pnpm run rules:compile && pnpm run skills:compile && pnpm run plugins:compile",
-    "check:all": "pnpm run type-check && pnpm run format && pnpm run lint:fix && pnpm run rules:check && pnpm run skills:validate && pnpm run skills:test && pnpm run link:test && pnpm run hooks:test && pnpm run skills:lint",
+    "check:all": "pnpm run type-check && pnpm run format && pnpm run lint:fix && pnpm run rules:check && pnpm run rules:test && pnpm run skills:validate && pnpm run skills:test && pnpm run link:test && pnpm run hooks:test && pnpm run skills:lint",
     "check:ci": "pnpm run check:all",
     "check": "pnpm run check:all",
     "format:check": "prettier --check .",
@@ -16,6 +16,7 @@
     "clean:dist": "node -e \"require('node:fs/promises').rm('dist', { recursive: true, force: true })\"",
     "rules:check": "tsx scripts/bin/run-compile-rules.ts --check",
     "rules:compile": "tsx scripts/bin/run-compile-rules.ts",
+    "rules:test": "tsx --test scripts/commands/VERIFY_INDEX_ONLY_OUTPUT_TEST.ts",
     "rules:verify": "tsx scripts/commands/verifyRulesOutput.ts",
     "rules:link": "tsx scripts/bin/run-link-rules-global.ts",
     "skills:compile": "tsx scripts/bin/run-compile-skills.ts",

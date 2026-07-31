@@ -3,6 +3,11 @@ import { DEFAULT_MIN_REFS } from "../constants/DEFAULT_MIN_REFS"
 
 /**
  * DoD checks on index-only output string.
+ *
+ * Reference counting is scoped to the router index, because AGENTS.md inlines
+ * whole rule bodies above it and a rule that cross-references another rule file
+ * would otherwise read as a duplicate index entry.
+ *
  * @param {string} output
  * @param {{ maxChars?: number, minRefs?: number, refPattern?: RegExp, refLabel?: string }} options
  * @returns {{ ok: boolean, errors: string[] }}
@@ -24,11 +29,12 @@ export function verifyIndexOnlyOutput(
     errors.push('Output must not contain inline mdc blocks (no "```mdc")')
   }
 
-  if (!output.includes("## Rules index (router)")) {
+  const indexStart = output.indexOf("## Rules index (router)")
+  if (indexStart === -1) {
     errors.push('Output must include "## Rules index (router)"')
   }
 
-  const refMatches = output.match(refPattern)
+  const refMatches = output.slice(Math.max(indexStart, 0)).match(refPattern)
   const refs = refMatches ? [...new Set(refMatches)] : []
   if (refs.length < minRefs) {
     errors.push(

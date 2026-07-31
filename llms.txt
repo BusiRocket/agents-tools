@@ -40,6 +40,12 @@ A collection of reusable Agent Skills for TypeScript/React/Next.js/Rust/Tauri pr
 - brp-test: Design, add, or update validation for a change using deterministic tests and explicit manual checks when automation is not possible. Trigger when code exists and the next job is to prove correctness with unit, integration, end-to-end, or manual verification coverage. Do not use for planning the feature itself, debugging unclear failures, or final findings-first review.
   dist/skills/core/brp-test/SKILL.md
 
+- brp-todo-create: Build a project backlog from accessible Claude, Codex and Antigravity history by recovering every unfinished task, blocker, decision and completed milestone into TODO.md and TODO_LOG.md, with coverage tracked in TODO_HISTORY_INDEX.jsonl. Trigger when a repository has no usable backlog and the work is to audit past conversations and consolidate what they contain. Do not use for implementing the recovered work, for executing an existing backlog, or for summarizing a single conversation.
+  dist/skills/core/brp-todo-create/SKILL.md
+
+- brp-todo-work: Execute a project's existing TODO backlog end to end, advancing every safe actionable item until it is verified complete, blocked with evidence, or superseded, and recording closed work in TODO_LOG.md. Trigger when the task is to work through TODO.md, clear the backlog, or resume autonomous TODO execution in the current repository. Do not use for building a backlog from conversation history, for a single named bug fix or feature, or for review of already-finished work.
+  dist/skills/core/brp-todo-work/SKILL.md
+
 - brp-traffic-client: Turn observed application traffic into the smallest reliable programmatic client, and replace browser automation with direct HTTP calls once the protocol is understood. Trigger when the task involves HAR files, DevTools or CDP network exports, cURL or "Copy as fetch" output, proxy captures, or an existing Playwright/Puppeteer/browser-agent flow that is slow, brittle, or token-expensive. Do not use for documented public APIs with an official SDK, for UI testing where the browser is the subject under test, or for bypassing access controls.
   dist/skills/core/brp-traffic-client/SKILL.md
 

@@ -18,6 +18,14 @@
     "add unit and integration tests for this change",
     "validate this implementation with deterministic tests"
   ],
+  "brp-todo-create": [
+    "build a TODO backlog from our past agent conversations",
+    "consolidate project history into TODO.md and TODO_LOG.md"
+  ],
+  "brp-todo-work": [
+    "work through the TODO backlog and close what is safe",
+    "execute TODO.md until every actionable item is done or blocked"
+  ],
   "brp-traffic-client": [
     "build a client from this HAR capture",
     "stop using the browser and call the API directly"

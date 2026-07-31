@@ -43,6 +43,26 @@
       "write a technical architecture overview for this codebase"
     ]
   },
+  "brp-todo-create": {
+    "positive": [
+      "audit our Claude and Codex history and build a TODO backlog for this repo",
+      "recover every unfinished task from past conversations into TODO.md and TODO_LOG.md"
+    ],
+    "negative": [
+      "work through the existing TODO backlog and close what you can",
+      "implement the pending items listed in TODO.md"
+    ]
+  },
+  "brp-todo-work": {
+    "positive": [
+      "work through TODO.md and advance every safe actionable item",
+      "execute the existing backlog and record closed work in TODO_LOG.md"
+    ],
+    "negative": [
+      "build a backlog from our past Codex and Claude conversations",
+      "fix this specific bug with a minimal patch"
+    ]
+  },
   "brp-traffic-client": {
     "positive": [
       "turn this HAR capture into a client for the invoice download endpoint",

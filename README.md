@@ -11,7 +11,7 @@ BRP consolidates rules, skills, and an orchestration protocol into a single proj
 - A **Claude Code plugin** (`dist/plugins/claude/.claude-plugin/plugin.json`) with a marketplace
   manifest, bundled subagents, and opt-in hooks
 - A **multi-IDE rules exporter** for lightweight guidance layers
-- An **AgentSkills-compatible** skill collection (13 validated skills) with a Claude variant
+- An **AgentSkills-compatible** skill collection (15 validated skills) with a Claude variant
   (`dist/skills/`) and a portable variant (`dist/skills-portable/`, Anthropic-only frontmatter
   stripped) for non-Claude IDEs
 - A **multi-IDE skill linker** for popular agents/editors including Cursor, Claude Code, Codex,
@@ -39,7 +39,7 @@ generated config into `~/.codex` instead of symlinking to `dist`, so Codex remai
 ### As a Claude Code Plugin
 
 After `pnpm run build` the plugin lives at `dist/plugins/claude/` with manifests under
-`.claude-plugin/`, the 13 BRP skills flattened in `skills/`, the `brp-reviewer` subagent in
+`.claude-plugin/`, the 15 BRP skills flattened in `skills/`, the `brp-reviewer` subagent in
 `agents/`, and an opt-in SessionStart hook under `hooks/`. Install it by pointing Claude Code at the
 plugin root or by publishing the included `marketplace.json`. Then use `/brp-plan`,
 `/brp-implement`, `/brp-fix`, etc. The `brp` orchestrator skill is hidden from the `/` menu
@@ -69,6 +69,8 @@ stripped `dist/skills-portable/` variant.
 | `/brp-release`        | Commits since tag → Semver bump → Changelog → Tag      |
 | `/brp-rust-quality`   | Rust/Tauri quality, async and concurrency review       |
 | `/brp-code-quality`   | Audit and harden TS/Next quality gates                 |
+| `/brp-todo-create`    | History audit → TODO.md + TODO_LOG.md + coverage index |
+| `/brp-todo-work`      | Plan approval → Execute backlog → Evidence → Log       |
 
 ## Workflow Protocol (Non-Negotiable)
 
@@ -142,9 +144,9 @@ busirocket-agents-tools/
 └── package.json
 ```
 
-## Skills (13 validated)
+## Skills (15 validated)
 
-### Core Workflow Skills (9)
+### Core Workflow Skills (11)
 
 | Skill                | Purpose                                             |
 | -------------------- | --------------------------------------------------- |
@@ -157,6 +159,8 @@ busirocket-agents-tools/
 | `brp-debug`          | Symptom analysis, hypothesis, isolation, resolution |
 | `brp-docs`           | Documentation generation (README, API, ADR)         |
 | `brp-traffic-client` | Traffic capture to maintainable HTTP client         |
+| `brp-todo-create`    | Build a backlog and work log from agent history     |
+| `brp-todo-work`      | Execute an existing TODO backlog under a gated plan |
 
 ### Specialized (3)
 
@@ -271,7 +275,7 @@ Task > Project > Stack > Global
 | `pnpm run skills:package`       | Package compiled skills as zip artifacts                                 |
 | `pnpm run rules:verify`         | Verify index-only outputs (DoD + CLAUDE golden master)                   |
 | `pnpm run rules:check`          | Verify compiled output is current                                        |
-| `pnpm run skills:validate`      | Validate all 13 skills against AgentSkills spec                          |
+| `pnpm run skills:validate`      | Validate all 15 skills against AgentSkills spec                          |
 | `pnpm run skills:test`          | Run schema/idempotence/source-purity/snapshot/smoke tests                |
 | `pnpm run skills:llms`          | Generate `llms.txt` for skill discovery                                  |
 | `pnpm run skills:prompt`        | Generate XML prompt with all skills                                      |

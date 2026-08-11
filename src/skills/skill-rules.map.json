@@ -128,6 +128,13 @@
         "@rules/core/general.mdc",
         "@rules/core/boundaries.mdc"
       ]
+    },
+    "handoff": {
+      "rules": [
+        "@rules/core/agent-discipline.mdc",
+        "@rules/core/git-workflow.mdc",
+        "@rules/core/text-hygiene.mdc"
+      ]
     }
   }
 }

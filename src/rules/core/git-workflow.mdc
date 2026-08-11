@@ -36,3 +36,17 @@ benefit here.
   session before render`).
 - Do not commit secrets, `.env` files, or generated artifacts. If they are
   already tracked, flag it instead of committing more.
+
+## GitHub CLI (gh) quota hygiene
+
+API quota burns fastest on unshaped reads and per-item loops; shape every read.
+
+- Always pass `--json <fields>` on `gh` reads (`pr view`, `run list`, `issue
+  list`, ...). Never parse default human output, and never fetch fields you do
+  not use.
+- Avoid `gh api --paginate` on large collections; bound the read (`--limit`,
+  explicit page) instead.
+- Fetch a failed run's logs once (`gh run view <id> --log-failed`), save to a
+  file, and reuse the file; do not re-download per retry or per question.
+- Prefer one `gh search` or one `list --json` over a loop of per-item `view`
+  calls.

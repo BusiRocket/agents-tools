@@ -10,14 +10,16 @@ import { fileURLToPath } from "node:url"
  * the artifact that actually ships.
  *
  * @param {string} prompt - The user prompt to route.
+ * @param {string} [sessionId] - Session id for per-session lane idempotency;
+ *   omitted in most tests so every call routes statelessly.
  * @returns {string | null} - Injected additionalContext, or null if silent.
  */
-export const runRouterHook = (prompt: string): string | null => {
+export const runRouterHook = (prompt: string, sessionId?: string): string | null => {
   const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..")
   const hook = path.join(repoRoot, "src/hooks/user-prompt-skill-router.sh")
 
   const raw = execFileSync("bash", [hook], {
-    input: JSON.stringify({ prompt }),
+    input: JSON.stringify(sessionId ? { prompt, session_id: sessionId } : { prompt }),
     encoding: "utf8",
   }).trim()
 

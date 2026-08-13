@@ -1,5 +1,8 @@
 import assert from "node:assert/strict"
 import { execFileSync } from "node:child_process"
+import { randomUUID } from "node:crypto"
+import { rmSync } from "node:fs"
+import { tmpdir } from "node:os"
 import path from "node:path"
 import test from "node:test"
 import { fileURLToPath } from "node:url"
@@ -30,6 +33,22 @@ void test("every real prompt reaches its lane", () => {
 void test("acknowledgements and ordinary work stay silent", () => {
   for (const prompt of ROUTER_FIXTURES.silent.prompts) {
     assert.equal(runRouterHook(prompt), null, `expected silence for: ${prompt}`)
+  }
+})
+
+void test("a lane fires at most once per session", () => {
+  const prompt = ROUTER_FIXTURES.routes.debug?.[0]
+  assert.ok(prompt, "debug lane needs at least one fixture prompt")
+  const first = `router-test-${randomUUID()}`
+  const second = `router-test-${randomUUID()}`
+  try {
+    assert.notEqual(runRouterHook(prompt, first), null, "first prompt in a session must route")
+    assert.equal(runRouterHook(prompt, first), null, "repeat in the same session must stay silent")
+    assert.notEqual(runRouterHook(prompt, second), null, "a new session must route again")
+  } finally {
+    for (const id of [first, second]) {
+      rmSync(path.join(tmpdir(), `claude-skill-router-${id}`), { force: true })
+    }
   }
 })
 

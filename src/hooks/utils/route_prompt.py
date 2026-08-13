@@ -8,11 +8,18 @@ costs zero tokens.
 Routing anchors on domain nouns rather than verbs. The user's imperative verbs
 ("mira", "haz", "dame") are too ambiguous to route on: "mira a ver si" means
 investigate, "mira los mensajes de" means read comms. Nouns disambiguate.
+
+Each lane fires at most once per session: repeating the same directive on every
+matching prompt wastes tokens after the first injection. Fired lanes are
+tracked in a per-session temp file; without a session_id the hook stays
+stateless and fires every time.
 """
 
 import json
+import os
 import re
 import sys
+import tempfile
 
 # Prompts that only acknowledge or resume. Routing these wastes tokens, since
 # the work was already established by an earlier turn.
@@ -158,14 +165,40 @@ MULTI_VERB = re.compile(
 )
 
 
-def build_context(prompt):
-    if MACHINE.match(prompt) or CONTINUATION.match(prompt.strip()):
+def session_state_path(session_id):
+    safe = re.sub(r"[^A-Za-z0-9_-]", "", str(session_id))
+    if not safe:
         return None
+    return os.path.join(tempfile.gettempdir(), f"claude-skill-router-{safe}")
 
+
+def read_fired_lanes(state_path):
+    try:
+        with open(state_path) as fh:
+            return set(fh.read().split())
+    except OSError:
+        return set()
+
+
+def record_fired_lane(state_path, lane):
+    try:
+        with open(state_path, "a") as fh:
+            fh.write(lane + "\n")
+    except OSError:
+        pass
+
+
+def build_context(prompt, fired_lanes):
+    if MACHINE.match(prompt) or CONTINUATION.match(prompt.strip()):
+        return None, None
+
+    lane = None
     notes = []
-    for _name, directive, pattern in COMPILED:
+    for name, directive, pattern in COMPILED:
         if pattern.search(prompt):
-            notes.append(directive)
+            if name not in fired_lanes:
+                lane = name
+                notes.append(directive)
             break
 
     if len(set(m.lower() for m in MULTI_VERB.findall(prompt))) >= 3:
@@ -174,7 +207,7 @@ def build_context(prompt):
             "confirm every one is done before finishing."
         )
 
-    return " ".join(notes) if notes else None
+    return lane, " ".join(notes) if notes else None
 
 
 def main():
@@ -186,9 +219,13 @@ def main():
     if not prompt.strip():
         return
 
-    context = build_context(prompt)
+    state_path = session_state_path(payload.get("session_id") or "")
+    fired_lanes = read_fired_lanes(state_path) if state_path else set()
+    lane, context = build_context(prompt, fired_lanes)
     if not context:
         return
+    if lane and state_path:
+        record_fired_lane(state_path, lane)
 
     json.dump(
         {

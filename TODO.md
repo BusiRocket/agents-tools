@@ -29,11 +29,6 @@
       `~/p/brain/topics/claude-skills-ecosystem.md`.
 - [ ] Diff `mattpocock/skills` (grill-with-docs, tdd, diagnose, improve-codebase-architecture)
       against the BRP equivalents for missing moves — e.g. ADR bar, diagnose state machine.
-- [ ] Wire the rebuilt external validator (`agentskills` in `.venv-validate`) into
-      `skills:validate`, or delete the orphan `detectValidator`/`runValidate` — verified 2026-08-13
-      that nothing calls either function. Known quirk if wiring: strictyaml rejects the
-      `argument-hint: [x]` flow syntax that Claude Code's own docs use, so those findings need
-      filtering.
 
 ## Supply chain and secrets
 

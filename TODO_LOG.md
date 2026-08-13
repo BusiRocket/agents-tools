@@ -258,19 +258,29 @@
 
 - [x] 2026-08-13 — **Skills:** External validator rebuilt; the "dead subsystem" blocker closed by
       the user's rebuild decision.
-  - Result: `.venv-validate` recreated from scratch (`pnpm run validate:install` over the moved
-    venv only reported "already satisfied" and left the old `busirocket-agents` shebangs, so the
-    directory was removed first); `agentskills --help` and a real `validate` run work. Side fixes
-    at the root: `.venv-validate/**` added to the eslint ignores (pip vendors `.js` files the
-    typed lint choked on). Residual fact filed in `TODO.md`: `detectValidator`/`runValidate` still
-    have zero callers, and strictyaml rejects the `argument-hint: [x]` syntax.
+  - Result: `.venv-validate` recreated from scratch (`pnpm run validate:install` over the moved venv
+    only reported "already satisfied" and left the old `busirocket-agents` shebangs, so the
+    directory was removed first); `agentskills --help` and a real `validate` run work. Side fixes at
+    the root: `.venv-validate/**` added to the eslint ignores (pip vendors `.js` files the typed
+    lint choked on). Residual fact filed in `TODO.md`: `detectValidator`/`runValidate` still have
+    zero callers, and strictyaml rejects the `argument-hint: [x]` syntax.
   - Evidence: `.venv-validate/bin/agentskills --help` prints usage; `pnpm run check` green.
 
 - [x] 2026-08-13 — **Skills:** Every description's "Trigger when" clause now opens before char 150,
       and a lint keeps it that way.
-  - Result: 12 of 13 descriptions rewritten (handoff was already at 148) so the activation
-    boundary survives listing truncation; first sentences compressed, boundaries preserved. New
+  - Result: 12 of 13 descriptions rewritten (handoff was already at 148) so the activation boundary
+    survives listing truncation; first sentences compressed, boundaries preserved. New
     `descriptionTriggerPositionError` validator wired into `DESCRIPTIONS_TEST.ts` enforces the
     limit; the audit item's "16 skills" count predates the 7-skill demotion.
-  - Evidence: commit 2cb270c; `pnpm run check` green (skills:lint passes the new test);
-    measured positions 132-146.
+  - Evidence: commit 2cb270c; `pnpm run check` green (skills:lint passes the new test); measured
+    positions 132-146.
+
+- [x] 2026-08-13 — **Skills:** External `agentskills` validator wired into `skills:validate`; the
+      orphan `detectValidator`/`runValidate` gained their callers.
+  - Result: `validatePortableSkills` runs the validator over `dist/skills-portable` (the emitter
+    already strips Anthropic-only frontmatter, so the strictyaml `argument-hint: [x]` quirk and
+    `paths`/`user-invocable` field rejections never surface — no finding filtering needed, which the
+    TODO item expected). Missing venv or missing dist degrade to an explicit warning, not a silent
+    pass. Negative test: a synthetic skill with a bogus frontmatter field fails the run.
+  - Evidence: `pnpm run skills:validate` prints `agentskills OK (13 skills, method: venv)`;
+    synthetic bad skill exits 1; `pnpm run check` exit 0.

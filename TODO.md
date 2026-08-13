@@ -27,8 +27,22 @@
       isolated contexts); if pass rates match, the skill adds nothing. Also pressure-test skill
       wording adversarially (Superpowers method). Source:
       `~/p/brain/topics/claude-skills-ecosystem.md`.
-- [ ] Diff `mattpocock/skills` (grill-with-docs, tdd, diagnose, improve-codebase-architecture)
-      against the BRP equivalents for missing moves — e.g. ADR bar, diagnose state machine.
+- [ ] Adopt into `brp-docs`: the ADR bar (hard to reverse + surprising + real trade-off, minimal
+      template, `docs/adr/NNNN-slug.md`) and the `CONTEXT.md` glossary format (opinionated terms,
+      avoid-lists, no implementation details). Full spec: `docs/mattpocock-skills-diff-2026-08.md`
+      section 1.
+- [ ] Adopt into the `brp` test lane: pre-agreed seams gate, red-before-green + vertical slicing,
+      the three test anti-patterns (implementation-coupled, tautological, side-channel), and the
+      boundaries-only mocking policy. Full spec: `docs/mattpocock-skills-diff-2026-08.md` section 2.
+- [ ] Adopt into the `brp` debug/fix lanes: the Phase-1 red-loop gate (no hypothesis without a run
+      command), the feedback-loop ladder, minimisation, 3-5 falsifiable hypotheses with a user
+      checkpoint, tagged debug logs, and the regression-seam judgment. Full spec:
+      `docs/mattpocock-skills-diff-2026-08.md` section 3.
+- [ ] Adopt into `brp-refactor`/`brp-plan`: git-hot-spot scoping, the deletion test, the candidate
+      report with strength badges and a hard stop before interface design, design-it-twice, and ADR
+      consultation. Resolve first the two named conflicts with the atomic-file rule and the
+      "preserve public interfaces" rule. Full spec: `docs/mattpocock-skills-diff-2026-08.md`
+      section 4.
 
 ## Supply chain and secrets
 

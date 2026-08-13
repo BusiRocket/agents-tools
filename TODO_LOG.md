@@ -317,3 +317,19 @@
     (192/1047 differing) via `git hash-object` vs `git ls-tree origin/main`; `skillkit --version`
     prints 1.24.0 from an interactive shell; `find ~/.claude/skills -type l ! -exec test -e {} \;`
     empty; backup of the 192 kept files in the session scratchpad.
+
+- [x] 2026-08-13 — **Skills:** `mattpocock/skills` diffed against the BRP equivalents; missing moves
+      catalogued and split into four bounded adoption items.
+  - Result: `docs/mattpocock-skills-diff-2026-08.md` records, per skill: the ADR bar and
+    `CONTEXT.md` glossary absent from `brp-docs` (which advertises ADRs but carries no ADR content);
+    the seams gate, red-before-green ordering, three named test anti-patterns and mocking policy
+    absent from the test lane; the Phase-1 red-loop gate, feedback-loop ladder and minimisation
+    phase absent from the debug lane (`brp-debug.md` step 2 is exactly the hypothesis-first move
+    Matt gates against); and the deletion test, candidate-report workflow and design vocabulary
+    absent from `brp-refactor`. Also recorded: where BRP is stronger (executed-examples rule,
+    test-strategy matrix, green-baseline gate, escalation routing) and two genuine conflicts
+    (atomic-file rule vs module depth; interface preservation vs deepening) that must be resolved
+    before adopting section 4.
+  - Evidence: report read from a shallow clone of `mattpocock/skills` (grilling, domain-modeling,
+    tdd, diagnosing-bugs, improve-codebase-architecture, codebase-design payloads) against
+    `src/skills` and `orchestrator/brp` references; four `[ ]` adoption items filed in `TODO.md`.

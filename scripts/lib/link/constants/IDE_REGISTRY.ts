@@ -29,10 +29,10 @@ export const IDE_REGISTRY: IdeRegistryEntry[] = [
     skillsBundle: "claude",
   },
   {
+    // Rules-only target: Codex reads skills from the canonical user directory.
     id: "codex",
     rootDir: CODEX_HOME,
-    skillsDir: path.join(CODEX_HOME, "skills"),
-    linkStrategy: "copy",
+    detectPaths: [CODEX_HOME, "/etc/codex"],
   },
   {
     id: "copilot",

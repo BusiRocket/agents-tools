@@ -18,6 +18,11 @@ export const processTarget = async (
     return false
   }
 
+  if (target.skillsDir === undefined || target.linkStrategy === undefined) {
+    console.log(`- ${target.id}: skipped (reads skills from the canonical directory)`)
+    return false
+  }
+
   await cleanGlobalPrefix(target.skillsDir, "busirocket-")
   await cleanGlobalPrefix(target.skillsDir, "brp-")
   await cleanGlobalPrefix(target.skillsDir, "brp")

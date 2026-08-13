@@ -62,3 +62,17 @@
   `URLSearchParams`, `AbortController`. Measured elsewhere: audit vulnerabilities
   17 -> 5. Fewer deps also shrinks the supply-chain surface. Source:
   `~/p/brain/topics/web-platform.md`.
+
+## Skills
+
+Routed here on 2026-08-13 because `BusiRocket/agents-skills` is **archived on
+GitHub and read-only**, so it can no longer carry a backlog. This repo is where
+skills have actually landed since `05c7024`.
+
+- [ ] Pilot skill-creator-style blind A/B evals on one BRP skill (with-skill vs
+  without-skill, isolated contexts); if pass rates match, the skill adds nothing.
+  Also pressure-test skill wording adversarially (Superpowers method). Source:
+  `~/p/brain/topics/claude-skills-ecosystem.md`.
+- [ ] Diff `mattpocock/skills` (grill-with-docs, tdd, diagnose,
+  improve-codebase-architecture) against the BRP equivalents for missing moves -
+  e.g. ADR bar, diagnose state machine.

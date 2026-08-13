@@ -20,8 +20,8 @@ update stale wording in place. Closed entries do not accumulate in the active ba
 ```md
 # TODO
 
-> Consolidated from the accessible Claude, Codex, and Antigravity project history. Last reviewed:
-> YYYY-MM-DD. History coverage: Complete | Partial.
+> Consolidated from the accessible Claude, Codex, Cursor, and Antigravity project history. Last
+> reviewed: YYYY-MM-DD. History coverage: Complete | Partial.
 >
 > States: `[ ]` pending · `[~]` partial or unverified · `[!]` blocked · `[x]` verified complete ·
 > `[-]` obsolete or superseded. Closed work moves to `TODO_LOG.md`.

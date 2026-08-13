@@ -1,12 +1,12 @@
 ---
 name: brp-todo-create
 description:
-  Build a project backlog from accessible Claude, Codex and Antigravity history by recovering every
-  unfinished task, blocker, decision and completed milestone into TODO.md and TODO_LOG.md, with
-  coverage tracked in TODO_HISTORY_INDEX.jsonl. Trigger when a repository has no usable backlog and
-  the work is to audit past conversations and consolidate what they contain. Do not use for
-  implementing the recovered work, for executing an existing backlog, or for summarizing a single
-  conversation.
+  Build a project backlog from accessible Claude, Codex, Cursor and Antigravity history by
+  recovering every unfinished task, blocker, decision and completed milestone into TODO.md and
+  TODO_LOG.md, with coverage tracked in TODO_HISTORY_INDEX.jsonl. Trigger when a repository has no
+  usable backlog and the work is to audit past conversations and consolidate what they contain. Do
+  not use for implementing the recovered work, for executing an existing backlog, or for summarizing
+  a single conversation.
 allowed-tools: Read, Grep, Glob, Edit, Write, Bash, TodoWrite, Task
 argument-hint: [repository-or-scope]
 ---
@@ -31,10 +31,11 @@ argument-hint: [repository-or-scope]
    owning source, not the generated output. Locate the project-owned `TODO.md`, `TODO_LOG.md` and
    `TODO_HISTORY_INDEX.jsonl`, ignoring vendor and generated ones.
 2. Inventory accessible history: Claude Code conversations and summaries, Codex tasks, sessions,
-   rollouts and memories, Antigravity sessions, tool calls and output, command output and errors,
-   plans, reports and handoffs, plus Git history that can confirm whether discussed work landed.
-   Process large histories in bounded batches with deterministic source coverage. Parallel agents
-   get non-overlapping source ranges; the coordinator deduplicates and verifies.
+   rollouts and memories, Cursor composer chats and message bubbles read from its state database
+   (SQLite, keyed by composer ID), Antigravity sessions, tool calls and output, command output and
+   errors, plans, reports and handoffs, plus Git history that can confirm whether discussed work
+   landed. Process large histories in bounded batches with deterministic source coverage. Parallel
+   agents get non-overlapping source ranges; the coordinator deduplicates and verifies.
 3. Reuse `TODO_HISTORY_INDEX.jsonl` so unchanged conversations are never reparsed. Load
    `references/history-index.md` for the record shape and the skip, resume and retry rules.
 4. Recover work semantically: requests never completed, work promised but not executed, partial

@@ -23,6 +23,11 @@ argument-hint: [repository-or-scope]
 - Report critical security or data-loss findings immediately, then continue the rest of the audit.
 - Never claim complete coverage from the histories that happened to be easy to read. Name what was
   unavailable, corrupted, truncated or only partially searchable.
+- Work discovered that belongs to a different project is filed in that project's own `TODO.md`,
+  following that repository's conventions and the same format contract, with a pointer to the
+  evidence. It never lands in the current backlog as if it were local work. When the target
+  repository is not accessible, record the item in the current `TODO.md` under a `Cross-project`
+  category, marked with the target repository and the smallest transfer action.
 
 ## Workflow
 
@@ -64,6 +69,7 @@ identifiers or session diary.
 - Return: pending, partial, blocked, completed and obsolete counts; categories created or changed;
   history coverage and inaccessible sources; conversations reused unchanged, newly parsed,
   incrementally extended, reparsed, partial, inaccessible and irrelevant; files modified; validation
-  performed; and any finding needing immediate human action.
+  performed; cross-project items filed with their target repositories; and any finding needing
+  immediate human action.
 - Show a focused diff summary for `TODO.md`, `TODO_LOG.md`, `TODO_HISTORY_INDEX.jsonl` and the
   instruction source. Do not dump the backlog or the index into chat.

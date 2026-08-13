@@ -14,6 +14,9 @@ argument-hint: [target-file-or-module]
 - **Never mix refactoring with feature changes.** These are separate tasks.
 - **Tests must pass at every step.** If they don't, the refactor is wrong.
 - **Preserve public interfaces.** Callers should not need to change.
+- The structural bar is the BusiRocket baseline: atomic files (one exported unit per file), explicit
+  boundaries, and the loaded code-quality rules. Repo-wide gates and the agent-ready documentation
+  standard are `brp-code-quality`'s job; do not bootstrap them mid-refactor.
 
 ## Workflow
 

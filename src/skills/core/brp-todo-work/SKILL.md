@@ -14,6 +14,10 @@ argument-hint: [scope-or-category]
 ## Rules
 
 - Scope is the current repository and its project-owned TODO files. English in every artifact.
+- Cross-project discoveries are the one exception to repository scope: work that belongs to another
+  project is filed in that project's own `TODO.md` as a bookkeeping write with an evidence pointer,
+  never executed from this run. When the target repository is not accessible, record it in the
+  current `TODO.md` under a `Cross-project` category marked with the target repository.
 - No commit, push, branch, or PR unless the user or project instructions authorize it.
 - Hosted CI, cloud builds, paid API calls, bulk backfills and scheduled jobs are external side
   effects. Prefer equivalent local validation and record the missing remote proof honestly.
@@ -74,8 +78,9 @@ Flaky checks get exactly one retry, so noise does not read as divergence.
 
 - Return: items verified already complete, completed this run, advanced or superseded, blockers with
   their smallest unblock action, validation commands and results including pre-existing failures,
-  `TODO_LOG.md` entries added, files changed, remote or metered actions taken or still needing
-  approval, and tokens spent per completed item.
+  `TODO_LOG.md` entries added, files changed, cross-project items filed with their target
+  repositories, remote or metered actions taken or still needing approval, and tokens spent per
+  completed item.
 - State the remaining `[ ]`, `[~]` and `[!]` counts, and for each remaining `[ ]` or `[~]` the
   concrete reason it could not be advanced. Size, elapsed time, context pressure or a preference for
   a fresh session make a task neither complete nor out of scope: report a checkpointed incomplete

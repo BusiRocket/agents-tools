@@ -815,3 +815,13 @@ subsystem, a substantial share of this repo's apparent quality tooling has never
       `hooks:test` and `skills:validate` as the safety net.
 - [ ] Re-run this audit in a week and compare the firing rate. The router changes the measurement:
       count sessions where the injected directive was followed, not just `Skill` tool calls.
+
+---
+
+## 2026-08-13 — backlog consolidation note
+
+The unchecked items in the "Pending" and "Open questions" sections above are now tracked in the repo
+backlog (`TODO.md`, with closed work in `TODO_LOG.md`). This file stays what it always was —
+append-only audit history — and is no longer a backlog. One extra data point for Round 2, recovered
+from the 2026-07-19 trigger-test fixtures: a plain "check this header on mobile" prompt fired no
+design skill, consistent with the documented 100% frontend miss rate.

@@ -62,8 +62,9 @@ ROUTES = [
     ),
     (
         "invoice-ops",
-        "Invoice and tax work. Verify amounts and status against the live "
-        "source (Holded, bank exports); never infer them from stale context.",
+        "Invoice and tax work. Load the invoice-quarter-close skill for the "
+        "method, and verify amounts and status against the live source "
+        "(Holded, bank exports); never infer them from stale context.",
         r"\b(factura|facturas|trimestre|iva\b|irpf|holded|movimientos|"
         r"ep[ií]grafe|hacienda|gastos? deducible|autonomo|aut[oó]nomo|"
         r"modelo 30[03]|modelo 111|cierre trimestral)\b",

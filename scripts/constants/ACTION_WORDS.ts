@@ -37,4 +37,6 @@ export const ACTION_WORDS = new Set([
   "designs",
   "builds",
   "routes",
+  "closes",
+  "reconciles",
 ])

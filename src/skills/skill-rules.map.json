@@ -68,6 +68,13 @@
         "@rules/core/boundaries.mdc"
       ]
     },
+    "invoice-quarter-close": {
+      "rules": [
+        "@rules/core/agent-discipline.mdc",
+        "@rules/core/security-baseline.mdc",
+        "@rules/core/general.mdc"
+      ]
+    },
     "handoff": {
       "rules": [
         "@rules/core/agent-discipline.mdc",

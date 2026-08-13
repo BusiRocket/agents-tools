@@ -1,11 +1,12 @@
 ---
 name: brp-plan
 description:
-  Produce a decision-complete implementation plan with discovery, milestones, risks, validation, and
-  acceptance criteria before code changes start. Trigger when the user asks for a plan, the scope is
-  high-risk or ambiguous, or multiple implementation paths involving project structure, design
-  patterns, or architecture need to be compared. Do not use for straightforward low-risk edits that
-  can be implemented immediately, active debugging, or final review after code is already written.
+  Produces a decision-complete implementation plan with discovery, milestones, risks, validation,
+  and acceptance criteria before code changes start. Trigger when the user asks for a plan, the
+  scope is high-risk or ambiguous, or multiple implementation paths involving project structure,
+  design patterns, or architecture need to be compared. Do not use for straightforward low-risk
+  edits that can be implemented immediately, active debugging, or final review after code is already
+  written.
 allowed-tools: Read, Grep, Glob, TodoWrite
 effort: high
 argument-hint: [feature-or-goal]

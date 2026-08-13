@@ -1,7 +1,7 @@
 ---
 name: brp-refactor
 description:
-  Refactor existing code into cleaner structure without changing behavior by splitting files,
+  Refactors existing code into cleaner structure without changing behavior by splitting files,
   extracting helpers, and preserving public interfaces with tight validation. Trigger when the goal
   is structural improvement with no feature change. Do not use for shipping new behavior, fixing
   unknown bugs, or final quality review of already-finished work.
@@ -14,4 +14,17 @@ argument-hint: [target-file-or-module]
 - **Never mix refactoring with feature changes.** These are separate tasks.
 - **Tests must pass at every step.** If they don't, the refactor is wrong.
 - **Preserve public interfaces.** Callers should not need to change.
-- Run the full test suite before and after, and compare results.
+
+## Workflow
+
+1. Run the test suite and record the passing baseline; a red baseline blocks the refactor.
+2. Map the responsibilities in the target and decide the extraction order.
+3. Apply one structural change at a time (split, extract, rename), fixing imports as you go.
+4. Re-run the tests after each step and compare against the baseline; revert the step if results
+   diverge.
+5. Finish with the full project check.
+
+## Output
+
+- Return: files created, moved, or changed, the before/after test results, and confirmation that
+  public interfaces and behavior are unchanged.

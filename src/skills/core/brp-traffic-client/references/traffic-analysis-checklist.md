@@ -2,6 +2,18 @@
 
 Use when triaging a capture or debugging a failed replay.
 
+## Contents
+
+- Accepted inputs
+- Capture quality
+- Endpoint inventory
+- Header reduction
+- Authentication tracing
+- Dynamic value tracing
+- Validation matrix
+- Write operations
+- Deliverable checklist
+
 ## Accepted inputs
 
 Any combination is workable; do not demand a HAR when a smaller artifact suffices.

@@ -1,11 +1,11 @@
 ---
 name: brp-fix
 description:
-  Reproduce and patch a known bug with a minimal diff, then verify the broken behavior stays fixed.
-  Trigger when the task is to implement a concrete bug fix and the likely cause is already narrow
-  enough to change code safely while preserving code quality and useful observability signals. Do
-  not use for open-ended root-cause investigations, behavior-preserving refactors, or broad
-  code-quality audits.
+  Reproduces and patches a known bug with a minimal diff, then verifies the broken behavior stays
+  fixed. Trigger when the task is to implement a concrete bug fix and the likely cause is already
+  narrow enough to change code safely while preserving code quality and useful observability
+  signals. Do not use for open-ended root-cause investigations, behavior-preserving refactors, or
+  broad code-quality audits.
 allowed-tools: Read, Grep, Glob, Edit, Write, Bash, TodoWrite
 argument-hint: [bug-description]
 ---
@@ -15,6 +15,8 @@ argument-hint: [bug-description]
 - Never fix without reproducing first. "I think this should fix it" is not enough.
 - Minimal diff only. Bug fixes are not the time for refactoring.
 - Always add a test for the case that was broken.
+- Escalate to `brp-debug` when the root cause is still unclear, or to `brp-plan` when the fix
+  expands beyond a minimal patch.
 
 ## Workflow
 

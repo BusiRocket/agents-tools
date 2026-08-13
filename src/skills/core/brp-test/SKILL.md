@@ -1,7 +1,7 @@
 ---
 name: brp-test
 description:
-  Design, add, or update validation for a change using deterministic tests and explicit manual
+  Designs, adds, or updates validation for a change using deterministic tests and explicit manual
   checks when automation is not possible. Trigger when code exists and the next job is to prove
   correctness with unit, integration, end-to-end, or manual verification coverage. Do not use for
   planning the feature itself, debugging unclear failures, or final findings-first review.

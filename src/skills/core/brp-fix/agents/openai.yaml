@@ -9,7 +9,7 @@ policy:
   allow_implicit_invocation: true
 busirocket:
   skill_class: workflow
-  requires_references: true
+  requires_references: false
   failure_mode:
     Escalate to brp-debug when the root cause is still unclear or to brp-plan when the fix expands
     beyond a minimal patch.

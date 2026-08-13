@@ -1,7 +1,7 @@
 ---
 name: handoff
 description:
-  Generate a handoff document that serializes the current working state so another session or agent
+  Generates a handoff document that serializes the current working state so another session or agent
   can resume from it without re-deriving anything. Trigger when the task is to hand off, pause, or
   transfer in-progress work, when context is running out mid-task, or when the user asks for a
   handoff, checkpoint, or session summary to continue elsewhere. Do not use for final delivery

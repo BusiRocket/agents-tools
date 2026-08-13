@@ -1,7 +1,7 @@
 ---
 name: brp-todo-work
 description:
-  Execute a project's existing TODO backlog end to end, advancing every safe actionable item until
+  Executes a project's existing TODO backlog end to end, advancing every safe actionable item until
   it is verified complete, blocked with evidence, or superseded, and recording closed work in
   TODO_LOG.md. Trigger when the task is to work through TODO.md, clear the backlog, or resume
   autonomous TODO execution in the current repository. Do not use for building a backlog from

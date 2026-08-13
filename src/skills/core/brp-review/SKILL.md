@@ -1,7 +1,7 @@
 ---
 name: brp-review
 description:
-  Perform a findings-first self-review of code changes for bugs, regressions, missing tests,
+  Performs a findings-first self-review of code changes for bugs, regressions, missing tests,
   security risks, and maintainability issues before delivery. Trigger when implementation is done
   and the next step is to assess change quality like a strict reviewer. Do not use for planning,
   root-cause debugging, or writing the implementation itself.

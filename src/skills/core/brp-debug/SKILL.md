@@ -1,7 +1,7 @@
 ---
 name: brp-debug
 description:
-  Diagnose unexpected runtime errors, flaky behavior, failing checks with unclear cause, and
+  Diagnoses unexpected runtime errors, flaky behavior, failing checks with unclear cause, and
   performance regressions by collecting symptoms, testing hypotheses, isolating the fault, and only
   then changing code. Trigger when the task is to investigate or explain a problem before applying a
   fix. Do not use for straightforward bug fixes with an already-known cause, planned refactors, or
@@ -16,6 +16,7 @@ argument-hint: [symptom-or-error]
 - Always start with symptoms, not assumptions.
 - Test hypotheses in order of likelihood (cheapest test first).
 - Clean up all debug artifacts before delivering.
+- Escalate to `brp-plan` when the issue turns into a larger redesign instead of a diagnosis.
 
 ## Workflow
 

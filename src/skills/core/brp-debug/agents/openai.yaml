@@ -9,7 +9,7 @@ policy:
   allow_implicit_invocation: true
 busirocket:
   skill_class: workflow
-  requires_references: true
+  requires_references: false
   failure_mode:
     Escalate to brp-plan when the issue turns into a larger redesign or cross-cutting architectural
     change.

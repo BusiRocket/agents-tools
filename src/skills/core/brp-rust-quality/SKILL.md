@@ -1,7 +1,7 @@
 ---
 name: brp-rust-quality
 description:
-  Audit and harden a Rust or Tauri project's quality gates including clippy lint level, rustfmt,
+  Audits and hardens a Rust or Tauri project's quality gates including clippy lint level, rustfmt,
   deny-warnings, feature and unsafe hygiene, and Tauri IPC boundaries. Trigger when the task is to
   bootstrap or improve repo-wide quality gates for a Rust or Tauri codebase and a `Cargo.toml` is
   present. Do not use for TypeScript, JavaScript, Python, Go, or PHP projects, isolated bug fixes,

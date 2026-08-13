@@ -1,7 +1,7 @@
 ---
 name: brp-traffic-client
 description:
-  Turn observed application traffic into the smallest reliable programmatic client, and replace
+  Turns observed application traffic into the smallest reliable programmatic client, and replace
   browser automation with direct HTTP calls once the protocol is understood. Trigger when the task
   involves HAR files, DevTools or CDP network exports, cURL or "Copy as fetch" output, proxy
   captures, or an existing Playwright/Puppeteer/browser-agent flow that is slow, brittle, or

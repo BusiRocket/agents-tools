@@ -37,7 +37,8 @@ network tools below before either.
 Prefer the network inspection tools over page reading, and prefer a filter over a full dump.
 
 - Chrome extension: `read_network_requests`
-- Chrome DevTools MCP: `list_network_requests`, then `get_network_request` for the few that matter
+- Chrome DevTools MCP: `chrome-devtools:list_network_requests`, then
+  `chrome-devtools:get_network_request` for the few that matter
 - Playwright MCP: `browser_network_requests`
 
 Procedure:

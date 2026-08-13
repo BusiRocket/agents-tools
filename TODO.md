@@ -29,12 +29,11 @@
       `~/p/brain/topics/claude-skills-ecosystem.md`.
 - [ ] Diff `mattpocock/skills` (grill-with-docs, tdd, diagnose, improve-codebase-architecture)
       against the BRP equivalents for missing moves — e.g. ADR bar, diagnose state machine.
-- [ ] Optional: restructure the 16 skill descriptions so the "Trigger when…" clause lands before
-      ~char 150 (truncation risk flagged 2026-08-13, consciously left as an open offer).
-- [!] Dead external-validator subsystem: `.venv-validate/bin/agentskills` shebang still points at
-  the old `busirocket-agents` repo path, so `detectValidator`/`runValidate` can never work. Blocked
-  on a decision: rebuild via `pnpm run validate:install` or delete the subsystem (gitignored dir —
-  deletion needs explicit sign-off).
+- [ ] Wire the rebuilt external validator (`agentskills` in `.venv-validate`) into
+      `skills:validate`, or delete the orphan `detectValidator`/`runValidate` — verified 2026-08-13
+      that nothing calls either function. Known quirk if wiring: strictyaml rejects the
+      `argument-hint: [x]` flow syntax that Claude Code's own docs use, so those findings need
+      filtering.
 
 ## Supply chain and secrets
 

@@ -13,14 +13,6 @@
 
 ## Router and hooks
 
-- [ ] Rebuild the `invoice-quarter-close` skill — it covered the single largest recurring workload
-      (99–101 prompts in the audit corpus). Built 2026-07-19 outside the repo, wiped before the
-      `skills:link` guard landed in `aa2a972`. The old MacBook Pro was checked over SSH 2026-08-13:
-      no copy exists there (`find` + `mdfind` empty), so rebuild from the audit's trigger draft
-      (`TODO-skills-audit.md` RC-5) is the only path. The `invoice-ops` lane no longer misdirects:
-      its directive was rewritten 2026-08-13 to carry only the live-source verification rule.
-- [ ] Build `lovable-sync` and `stakeholder-recap` skills — router lanes exist, skills do not.
-      Source: `TODO-skills-audit.md` pending list.
 - [ ] Round 2 audit re-run with the revised metrics: directive adherence (the one that matters),
       router coverage (baseline 172/1053 = 16%) and hand-measured lane precision. Include the known
       frontend miss: a plain "check this header on mobile" trigger test (2026-07-19) fired no design

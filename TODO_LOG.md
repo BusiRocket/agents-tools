@@ -231,3 +231,27 @@
     `~/.agents/skills/`).
   - Evidence: brain commit 69c0b6a; `tar tzf` lists 211 entries; GitHub API tree queries for
     `claudekit` org and `mrgoonie/claudekit-skills`; `npx skills add --help` (GitHub-only sources).
+
+- [x] 2026-08-13 — **Skills:** `invoice-quarter-close` rebuilt over the brain playbook.
+  - Result: new core skill from the audit's RC-5 trigger draft; the method stays in
+    `~/p/brain/business/quarter-close-playbook.md` and the skill carries the trigger surface, the
+    live-source verification rules, and the workflow skeleton (no secrets, no company data). The
+    `invoice-ops` lane directive now summons it. `closes`/`reconciles` added to `ACTION_WORDS` so
+    the description passes the specificity lint honestly.
+  - Evidence: commit 7edcd31; `pnpm run check` green; `skills:link` distributes 11 skills;
+    `ls ~/.claude/skills | grep invoice` shows it.
+
+- [x] 2026-08-13 — **Skills:** `stakeholder-recap` built behind its existing router lane.
+  - Result: channel-history-first recap skill (evidence-backed claims, communication-norms
+    disclosure shape, draft-before-post); the `stakeholder-recap` lane directive now summons it
+    explicitly (marker unchanged).
+  - Evidence: commit 45c136f; `pnpm run check` green; `skills:link` distributes 12 skills.
+
+- [x] 2026-08-13 — **Skills:** `lovable-sync` built with a new router lane — the TODO's "lane
+      exists" premise was false for this one.
+  - Result: two-way design-parity skill (pull latest, difference map, slice-by-slice port, preserve
+    working functionality); new `lovable-sync` lane placed before `debug` (one real prompt carries
+    "no funciona") and before `frontend` ("el diseño" would steal it); 6 verbatim transcript
+    prompts added as fixtures; the "prompt para lovable" fixture stays correctly silent.
+  - Evidence: commit 2136a70; `pnpm run check` green (router fixtures pass); `skills:link`
+    distributes 13 skills.

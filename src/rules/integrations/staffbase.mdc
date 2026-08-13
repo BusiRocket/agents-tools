@@ -8,6 +8,8 @@ alwaysApply: false
 
 Use this rule when working on projects that integrate with **Staffbase** (widgets, APIs/SDK, embedding in Staffbase apps).
 
+> **Auto-load gotcha:** the globs only match repos with a `widget/` or `configuration/` directory. Staffbase repos without those markers (e.g. cli, darkmode, drawer, smart-search, global-content, search-widget, `example-*`/`test-*`) never auto-load this rule — invoke `@staffbase` manually there. The globs stay narrow on purpose: widening to `**/src/**` would load Staffbase guidance into every project.
+
 ## Platform context
 
 - **Staffbase** provides employee apps and communication; projects often ship **widgets** that render inside Staffbase (e.g. Alerts widget, bulletins, custom UIs).

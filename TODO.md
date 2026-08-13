@@ -71,16 +71,6 @@
       `sourcesContent` ships your source (that is how Claude Code's 512k-line codebase leaked).
       Source: `~/p/brain/topics/claude-code-practice.md`.
 
-## Global agent config
-
-This repo owns the global linking surface (`~/.agents`, `hooks:link`, `skills:link`), so losses in
-that surface land here.
-
-- [ ] Register the recovered `ckm-*` skills in `~/.agents/.skill-lock.json` (or record their true
-      installer) — restored 2026-08-13 from the old MacBook Pro but still lock-untracked on both
-      machines, so a future restore-from-lock cannot recover them. Their frontmatter names carry a
-      `ckm:` namespace; the installer remains unidentified.
-
 ## Harness
 
 - [ ] Dependency sweep for native replacements across the `~/p` frontends: `Intl.*` for formatting,

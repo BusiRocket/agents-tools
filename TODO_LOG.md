@@ -218,3 +218,16 @@
     "make superpowers delegate to brp-*" idea (can't delegate to skills being retired). The
     surviving half of the consolidation intent — one family per lane — is exactly what the demote
     implements.
+
+- [x] 2026-08-13 — **Global agent config:** `ckm-*` skills' true installer identified; lock
+      registration ruled out; durable recovery path archived.
+  - Result: the 6 `ckm-*` skills are ClaudeKit.cc paid-marketplace content (frontmatter author
+    `claudekit`, v2.1.0). No public GitHub source exists (org repos and `mrgoonie/claudekit-skills`
+    carry only ui-styling/frontend-design variants), and the `skills` CLI (v1.5.22) only accepts
+    GitHub packages, so an honest `~/.agents/.skill-lock.json` entry is impossible — a fabricated
+    one would 404 on `experimental_install`. Instead the provenance is recorded in
+    `~/p/brain/topics/claude-skills-ecosystem.md` and a backup tarball archived at
+    `~/p/brain/sources/vault/ckm-skills-v2.1.0-claudekit.tar.gz` (211 entries; extract into
+    `~/.agents/skills/`).
+  - Evidence: brain commit 69c0b6a; `tar tzf` lists 211 entries; GitHub API tree queries for
+    `claudekit` org and `mrgoonie/claudekit-skills`; `npx skills add --help` (GitHub-only sources).

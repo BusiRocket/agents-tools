@@ -161,11 +161,11 @@
     rsync'd back. `skills:link` re-run afterwards; all restored skills survive the `aa2a972` guard.
     `ckm-*` remain lock-untracked on both machines — follow-up filed in `TODO.md`.
   - Evidence: `ls ~/.agents/skills/ckm-*` (6 dirs), `ls -la ~/.claude/claude-security-guidance.md`;
-    `pnpm run skills:link` clean; old machine searched via `find`/`mdfind` over
-    `~/.agents`, `~/.claude`, `~/p`.
+    `pnpm run skills:link` clean; old machine searched via `find`/`mdfind` over `~/.agents`,
+    `~/.claude`, `~/p`.
 
-- [x] 2026-08-13 — **Recovery:** `invoice-quarter-close` and the `brain` skill confirmed absent
-      from the old MacBook Pro — restore path exhausted.
+- [x] 2026-08-13 — **Recovery:** `invoice-quarter-close` and the `brain` skill confirmed absent from
+      the old MacBook Pro — restore path exhausted.
   - Result: SSH search (`find` maxdepth 6 + `mdfind`, both machines' lock files) found no copy of
     either. `invoice-quarter-close` stays open in `TODO.md` (Router) as a rebuild from the audit's
     trigger draft; the `brain` skill rebuild is filed cross-project in `~/p/brain/TODO.md`
@@ -189,6 +189,20 @@
   - Resolution: the "exists nowhere on this machine" premise was wrong — the skill lives in the
     portfolio repo (repo-scoped). Improvement filed in
     `~/p/cristian-deluxe-developer-portfolio/TODO.md` (Skills).
+
+- [x] 2026-08-13 — **Skills:** The 7 competing BRP skills demoted to orchestrator references.
+  - Result: `brp-plan`, `brp-implement`, `brp-test`, `brp-debug`, `brp-fix`, `brp-refactor` and
+    `brp-review` are no longer standalone skills; their workflows and templates live under
+    `src/skills/orchestrator/brp/references/`, the orchestrator chains point at the references, the
+    rules-map entries were pruned, and the README reflects the 9-skill surface. Process lanes are
+    owned by the superpowers family per the 2026-07-19 decision (user re-confirmed today). Side
+    find, fixed at the root: canonical staging never pruned removed skills inside namespace dirs
+    (`core/`, `orchestrator/`), so the 7 would have shipped to Codex forever;
+    `removeStaleNamespaceEntries` now runs in `populateCanonicalSkillsDir` with 3 tests in
+    `link:test`.
+  - Evidence: `pnpm run check` green (link:test 6/6); `skills:link` distributes 9 skills;
+    `~/.claude/skills` and `~/.agents/skills/core` carry no demoted entries; externally installed
+    skills (`ckm-*` 6/6) untouched.
 
 - [-] 2026-08-13 — **Skills:** Consolidation-by-delegation superseded by the demote decision.
   - Resolution: user confirmed 2026-08-13 that the recorded demote decision wins over the later

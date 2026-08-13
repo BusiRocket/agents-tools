@@ -1,16 +1,10 @@
----
-name: brp-plan
-description:
-  Produces a decision-complete implementation plan with discovery, milestones, risks, validation,
-  and acceptance criteria before code changes start. Trigger when the user asks for a plan, the
-  scope is high-risk or ambiguous, or multiple implementation paths involving project structure,
-  design patterns, or architecture need to be compared. Do not use for straightforward low-risk
-  edits that can be implemented immediately, active debugging, or final review after code is already
-  written.
-allowed-tools: Read, Grep, Glob, TodoWrite
-effort: high
-argument-hint: [feature-or-goal]
----
+# brp-plan (workflow reference)
+
+Produces a decision-complete implementation plan with discovery, milestones, risks, validation, and
+acceptance criteria before code changes start. Use when the user asks for a plan, the scope is
+high-risk or ambiguous, or multiple implementation paths involving project structure, design
+patterns, or architecture need to be compared. Not for straightforward low-risk edits that can be
+implemented immediately, active debugging, or final review after code is already written.
 
 ## Rules
 
@@ -30,5 +24,5 @@ argument-hint: [feature-or-goal]
 
 - Return: discovery summary, implementation plan, interface changes, validation commands,
   assumptions.
-- Load `references/decision-complete-plan-template.md` to keep plan structure and acceptance
+- Load `decision-complete-plan-template.md` (same directory) to keep plan structure and acceptance
   criteria consistent.

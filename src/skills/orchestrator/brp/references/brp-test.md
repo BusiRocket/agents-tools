@@ -1,13 +1,9 @@
----
-name: brp-test
-description:
-  Designs, adds, or updates validation for a change using deterministic tests and explicit manual
-  checks when automation is not possible. Trigger when code exists and the next job is to prove
-  correctness with unit, integration, end-to-end, or manual verification coverage. Do not use for
-  planning the feature itself, debugging unclear failures, or final findings-first review.
-allowed-tools: Read, Grep, Glob, Edit, Write, Bash, TodoWrite
-argument-hint: [target-to-test]
----
+# brp-test (workflow reference)
+
+Designs, adds, or updates validation for a change using deterministic tests and explicit manual
+checks when automation is not possible. Use when code exists and the next job is to prove
+correctness with unit, integration, end-to-end, or manual verification coverage. Not for planning
+the feature itself, debugging unclear failures, or final findings-first review.
 
 ## Rules
 
@@ -26,4 +22,4 @@ argument-hint: [target-to-test]
 ## Output
 
 - Return: test strategy, files added or changed, commands, remaining gaps, manual verification.
-- Load `references/test-strategy-matrix.md` when deciding test depth or fallback coverage.
+- Load `test-strategy-matrix.md` (same directory) when deciding test depth or fallback coverage.

@@ -30,11 +30,6 @@
 
 ## Skills
 
-- [ ] Demote the 7 competing BRP skills (`brp-plan`, `brp-implement`, `brp-test`, `brp-debug`,
-      `brp-fix`, `brp-refactor`, `brp-review`) to references — decision recorded 2026-07-19,
-      deliberately deferred twice (concurrent edits, then the 30-day pass softening the "never
-      fires" claim). Do it in one quiet pass with `hooks:test` and `skills:validate` as the net. All
-      7 dirs still present under `src/skills/core/`.
 - [ ] Candidate skills from the Codex 30-day pass, unbuilt: `communications-work-intake` (13
       sessions; Slack/Discord/WhatsApp/email intake, wider than `stakeholder-recap`) and
       `document-intake-reconciler` (Downloads/PDF/OCR triage into Holded).

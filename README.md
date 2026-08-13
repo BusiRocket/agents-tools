@@ -11,7 +11,7 @@ BRP consolidates rules, skills, and an orchestration protocol into a single proj
 - A **Claude Code plugin** (`dist/plugins/claude/.claude-plugin/plugin.json`) with a marketplace
   manifest, bundled subagents, and opt-in hooks
 - A **multi-IDE rules exporter** for lightweight guidance layers
-- An **AgentSkills-compatible** skill collection (15 validated skills) with a Claude variant
+- An **AgentSkills-compatible** skill collection (9 validated skills) with a Claude variant
   (`dist/skills/`) and a portable variant (`dist/skills-portable/`, Anthropic-only frontmatter
   stripped) for non-Claude IDEs
 - A **multi-IDE skill linker** for popular agents/editors including Cursor, Claude Code, Codex,
@@ -39,11 +39,13 @@ generated config into `~/.codex` instead of symlinking to `dist`, so Codex remai
 ### As a Claude Code Plugin
 
 After `pnpm run build` the plugin lives at `dist/plugins/claude/` with manifests under
-`.claude-plugin/`, the 15 BRP skills flattened in `skills/`, the `brp-reviewer` subagent in
-`agents/`, and an opt-in SessionStart hook under `hooks/`. Install it by pointing Claude Code at the
-plugin root or by publishing the included `marketplace.json`. Then use `/brp-plan`,
-`/brp-implement`, `/brp-fix`, etc. The `brp` orchestrator skill is hidden from the `/` menu
-(`user-invocable: false`) so it can only be invoked by the model when routing is needed.
+`.claude-plugin/`, the 9 skills flattened in `skills/`, the `brp-reviewer` subagent in `agents/`,
+and an opt-in SessionStart hook under `hooks/`. Install it by pointing Claude Code at the plugin
+root or by publishing the included `marketplace.json`. Then use `/brp-docs`, `/brp-release`,
+`/brp-todo-work`, etc. The `brp` orchestrator skill is hidden from the `/` menu
+(`user-invocable: false`) so it can only be invoked by the model when routing is needed. The
+plan/implement/test/debug/fix/refactor/review stages live as workflow references inside the
+orchestrator (`src/skills/orchestrator/brp/references/`), not as standalone skills.
 
 ### As a multi-IDE distribution
 
@@ -57,13 +59,6 @@ stripped `dist/skills-portable/` variant.
 
 | Command               | What it does                                           |
 | --------------------- | ------------------------------------------------------ |
-| `/brp-plan`           | Plan → Define milestones → Risk assessment             |
-| `/brp-implement`      | Minimal diffs → Incremental changes                    |
-| `/brp-fix`            | Reproduce → Hypothesize → Fix → Verify                 |
-| `/brp-refactor`       | Assess → Plan → Execute → Quality check                |
-| `/brp-review`         | Self-check + PR review (security/perf/maintainability) |
-| `/brp-test`           | Generate tests + validation commands                   |
-| `/brp-debug`          | Symptoms → Hypotheses → Isolation → Resolution         |
 | `/brp-docs`           | README, API docs, ADRs, specs                          |
 | `/brp-traffic-client` | Capture → Endpoint map → Direct HTTP client            |
 | `/brp-release`        | Commits since tag → Semver bump → Changelog → Tag      |
@@ -94,21 +89,18 @@ busirocket-agents-tools/
 │   │                            # typescript, php, python, go, bash, styling, deploy,
 │   │                            # integrations (supabase/stripe/n8n), monorepo, …
 │   ├── skills/
-│   │   ├── core/                # 12 BRP skills — 9 workflow (plan/implement/fix/refactor/review/
-│   │   │                        # test/debug/docs/traffic-client) + release, rust-quality,
-│   │   │                        # code-quality
-│   │   ├── orchestrator/brp/    # Model-only router (user-invocable: false)
-│   │   ├── skill-rules.map.json # Skill -> @rules manifest (source of truth)
-│   │   ├── activation-acceptance.json
-│   │   └── activation-smoke.json
+│   │   ├── core/                # 8 skills — docs, traffic-client, release, rust-quality,
+│   │   │                        # code-quality, todo-create, todo-work, handoff
+│   │   ├── orchestrator/brp/    # Model-only router (user-invocable: false) + workflow
+│   │   │                        # references (plan/implement/test/debug/fix/refactor/review)
+│   │   └── skill-rules.map.json # Skill -> @rules manifest (source of truth)
 │   ├── agents/                  # Claude Code subagents (.md)
-│   │   └── brp-reviewer.md      # Isolated findings-first PR reviewer used by brp-review
+│   │   └── brp-reviewer.md      # Isolated findings-first PR reviewer
 │   ├── hooks/                   # Plugin-scoped hooks shipped inside the Claude plugin
 │   │   ├── hooks.json           # Declarative hook manifest (SessionStart by default)
 │   │   └── session-start-brp-reminder.sh
 │   └── core/
-│       ├── protocol.md          # 6-step workflow contract
-│       └── policy.json          # Routing, precedence, stack detection
+│       └── protocol.md          # 6-step workflow contract
 │
 ├── dist/                        # Compiled output (generated, gitignored)
 │   ├── global/                  # Per-IDE compiled rules
@@ -144,23 +136,17 @@ busirocket-agents-tools/
 └── package.json
 ```
 
-## Skills (15 validated)
+## Skills (9 validated)
 
-### Core Workflow Skills (11)
+### Core Workflow Skills (5)
 
 | Skill                | Purpose                                             |
 | -------------------- | --------------------------------------------------- |
-| `brp-plan`           | Structured planning with milestones and risks       |
-| `brp-implement`      | Incremental implementation with minimal diffs       |
-| `brp-fix`            | Bug reproduction, hypothesis, fix, verification     |
-| `brp-refactor`       | Code assessment, planning, execution, quality check |
-| `brp-review`         | Security, performance, maintainability review       |
-| `brp-test`           | Test generation and validation                      |
-| `brp-debug`          | Symptom analysis, hypothesis, isolation, resolution |
 | `brp-docs`           | Documentation generation (README, API, ADR)         |
 | `brp-traffic-client` | Traffic capture to maintainable HTTP client         |
 | `brp-todo-create`    | Build a backlog and work log from agent history     |
 | `brp-todo-work`      | Execute an existing TODO backlog under a gated plan |
+| `handoff`            | Multi-agent handoff briefs                          |
 
 ### Specialized (3)
 
@@ -172,15 +158,15 @@ busirocket-agents-tools/
 
 ### Orchestrator (1)
 
-| Skill | Purpose                                                            |
-| ----- | ------------------------------------------------------------------ |
-| `brp` | Model-only router for BRP command chains (`user-invocable: false`) |
+| Skill | Purpose                                                                                      |
+| ----- | -------------------------------------------------------------------------------------------- |
+| `brp` | Model-only router with the plan/implement/test/debug/fix/refactor/review workflow references |
 
 ### Subagents (1)
 
-| Subagent       | Purpose                                                                   |
-| -------------- | ------------------------------------------------------------------------- |
-| `brp-reviewer` | Isolated, findings-first PR reviewer invoked by `brp-review` via `agent:` |
+| Subagent       | Purpose                              |
+| -------------- | ------------------------------------ |
+| `brp-reviewer` | Isolated, findings-first PR reviewer |
 
 ## Rule Categories
 

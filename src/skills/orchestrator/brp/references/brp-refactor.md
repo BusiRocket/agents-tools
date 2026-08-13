@@ -1,13 +1,9 @@
----
-name: brp-refactor
-description:
-  Refactors existing code into cleaner structure without changing behavior by splitting files,
-  extracting helpers, and preserving public interfaces with tight validation. Trigger when the goal
-  is structural improvement with no feature change. Do not use for shipping new behavior, fixing
-  unknown bugs, or final quality review of already-finished work.
-allowed-tools: Read, Grep, Glob, Edit, Write, Bash, TodoWrite
-argument-hint: [target-file-or-module]
----
+# brp-refactor (workflow reference)
+
+Refactors existing code into cleaner structure without changing behavior by splitting files,
+extracting helpers, and preserving public interfaces with tight validation. Use when the goal is
+structural improvement with no feature change. Not for shipping new behavior, fixing unknown bugs,
+or final quality review of already-finished work.
 
 ## Rules
 

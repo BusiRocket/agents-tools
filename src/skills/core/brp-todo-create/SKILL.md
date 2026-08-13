@@ -23,6 +23,10 @@ argument-hint: [repository-or-scope]
 - Report critical security or data-loss findings immediately, then continue the rest of the audit.
 - Never claim complete coverage from the histories that happened to be easy to read. Name what was
   unavailable, corrupted, truncated or only partially searchable.
+- Offload heavy batch work (bulk history parsing, large transcript summarization) to the cheapest
+  capable capacity whenever possible: Codex CLI on its own OpenAI quota, Antigravity (Gemini quota,
+  plus separate Claude and ChatGPT quotas), or cheaper Claude models (Haiku or Sonnet subagents).
+  Reserve the main session's model for coordination, deduplication, and judgment calls.
 - Work discovered that belongs to a different project is filed in that project's own `TODO.md`,
   following that repository's conventions and the same format contract, with a pointer to the
   evidence. It never lands in the current backlog as if it were local work. When the target

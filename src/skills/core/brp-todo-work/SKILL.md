@@ -73,6 +73,10 @@ Flaky checks get exactly one retry, so noise does not read as divergence.
 5. Delegate only independent, bounded tasks with non-overlapping file ownership. Shared state files,
    commits and pushes stay with the coordinator, which inspects the diff and validation evidence
    before accepting any result.
+6. Route delegated heavy work to the cheapest capable capacity whenever possible: Codex CLI on its
+   own OpenAI quota, Antigravity (Gemini quota, plus separate Claude and ChatGPT quotas), or cheaper
+   Claude models (Haiku or Sonnet subagents). Reserve the main session's model for coordination,
+   queue decisions, and result verification.
 
 ## Output
 

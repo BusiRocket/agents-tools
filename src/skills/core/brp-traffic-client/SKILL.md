@@ -1,12 +1,12 @@
 ---
 name: brp-traffic-client
 description:
-  Turns observed application traffic into the smallest reliable programmatic client, and replace
-  browser automation with direct HTTP calls once the protocol is understood. Trigger when the task
-  involves HAR files, DevTools or CDP network exports, cURL or "Copy as fetch" output, proxy
-  captures, or an existing Playwright/Puppeteer/browser-agent flow that is slow, brittle, or
-  token-expensive. Do not use for documented public APIs with an official SDK, for UI testing where
-  the browser is the subject under test, or for bypassing access controls.
+  Turns observed application traffic into the smallest reliable programmatic client, replacing
+  browser automation with direct HTTP calls. Trigger when the task involves HAR files, DevTools or
+  CDP network exports, cURL or "Copy as fetch" output, proxy captures, or an existing
+  Playwright/Puppeteer/browser-agent flow that is slow, brittle, or token-expensive. Do not use for
+  documented public APIs with an official SDK, for UI testing where the browser is the subject under
+  test, or for bypassing access controls.
 allowed-tools: Read, Grep, Glob, Bash, Write, Edit, TodoWrite
 effort: high
 argument-hint: [capture-path-or-target-operation]

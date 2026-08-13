@@ -21,6 +21,7 @@ export default tseslint.config(
       "*.md",
       "*.mdc",
       "**/node_modules/**",
+      ".venv-validate/**",
       "eslint.config.*",
       "prettier.config.*",
       "rules/**",

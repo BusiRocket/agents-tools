@@ -1,10 +1,10 @@
 ---
 name: invoice-quarter-close
 description:
-  Closes a VAT quarter per company by chasing missing invoices, reconciling bank movements against
-  Holded, classifying expenses, and verifying the filed models. Trigger when the context contains
-  Holded, InteliFactu, bank CSV exports, modelo 303/111/115, or a quarter-close ask. Triggers (ES)
-  are trimestre, IVA, facturas que faltan, movimientos, cerrar el trimestre, gastos deducibles,
+  Closes a VAT quarter per company, chasing missing invoices, reconciling bank movements with
+  Holded, classifying expenses, verifying filed models. Trigger when the context contains Holded,
+  InteliFactu, bank CSV exports, modelo 303/111/115, or a quarter-close ask. Triggers (ES) are
+  trimestre, IVA, facturas que faltan, movimientos, cerrar el trimestre, gastos deducibles,
   Hacienda. Do not use for drafting contracts, payroll, or building invoicing software features.
 allowed-tools: Read, Grep, Glob, Bash, TodoWrite
 argument-hint: [company-or-quarter]

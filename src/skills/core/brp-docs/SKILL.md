@@ -1,7 +1,7 @@
 ---
 name: brp-docs
 description:
-  Generates or updates technical documentation, specifications, and ADRs that explain the codebase,
+  Generates or updates technical documentation, specs, and ADRs that explain the codebase,
   interfaces, or design decisions for future readers. Trigger when the task is to write README
   content, API docs, architecture overviews, or technical specs from code context with strong text
   hygiene and consistent engineering terminology. Do not use for implementing features, debugging

@@ -1,10 +1,10 @@
 ---
 name: brp-release
 description:
-  Cuts a versioned release from trunk by collecting commits since the last tag, choosing the semver
-  bump, updating version and changelog, gating on a green check, and tagging. Trigger when the task
-  is to ship a release, bump a version, or generate release notes/changelog for a repo. Do not use
-  for writing the feature itself, debugging, or general code review unrelated to shipping.
+  Cuts a versioned release from trunk with the commits since the last tag, the semver bump, the
+  changelog, a green check gate, and the tag. Trigger when the task is to ship a release, bump a
+  version, or generate release notes/changelog for a repo. Do not use for writing the feature
+  itself, debugging, or general code review unrelated to shipping.
 allowed-tools: Read, Grep, Glob, Edit, Write, Bash
 ---
 

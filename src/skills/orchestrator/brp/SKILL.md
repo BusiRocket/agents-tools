@@ -1,12 +1,11 @@
 ---
 name: brp
 description:
-  Routes BRP requests to the right workflow by detecting project context, selecting the minimal rule
-  set for monorepo, Next.js, and TypeScript contexts, and choosing the correct BRP workflow chain
-  before work starts. Trigger when the task needs BRP command routing, protocol enforcement, or
-  workflow selection across planning, implementation, testing, and review. Do not use for
-  stack-specific coding guidance, single-purpose workflows that already have a precise BRP skill, or
-  direct code generation without orchestration.
+  Routes BRP requests to the right workflow chain by detecting project context and selecting the
+  minimal rule set before work starts. Trigger when the task needs BRP command routing, protocol
+  enforcement, or workflow selection across planning, implementation, testing, and review. Do not
+  use for stack-specific coding guidance, single-purpose workflows that already have a precise BRP
+  skill, or direct code generation without orchestration.
 user-invocable: false
 allowed-tools: Read, Grep, Glob
 ---

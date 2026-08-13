@@ -1,6 +1,7 @@
 import assert from "node:assert/strict"
 import test from "node:test"
 import { descriptionBoundaryErrors } from "../../validators/descriptionBoundaryErrors"
+import { descriptionTriggerPositionError } from "../../validators/descriptionTriggerPositionError"
 import { descriptionSpecificityWarning } from "../../validators/descriptionSpecificityWarning"
 import { frontmatterDescriptionErrors } from "../../validators/frontmatterDescriptionErrors"
 import { collectSkillFrontmatter } from "./collectSkillFrontmatter"
@@ -23,6 +24,17 @@ void test("every skill description has activation boundaries", () => {
   const failures = collectSkillFrontmatter().flatMap(({ name, frontmatter }) =>
     descriptionBoundaryErrors(extractDescription(frontmatter)).map((error) => `${name}: ${error}`),
   )
+  assert.deepEqual(failures, [], failures.join("\n"))
+})
+
+void test("every skill description opens its activation boundary early", () => {
+  const failures = collectSkillFrontmatter()
+    .map(({ name, frontmatter }) => ({
+      name,
+      error: descriptionTriggerPositionError(extractDescription(frontmatter)),
+    }))
+    .filter(({ error }) => error !== null)
+    .map(({ name, error }) => `${name}: ${String(error)}`)
   assert.deepEqual(failures, [], failures.join("\n"))
 })
 

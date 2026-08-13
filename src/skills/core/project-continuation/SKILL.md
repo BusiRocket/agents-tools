@@ -2,11 +2,10 @@
 name: project-continuation
 description:
   Resumes interrupted project work by reconstructing the real state from git, TODO backlogs, plan
-  and handoff files, and recent history before touching code, so the user never has to repeat
-  context they already gave. Trigger when a prompt continues earlier work ("sigue", "continúa",
-  "donde lo dejamos", "termina lo que falta"), when a session starts mid-task, or when the
-  continuation router lane fires. Do not use for brand-new tasks with fresh scope, a single named
-  bug fix, or review of already-finished work.
+  and handoff files before touching code. Trigger when a prompt continues earlier work ("sigue",
+  "continúa", "donde lo dejamos", "termina lo que falta"), when a session starts mid-task, or when
+  the continuation router lane fires. Do not use for brand-new tasks with fresh scope, a single
+  named bug fix, or review of already-finished work.
 allowed-tools: Read, Grep, Glob, Bash, TodoWrite
 argument-hint: [optional-topic]
 ---

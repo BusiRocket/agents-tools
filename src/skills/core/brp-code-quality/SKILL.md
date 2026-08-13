@@ -1,13 +1,11 @@
 ---
 name: brp-code-quality
 description:
-  Audits and hardens a TypeScript or Next.js project up to the BusiRocket baseline, covering strict
-  typing, linting, architectural boundaries, runtime safety defaults, and the agent-ready
-  documentation standard (AGENTS.md, CLAUDE.md shim, verified smoke test, deploy facts). Trigger
-  when the task is to bootstrap or improve repo-wide quality gates or bring a repo up to the
-  baseline, and a `tsconfig.json` or `next.config.*` is present. Do not use for Python, Go, Rust,
-  PHP, or any non-TypeScript project, isolated bug fixes, feature delivery, or behavior-preserving
-  refactors inside a single module.
+  Audits and hardens a TypeScript or Next.js repo up to the BusiRocket baseline (strict typing,
+  lint, architectural boundaries, agent-ready docs). Trigger when the task is to bootstrap or
+  improve repo-wide quality gates or bring a repo up to the baseline, and a `tsconfig.json` or
+  `next.config.*` is present. Do not use for Python, Go, Rust, PHP, or any non-TypeScript project,
+  isolated bug fixes, feature delivery, or behavior-preserving refactors inside a single module.
 allowed-tools: Read, Grep, Glob, Edit, Write, Bash
 paths: tsconfig.json, next.config.*
 ---

@@ -1,13 +1,12 @@
 ---
 name: lovable-sync
 description:
-  Implements design parity between a Lovable project and the real app repository, in either
-  direction, by pulling the latest state, mapping the differences, and wiring real data behind the
-  ported UI without deleting working functionality. Trigger when the ask involves a Lovable repo or
-  design, porting a Lovable design into the app, or pushing the app's design to Lovable. Triggers
-  (ES) are paridad lovable, diseño de lovable, migrar el diseño, que se vea como en lovable. Do not
-  use for writing Lovable prompts, general frontend styling without a Lovable source, or debugging
-  unrelated UI bugs.
+  Implements design parity between a Lovable project and the real app repo, in either direction,
+  wiring real data behind the ported UI. Trigger when the ask involves a Lovable repo or design,
+  porting a Lovable design into the app, or pushing the app's design to Lovable. Triggers (ES) are
+  paridad lovable, diseño de lovable, migrar el diseño, que se vea como en lovable. Do not use for
+  writing Lovable prompts, general frontend styling without a Lovable source, or debugging unrelated
+  UI bugs.
 allowed-tools: Read, Grep, Glob, Bash, TodoWrite
 argument-hint: [direction-or-scope]
 ---

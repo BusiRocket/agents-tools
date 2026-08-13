@@ -1,12 +1,11 @@
 ---
 name: stakeholder-recap
 description:
-  Produces a stakeholder status recap by reading the channel history first, cross-checking every
-  claim against commits and deploy state, and drafting the update without restating what was already
-  sent. Trigger when the ask involves Discord or Slack messages, a status update for a stakeholder,
-  or answering what happened in a channel. Triggers (ES) are resumen, recap, mira los mensajes,
-  responder a, qué ha dicho. Do not use for invoice reconciliation, contract drafting, or reading
-  channels without a recap or reply deliverable.
+  Produces a stakeholder status recap from the channel history, cross-checking every claim against
+  commits and deploys before drafting. Trigger when the ask involves Discord or Slack messages, a
+  status update for a stakeholder, or answering what happened in a channel. Triggers (ES) are
+  resumen, recap, mira los mensajes, responder a, qué ha dicho. Do not use for invoice
+  reconciliation, contract drafting, or reading channels without a recap or reply deliverable.
 allowed-tools: Read, Grep, Glob, Bash, TodoWrite
 argument-hint: [channel-or-stakeholder]
 ---

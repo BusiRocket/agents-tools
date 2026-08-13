@@ -1,12 +1,11 @@
 ---
 name: brp-todo-create
 description:
-  Builds a project backlog from accessible Claude, Codex, Cursor and Antigravity history by
-  recovering every unfinished task, blocker, decision and completed milestone into TODO.md and
-  TODO_LOG.md, with coverage tracked in TODO_HISTORY_INDEX.jsonl. Trigger when a repository has no
-  usable backlog and the work is to audit past conversations and consolidate what they contain. Do
-  not use for implementing the recovered work, for executing an existing backlog, or for summarizing
-  a single conversation.
+  Builds a project backlog from accessible Claude, Codex, Cursor and Antigravity history into
+  TODO.md, TODO_LOG.md, and the history index. Trigger when a repository has no usable backlog and
+  the work is to audit past conversations, recovering every unfinished task, blocker, decision and
+  milestone they contain. Do not use for implementing the recovered work, for executing an existing
+  backlog, or for summarizing a single conversation.
 allowed-tools: Read, Grep, Glob, Edit, Write, Bash, TodoWrite, Task
 argument-hint: [repository-or-scope]
 ---

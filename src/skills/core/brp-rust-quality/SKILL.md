@@ -1,11 +1,11 @@
 ---
 name: brp-rust-quality
 description:
-  Audits and hardens a Rust or Tauri project's quality gates including clippy lint level, rustfmt,
-  deny-warnings, feature and unsafe hygiene, and Tauri IPC boundaries. Trigger when the task is to
-  bootstrap or improve repo-wide quality gates for a Rust or Tauri codebase and a `Cargo.toml` is
-  present. Do not use for TypeScript, JavaScript, Python, Go, or PHP projects, isolated bug fixes,
-  feature delivery, or behavior-preserving refactors inside a single module.
+  Audits and hardens a Rust or Tauri project's quality gates (clippy lint level, rustfmt, deny-
+  warnings, unsafe hygiene, Tauri IPC boundaries). Trigger when the task is to bootstrap or improve
+  repo-wide quality gates for a Rust or Tauri codebase and a `Cargo.toml` is present. Do not use for
+  TypeScript, JavaScript, Python, Go, or PHP projects, isolated bug fixes, feature delivery, or
+  behavior-preserving refactors inside a single module.
 allowed-tools: Read, Grep, Glob, Edit, Write, Bash
 paths: Cargo.toml
 ---

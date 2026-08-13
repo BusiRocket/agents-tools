@@ -8,6 +8,7 @@ export const LANE_MARKERS: Record<string, string> = {
   frontend: "frontend-design",
   continuation: "Resuming earlier work",
   "stakeholder-recap": "Stakeholder-comms",
+  "lovable-sync": "Lovable design sync",
   "traffic-client": "brp-traffic-client",
   "contract-ops": "Contract production",
   "agent-config": "Agent-configuration work",

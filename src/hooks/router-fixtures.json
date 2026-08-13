@@ -24,6 +24,14 @@
       "esto se ha quedado a medias"
     ],
     "stakeholder-recap": ["Conéctate a slack y mira los últimos mensajes de todo"],
+    "lovable-sync": [
+      "me gustaría seguir con la conversión del diseño de lovable (creo que solo hicimos el paso 1)",
+      "vale podríamos seguir con el resto de cosas paridad lovable",
+      "he actualizado el diseño en lovable, ya hicimos hace unas sesiones el diseño de esta app al repo de lovable y ahora tenemos que hacer lo inverso, de lo que ha creado lovable a esta app y cablear lo que no funciona o crear las cosas (también no eliminar la funcionalidad que tenemos)",
+      "vale estamos migrando el diseño de lovable a vexa (baja la última versión) hay muchas cosas que no son iguales o no están cableadas, por favor vuelve a comprobar",
+      "quiero que se vea exactamente como en lovable (a excepcion de cosas de sentido comun como las carpetas IMAP y cosas así) si tenemos que mejorar las cosas de IA y el modelo clasificador para dar más información es el momento ahora",
+      "te había dado el repo de lovable lo ibas a renombrar e ibamos a empezar a implementar el diseño"
+    ],
     "traffic-client": ["turn this HAR capture into a client for the invoice download endpoint"],
     "contract-ops": [
       "hay que hacer contratos para esas 4 fechas",

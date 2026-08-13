@@ -68,6 +68,13 @@
         "@rules/core/boundaries.mdc"
       ]
     },
+    "lovable-sync": {
+      "rules": [
+        "@rules/core/code-quality-guidelines.mdc",
+        "@rules/react/performance.mdc",
+        "@rules/core/boundaries.mdc"
+      ]
+    },
     "stakeholder-recap": {
       "rules": [
         "@rules/core/agent-discipline.mdc",

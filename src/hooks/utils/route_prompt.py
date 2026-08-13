@@ -105,6 +105,17 @@ ROUTES = [
         r"\b(recap|resumen)\b.{0,40}\b(discord|slack|nathan|john)\b",
     ),
     (
+        "lovable-sync",
+        "Lovable design sync. Load the lovable-sync skill: pull the latest "
+        "Lovable state, map it against the real app, and wire or port without "
+        "deleting working functionality.",
+        r"(lovable.{0,60}implementar el dise[ñn]o|"
+        r"(conversi[oó]n|paridad|migrando|migrar|sincronizar) .{0,40}lovable|"
+        r"dise[ñn]o (de|en) lovable|"
+        r"se vea .{0,30}en lovable|"
+        r"lovable a (esta app|la app|vexa)\b)",
+    ),
+    (
         "debug",
         "Use the superpowers:systematic-debugging skill before proposing a fix. "
         "Reproduce first; do not guess at the cause.",

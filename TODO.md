@@ -15,9 +15,10 @@
 
 - [ ] Rebuild the `invoice-quarter-close` skill — it covered the single largest recurring workload
       (99–101 prompts in the audit corpus). Built 2026-07-19 outside the repo, wiped before the
-      `skills:link` guard landed in `aa2a972`; this machine was cloned from the old MacBook Pro, so
-      check there for the source before rebuilding. The `invoice-ops` lane no longer misdirects: its
-      directive was rewritten 2026-08-13 to carry only the live-source verification rule.
+      `skills:link` guard landed in `aa2a972`. The old MacBook Pro was checked over SSH 2026-08-13:
+      no copy exists there (`find` + `mdfind` empty), so rebuild from the audit's trigger draft
+      (`TODO-skills-audit.md` RC-5) is the only path. The `invoice-ops` lane no longer misdirects:
+      its directive was rewritten 2026-08-13 to carry only the live-source verification rule.
 - [ ] Build the `project-continuation` skill behind the existing `continuation` router lane (17+
       resumption prompts route there; no skill answers).
 - [ ] Build `lovable-sync` and `stakeholder-recap` skills — router lanes exist, skills do not.
@@ -34,16 +35,6 @@
       deliberately deferred twice (concurrent edits, then the 30-day pass softening the "never
       fires" claim). Do it in one quiet pass with `hooks:test` and `skills:validate` as the net. All
       7 dirs still present under `src/skills/core/`.
-- [ ] Resolve the runtime/catalog split — the Codex 30-day pass found 7 fired skills that are not in
-      the catalog.
-- [ ] Consolidate overlapping workflow skills: make superpowers `brainstorming`/`writing-plans`
-      delegate to `brp-plan` and `systematic-debugging` to `brp-debug`/`brp-fix`; unify review entry
-      points. `brainstorming`'s "MUST use before any creative work" wording still monopolises the
-      trigger surface (58/80 skill loads in the 7-day corpus).
-- [!] Improve the `job-search` skill's trigger phrases — accepted alternative to the rejected
-  deterministic router lane (Codex 30-day pass). Blocked: the skill exists nowhere on this machine
-  (not in the repo, not in `~/.agents/skills`, not lock-tracked). This machine was cloned from the
-  old MacBook Pro — smallest unblock: check that machine for the skill source, or drop the item.
 - [ ] Candidate skills from the Codex 30-day pass, unbuilt: `communications-work-intake` (13
       sessions; Slack/Discord/WhatsApp/email intake, wider than `stakeholder-recap`) and
       `document-intake-reconciler` (Downloads/PDF/OCR triage into Holded).
@@ -69,9 +60,14 @@
   zero-width Unicode that no diff shows. This repo covered 2026-08-13 (`hygiene:test` in
   `check:all`, scans all tracked files; `scripts/lib/isHiddenUnicode.ts` is reusable). Remaining:
   the other published repos. Source: `~/p/brain/topics/supply-chain-security.md`.
-- [ ] Audit CI for long-lived registry publish tokens readable by third-party actions (the LiteLLM
-      vector was a compromised Trivy action stealing `PYPI_PUBLISH`); prefer OIDC/Trusted
-      Publishers. Source: `~/p/brain/topics/supply-chain-security.md`.
+- [~] Audit CI for long-lived registry publish tokens readable by third-party actions (the LiteLLM
+  vector was a compromised Trivy action stealing `PYPI_PUBLISH`); prefer OIDC/Trusted Publishers.
+  This repo verified clean 2026-08-13: no `.github/workflows`, no CI at all. A keyword sweep of
+  `~/p` flagged 16 repos whose workflows mention publish/token terms and need the real audit:
+  baseline, dj-rocket, helm-cron, helm-drupal, helm-solr, Mains.World, mempalace, poirocket,
+  staffbase-cli, staffbase-drawer, staffbase-shoutouts, staffbase-utils, thewealthadvisor,
+  verticagtm, vexa-insight-dashboard, zerohedge-mcp. Source:
+  `~/p/brain/topics/supply-chain-security.md`.
 - [ ] Adopt pnpm 11 supply-chain controls across `~/p` repos: `minimumReleaseAge: 1440` (24h
       cooldown defeats the compromised-token window) and `blockExoticSubdeps: true`. Needs Node 22
       and pnpm 11; check per repo. Source: `~/p/brain/topics/supply-chain-security.md`.
@@ -87,19 +83,10 @@
 This repo owns the global linking surface (`~/.agents`, `hooks:link`, `skills:link`), so losses in
 that surface land here.
 
-- [ ] Restore or rebuild the globally-installed `brain` and `invoice-quarter-close` skills — both
-      missing before the 2026-08-13 restore, likely wiped by the pre-`aa2a972` link bug, and neither
-      is in `~/.agents/.skill-lock.json`. Smallest action: check the old MacBook Pro this machine
-      was cloned from (the wipe or an incomplete copy may have skipped them), else locate their
-      source (brain skill probably belongs to `~/p/brain` tooling; invoice-quarter-close see Router
-      entry) or rebuild.
-- [!] 6 `ckm-*` skills (banner-design, brand, design, design-system, slides, ui-styling) missing and
-  never lock-tracked; installer unknown. Blocked: user must identify the source repo — the old
-  MacBook Pro this machine was cloned from is the first place to look — before any reinstall.
-- [ ] Rewrite `~/.claude/claude-security-guidance.md` — built 2026-07-19 from 88 real ReviewHog
-      findings (auth-present-but-not-authorized, fail-open error paths, SSRF, tenant scoping, Tauri
-      boundaries), verified loaded at session end, now absent from disk. Investigate why it
-      vanished, then regenerate; the security-review plugin's extension point reads it.
+- [ ] Register the recovered `ckm-*` skills in `~/.agents/.skill-lock.json` (or record their true
+      installer) — restored 2026-08-13 from the old MacBook Pro but still lock-untracked on both
+      machines, so a future restore-from-lock cannot recover them. Their frontmatter names carry a
+      `ckm:` namespace; the installer remains unidentified.
 
 ## Harness
 

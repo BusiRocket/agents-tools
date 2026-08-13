@@ -151,3 +151,47 @@
     their content was reconstructed from the Codex rollouts during this audit and everything
     actionable was either already absorbed into `TODO-skills-audit.md` (with corrections) or is now
     tracked in `TODO.md`.
+
+- [x] 2026-08-13 — **Recovery:** Lost global skills and the security guidance restored from the old
+      MacBook Pro over SSH.
+  - Result: all 6 `ckm-*` skills (banner-design, brand, design, design-system, slides, ui-styling),
+    `frontend-skill` and `task-quality-kpi` (the two "lost upstream" from the linker wipe), and
+    `~/.claude/claude-security-guidance.md` (original 5269-byte file, dated 2026-07-19 — recovered,
+    not rewritten; its absence here traces to the machine clone, not a deletion on this machine)
+    rsync'd back. `skills:link` re-run afterwards; all restored skills survive the `aa2a972` guard.
+    `ckm-*` remain lock-untracked on both machines — follow-up filed in `TODO.md`.
+  - Evidence: `ls ~/.agents/skills/ckm-*` (6 dirs), `ls -la ~/.claude/claude-security-guidance.md`;
+    `pnpm run skills:link` clean; old machine searched via `find`/`mdfind` over
+    `~/.agents`, `~/.claude`, `~/p`.
+
+- [x] 2026-08-13 — **Recovery:** `invoice-quarter-close` and the `brain` skill confirmed absent
+      from the old MacBook Pro — restore path exhausted.
+  - Result: SSH search (`find` maxdepth 6 + `mdfind`, both machines' lock files) found no copy of
+    either. `invoice-quarter-close` stays open in `TODO.md` (Router) as a rebuild from the audit's
+    trigger draft; the `brain` skill rebuild is filed cross-project in `~/p/brain/TODO.md`
+    (Infrastructure) since it wraps that repo's tooling.
+  - Evidence: remote `find`/`mdfind` output empty; neither name in either `.skill-lock.json`.
+
+- [x] 2026-08-13 — **Audit:** Runtime/catalog split resolved — the catalog structurally misses two
+      skill classes.
+  - Result: of the 7 fired-but-uncatalogued skills, 4 are Claude Code harness built-ins never on
+    disk (`artifact-design`, `claude-api`, `claude-in-chrome`, `schedule`), `impeccable` is a live
+    user-linked skill in `~/.agents/skills`, `job-search` is repo-scoped inside
+    `cristian-deluxe-developer-portfolio/.claude/skills` (only loads there), and
+    `migrating-to-typescript-7` no longer exists anywhere on disk (removed since the corpus week).
+    Conclusion recorded by the audit stands: tune against the runtime listing, never the disk
+    catalog.
+  - Evidence: session skill listing; `ls ~/.agents/skills/impeccable`;
+    `ls ~/p/cristian-deluxe-developer-portfolio/.claude/skills/job-search`; `mdfind` empty for
+    `migrating-to-typescript-7`.
+
+- [-] 2026-08-13 — **Skills:** `job-search` trigger-phrase item rerouted to its owning repo.
+  - Resolution: the "exists nowhere on this machine" premise was wrong — the skill lives in the
+    portfolio repo (repo-scoped). Improvement filed in
+    `~/p/cristian-deluxe-developer-portfolio/TODO.md` (Skills).
+
+- [-] 2026-08-13 — **Skills:** Consolidation-by-delegation superseded by the demote decision.
+  - Resolution: user confirmed 2026-08-13 that the recorded demote decision wins over the later
+    "make superpowers delegate to brp-*" idea (can't delegate to skills being retired). The
+    surviving half of the consolidation intent — one family per lane — is exactly what the demote
+    implements.

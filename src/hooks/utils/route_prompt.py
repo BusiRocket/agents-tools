@@ -97,8 +97,9 @@ ROUTES = [
     ),
     (
         "stakeholder-recap",
-        "Stakeholder-comms context. Read the channel history first, cross-check "
-        "claims against commits, and do not restate what was already sent.",
+        "Stakeholder-comms context. Load the stakeholder-recap skill. Read the "
+        "channel history first, cross-check claims against commits, and do not "
+        "restate what was already sent.",
         r"\b(discord|slack)\b.{0,60}\b(recap|resumen|mensajes|dice|dijo|"
         r"responder|contestar|update)\b|"
         r"\b(recap|resumen)\b.{0,40}\b(discord|slack|nathan|john)\b",

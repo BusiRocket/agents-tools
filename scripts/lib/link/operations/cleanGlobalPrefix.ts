@@ -3,6 +3,12 @@ import path from "node:path"
 import { pathExists } from "./pathExists"
 
 export const cleanGlobalPrefix = async (targetDir: string, prefix: string) => {
+  // An empty prefix would match every entry and wipe foreign skills
+  // installed by other tools into the same directory.
+  if (prefix === "") {
+    return []
+  }
+
   const exists = await pathExists(targetDir)
   if (!exists) {
     return []

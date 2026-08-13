@@ -63,9 +63,10 @@
       `crypto.randomUUID`, `structuredClone`, `URLSearchParams`, `AbortController`. Measured
       elsewhere: audit vulnerabilities 17 -> 5. Fewer deps also shrinks the supply-chain surface.
       Source: `~/p/brain/topics/web-platform.md`.
-- [ ] Measure the `security-review` auto fan-out cost vs value — it generated 627 machine sessions
-      in one audited week (all 15 reviews of the 2026-07-19 diff set came back clean). Open question
-      from audit Round 1.
+- [ ] Decide whether to keep the `security-review` auto fan-out: measured 2026-08-13 at ~$2,691/30d
+      list-price equivalent (2,324 sessions, ~77/day, Opus 4.7) with a ~1.7% candidate-flag rate and
+      no confirmed real finding in the sampled verdicts. Options: keep (subscription absorbs it),
+      scope to risky paths only, or disable. Numbers in `TODO_LOG.md` 2026-08-13.
 
 ## Cross-project
 

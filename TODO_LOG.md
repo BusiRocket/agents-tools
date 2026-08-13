@@ -284,3 +284,16 @@
     pass. Negative test: a synthetic skill with a bogus frontmatter field fails the run.
   - Evidence: `pnpm run skills:validate` prints `agentskills OK (13 skills, method: venv)`;
     synthetic bad skill exits 1; `pnpm run check` exit 0.
+
+- [x] 2026-08-13 — **Harness:** `security-review` auto fan-out cost vs value measured (audit Round 1
+      open question closed; the keep/scope/disable decision stays in `TODO.md`).
+  - Result: last 30 days of `~/.claude/projects` transcripts: 2,324 machine sessions open with the
+    fan-out prompt ("Review this change for security vulnerabilities." 2,285 + "You previously
+    flagged these candidate vulnerabilities:" 39) out of 3,332 total sessions (70%). All on
+    `claude-opus-4-7`. Tokens: 25.9M output, 1.246B cache-read, 227M cache-write, 0.12M raw input —
+    ~$2,691/30d list-price equivalent (~$1.16/session, ~77 sessions/day) at Opus 4.7 rates ($5/$25
+    per MTok, cache read 0.1x, write 1.25x). Value: 753 sessions end with an explicit clean verdict,
+    1,349 with a verbose verdict (sampled ones read clean), 222 with no final text; only 39 (1.7%)
+    escalated to a candidate-verification pass. No confirmed real finding observed.
+  - Evidence: `sr_measure.py` in the session scratchpad over 3,381 transcript files; token sums and
+    outcome counts printed above; pricing from the claude-api skill model table.

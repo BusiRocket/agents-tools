@@ -11,5 +11,6 @@ busirocket:
   skill_class: workflow
   requires_references: false
   failure_mode:
-    Escalate to brp-fix when the pre-release check fails, or to brp-review when the pending changes
-    look unsafe to ship.
+    Escalate to a bug-fix pass (the brp orchestrator's brp-fix reference) when the pre-release check
+    fails, or to a review pass (its brp-review reference) when the pending changes look unsafe to
+    ship.

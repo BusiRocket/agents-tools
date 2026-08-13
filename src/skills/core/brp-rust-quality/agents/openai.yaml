@@ -11,5 +11,5 @@ busirocket:
   skill_class: workflow
   requires_references: false
   failure_mode:
-    Escalate to brp-plan when hardening requires architectural changes beyond config and lint
-    settings.
+    Escalate to a planning pass (the brp orchestrator's brp-plan reference) when hardening requires
+    architectural changes beyond config and lint settings.

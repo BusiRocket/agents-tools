@@ -12,4 +12,5 @@ busirocket:
   requires_references: true
   failure_mode:
     Keep a browser or CDP bridge for the steps that genuinely require page execution, and escalate
-    to brp-plan when the integration turns into a broader service design.
+    to a planning pass (the brp orchestrator's brp-plan reference) when the integration turns into a
+    broader service design.

@@ -10,4 +10,6 @@ policy:
 busirocket:
   skill_class: workflow
   requires_references: false
-  failure_mode: Escalate to brp-plan when hardening work becomes a multi-milestone repo migration.
+  failure_mode:
+    Escalate to a planning pass (the brp orchestrator's brp-plan reference) when hardening work
+    becomes a multi-milestone repo migration.

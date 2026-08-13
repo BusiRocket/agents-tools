@@ -11,5 +11,5 @@ busirocket:
   skill_class: workflow
   requires_references: false
   failure_mode:
-    Escalate to brp-plan when the documentation request depends on unresolved product or
-    architecture decisions.
+    Escalate to a planning pass (the brp orchestrator's brp-plan reference) when the documentation
+    request depends on unresolved product or architecture decisions.

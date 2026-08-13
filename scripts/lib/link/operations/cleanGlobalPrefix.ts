@@ -1,6 +1,7 @@
 import { promises as fs } from "node:fs"
 import path from "node:path"
 import { pathExists } from "./pathExists"
+import { removeSkillEntry } from "./removeSkillEntry"
 
 export const cleanGlobalPrefix = async (targetDir: string, prefix: string) => {
   // An empty prefix would match every entry and wipe foreign skills
@@ -46,17 +47,7 @@ export const cleanGlobalPrefix = async (targetDir: string, prefix: string) => {
       continue
     }
 
-    const fullPath = path.join(targetDir, entry)
-    const stat = await fs.lstat(fullPath)
-
-    if (stat.isSymbolicLink()) {
-      await fs.unlink(fullPath)
-    } else if (stat.isDirectory()) {
-      await fs.rm(fullPath, { recursive: true, force: true })
-    } else {
-      await fs.unlink(fullPath)
-    }
-
+    await removeSkillEntry(path.join(targetDir, entry))
     removed.push(entry)
   }
 

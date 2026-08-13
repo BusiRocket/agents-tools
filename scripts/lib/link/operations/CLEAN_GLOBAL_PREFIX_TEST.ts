@@ -13,7 +13,10 @@ void test("an empty prefix removes nothing instead of wiping the directory", asy
   const removed = await cleanGlobalPrefix(dir, "")
 
   assert.deepEqual(removed, [])
-  assert.deepEqual((await fs.readdir(dir)).sort(), ["brp-old", "foreign-skill"])
+  assert.deepEqual(
+    (await fs.readdir(dir)).sort((a, b) => a.localeCompare(b)),
+    ["brp-old", "foreign-skill"],
+  )
   await fs.rm(dir, { recursive: true, force: true })
 })
 

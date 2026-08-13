@@ -141,14 +141,18 @@ export default tseslint.config(
         "error",
         {
           default: "allow",
-          rules: [
+          policies: [
             {
-              from: [{ type: "scripts" }],
-              allow: [{ to: { type: "scripts" } }, { to: { type: "lib" } }],
+              from: { element: { type: "scripts" } },
+              allow: {
+                to: [{ element: { type: "scripts" } }, { element: { type: "lib" } }],
+              },
             },
             {
-              from: [{ type: "lib" }],
-              allow: [{ to: { type: "lib" } }, { to: { type: "scripts" } }],
+              from: { element: { type: "lib" } },
+              allow: {
+                to: [{ element: { type: "lib" } }, { element: { type: "scripts" } }],
+              },
             },
           ],
         },

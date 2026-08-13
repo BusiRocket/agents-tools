@@ -19,8 +19,6 @@
       no copy exists there (`find` + `mdfind` empty), so rebuild from the audit's trigger draft
       (`TODO-skills-audit.md` RC-5) is the only path. The `invoice-ops` lane no longer misdirects:
       its directive was rewritten 2026-08-13 to carry only the live-source verification rule.
-- [ ] Build the `project-continuation` skill behind the existing `continuation` router lane (17+
-      resumption prompts route there; no skill answers).
 - [ ] Build `lovable-sync` and `stakeholder-recap` skills — router lanes exist, skills do not.
       Source: `TODO-skills-audit.md` pending list.
 - [ ] Round 2 audit re-run with the revised metrics: directive adherence (the one that matters),

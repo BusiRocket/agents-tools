@@ -74,6 +74,13 @@
         "@rules/core/git-workflow.mdc",
         "@rules/core/text-hygiene.mdc"
       ]
+    },
+    "project-continuation": {
+      "rules": [
+        "@rules/core/general.mdc",
+        "@rules/core/agent-discipline.mdc",
+        "@rules/core/git-workflow.mdc"
+      ]
     }
   }
 }

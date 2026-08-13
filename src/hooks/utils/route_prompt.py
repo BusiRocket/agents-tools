@@ -37,9 +37,9 @@ MACHINE = re.compile(r"^\W*<(task-notification|system-reminder|local-command)", 
 ROUTES = [
     (
         "continuation",
-        "Resuming earlier work. Recover state before acting: check git status, the "
-        "active plan file, and what was left unfinished. Do not ask the user to "
-        "repeat context they already gave.",
+        "Resuming earlier work. Load the project-continuation skill: recover state "
+        "from git status, the active plan file, TODO.md, and any handoff document "
+        "before acting. Do not ask the user to repeat context they already gave.",
         r"(siguiendo (la|el|nuestra)? ?(conversaci[oó]n|sesi[oó]n|hilo)|"
         r"(la )?(conversaci[oó]n|sesi[oó]n) anterior|se qued[oó] a medias|"
         r"esto se ha quedado a medias|donde lo dejamos|"

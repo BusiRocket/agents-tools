@@ -11,7 +11,7 @@ BRP consolidates rules, skills, and an orchestration protocol into a single proj
 - A **Claude Code plugin** (`dist/plugins/claude/.claude-plugin/plugin.json`) with a marketplace
   manifest, bundled subagents, and opt-in hooks
 - A **multi-IDE rules exporter** for lightweight guidance layers
-- An **AgentSkills-compatible** skill collection (9 validated skills) with a Claude variant
+- An **AgentSkills-compatible** skill collection (10 validated skills) with a Claude variant
   (`dist/skills/`) and a portable variant (`dist/skills-portable/`, Anthropic-only frontmatter
   stripped) for non-Claude IDEs
 - A **multi-IDE skill linker** for popular agents/editors including Cursor, Claude Code, Codex,
@@ -39,7 +39,7 @@ generated config into `~/.codex` instead of symlinking to `dist`, so Codex remai
 ### As a Claude Code Plugin
 
 After `pnpm run build` the plugin lives at `dist/plugins/claude/` with manifests under
-`.claude-plugin/`, the 9 skills flattened in `skills/`, the `brp-reviewer` subagent in `agents/`,
+`.claude-plugin/`, the 10 skills flattened in `skills/`, the `brp-reviewer` subagent in `agents/`,
 and an opt-in SessionStart hook under `hooks/`. Install it by pointing Claude Code at the plugin
 root or by publishing the included `marketplace.json`. Then use `/brp-docs`, `/brp-release`,
 `/brp-todo-work`, etc. The `brp` orchestrator skill is hidden from the `/` menu
@@ -89,8 +89,9 @@ busirocket-agents-tools/
 │   │                            # typescript, php, python, go, bash, styling, deploy,
 │   │                            # integrations (supabase/stripe/n8n), monorepo, …
 │   ├── skills/
-│   │   ├── core/                # 8 skills — docs, traffic-client, release, rust-quality,
-│   │   │                        # code-quality, todo-create, todo-work, handoff
+│   │   ├── core/                # 9 skills — docs, traffic-client, release, rust-quality,
+│   │   │                        # code-quality, todo-create, todo-work, handoff,
+│   │   │                        # project-continuation
 │   │   ├── orchestrator/brp/    # Model-only router (user-invocable: false) + workflow
 │   │   │                        # references (plan/implement/test/debug/fix/refactor/review)
 │   │   └── skill-rules.map.json # Skill -> @rules manifest (source of truth)
@@ -136,17 +137,18 @@ busirocket-agents-tools/
 └── package.json
 ```
 
-## Skills (9 validated)
+## Skills (10 validated)
 
-### Core Workflow Skills (5)
+### Core Workflow Skills (6)
 
-| Skill                | Purpose                                             |
-| -------------------- | --------------------------------------------------- |
-| `brp-docs`           | Documentation generation (README, API, ADR)         |
-| `brp-traffic-client` | Traffic capture to maintainable HTTP client         |
-| `brp-todo-create`    | Build a backlog and work log from agent history     |
-| `brp-todo-work`      | Execute an existing TODO backlog under a gated plan |
-| `handoff`            | Multi-agent handoff briefs                          |
+| Skill                  | Purpose                                              |
+| ---------------------- | ---------------------------------------------------- |
+| `brp-docs`             | Documentation generation (README, API, ADR)          |
+| `brp-traffic-client`   | Traffic capture to maintainable HTTP client          |
+| `brp-todo-create`      | Build a backlog and work log from agent history      |
+| `brp-todo-work`        | Execute an existing TODO backlog under a gated plan  |
+| `handoff`              | Multi-agent handoff briefs                           |
+| `project-continuation` | Resume interrupted work from git/TODO/plan artifacts |
 
 ### Specialized (3)
 

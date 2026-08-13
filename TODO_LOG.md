@@ -204,6 +204,15 @@
     `~/.claude/skills` and `~/.agents/skills/core` carry no demoted entries; externally installed
     skills (`ckm-*` 6/6) untouched.
 
+- [x] 2026-08-13 — **Skills:** `project-continuation` built behind the `continuation` router lane.
+  - Result: new core skill (SKILL.md + openai.yaml + rules-map entry) that reconstructs state from
+    git, TODO backlogs, plan and handoff artifacts before resuming; the `continuation` lane
+    directive now summons it explicitly (lane marker unchanged, so router tests were untouched); the
+    read-side twin of `handoff`. Distributed to all IDE targets.
+  - Evidence: `pnpm run check` green after `build` + `hooks:link` (drift gate caught the
+    out-of-order link once, as designed); `hooks:test` 11/11; `skills:link` distributes 10 skills;
+    `ls ~/.claude/skills | grep project` shows it.
+
 - [-] 2026-08-13 — **Skills:** Consolidation-by-delegation superseded by the demote decision.
   - Resolution: user confirmed 2026-08-13 that the recorded demote decision wins over the later
     "make superpowers delegate to brp-*" idea (can't delegate to skills being retired). The

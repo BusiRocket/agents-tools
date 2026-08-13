@@ -297,3 +297,23 @@
     escalated to a candidate-verification pass. No confirmed real finding observed.
   - Evidence: `sr_measure.py` in the session scratchpad over 3,381 transcript files; token sums and
     outcome counts printed above; pricing from the claude-api skill model table.
+
+- [x] 2026-08-13 — **Machine sync:** Mac Studio brought to parity with the MacBook Pro on skills,
+      plugins, and CLI tooling.
+  - Result: `~/.agents` (git repo `BusiRocket/claude-skills`, the cross-machine sync channel) was 1
+    commit behind; the pull restored 1,306 missing files (xlsx/docx Office scripts and schemas,
+    skill references). 192 conflicting files were kept from the local side: the MacBook Pro's commit
+    carries SKILL.md descriptions truncated to `"…"` (trigger clauses lost), while the local copies
+    reinstalled from upstream are complete — the next auto-sync push heals the MBP. 8 skills existed
+    on disk but had no `~/.claude/skills` symlink (`ckm-*` x6, `frontend-skill`, `task-quality-kpi`)
+    — linked; 107 skills linked total, 0 broken symlinks. `skillkit` CLI installed globally via pnpm
+    with `~/.local/bin` wrappers (pnpm's bin shim resolves relative to `$0`, so plain symlinks break
+    it). Plugin audit: 37 installed match `enabledPlugins`; removed the orphaned `engram`
+    marketplace clone (54MB, zero plugins, superseded by mempalace) and uninstalled 3 disabled
+    heavyweight plugins (semgrep 159MB, posthog 30MB, sentry 13MB — reinstallable via
+    `claude plugin install <name>`). Remaining disabled plugins are small and kept for quick
+    re-enable.
+  - Evidence: `git -C ~/.agents status -sb` up to date with origin/main; blob-hash comparison
+    (192/1047 differing) via `git hash-object` vs `git ls-tree origin/main`; `skillkit --version`
+    prints 1.24.0 from an interactive shell; `find ~/.claude/skills -type l ! -exec test -e {} \;`
+    empty; backup of the 192 kept files in the session scratchpad.

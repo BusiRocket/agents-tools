@@ -3,7 +3,7 @@
  * the test tied to which skill is summoned rather than to exact wording.
  */
 export const LANE_MARKERS: Record<string, string> = {
-  "invoice-ops": "invoice-quarter-close",
+  "invoice-ops": "Invoice and tax work",
   debug: "systematic-debugging",
   frontend: "frontend-design",
   continuation: "Resuming earlier work",

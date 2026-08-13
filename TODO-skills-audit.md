@@ -15,7 +15,7 @@ rewrite history. Add a `## Round N` section per audit pass.
 - Extraction scripts: `scratchpad/extract.py` → `sessions.json` → `digest.json`. Re-run with
   `python3 extract.py sessions.json <days>`.
 
-> ## ⚠️ HEADLINE CORRECTION (added later the same day)
+> ## HEADLINE CORRECTION (added later the same day)
 >
 > **The 5.4% figure below is wrong by roughly 8x. The real rate is 42%.**
 >

@@ -13,17 +13,15 @@
 
 ## Router and hooks
 
-- [ ] The `invoice-ops` router lane fires a broken directive: `src/hooks/utils/route_prompt.py:57`
-      says "Use the invoice-quarter-close skill" but that skill no longer exists anywhere on disk
-      (built 2026-07-19 outside the repo, wiped before the `skills:link` guard landed in `aa2a972`).
-      Rebuild the skill — it covered the single largest recurring workload (99–101 prompts in the
-      audit corpus) — or silence the lane until it exists. Right now the lane actively misdirects.
+- [ ] Rebuild the `invoice-quarter-close` skill — it covered the single largest recurring workload
+      (99–101 prompts in the audit corpus). Built 2026-07-19 outside the repo, wiped before the
+      `skills:link` guard landed in `aa2a972`; this machine was cloned from the old MacBook Pro, so
+      check there for the source before rebuilding. The `invoice-ops` lane no longer misdirects: its
+      directive was rewritten 2026-08-13 to carry only the live-source verification rule.
 - [ ] Build the `project-continuation` skill behind the existing `continuation` router lane (17+
       resumption prompts route there; no skill answers).
 - [ ] Build `lovable-sync` and `stakeholder-recap` skills — router lanes exist, skills do not.
       Source: `TODO-skills-audit.md` pending list.
-- [ ] Add session-level idempotency so the router cannot direct the same skill twice in one session.
-      Source: `TODO-skills-audit.md`.
 - [ ] Round 2 audit re-run with the revised metrics: directive adherence (the one that matters),
       router coverage (baseline 172/1053 = 16%) and hand-measured lane precision. Include the known
       frontend miss: a plain "check this header on mobile" trigger test (2026-07-19) fired no design
@@ -42,12 +40,10 @@
       delegate to `brp-plan` and `systematic-debugging` to `brp-debug`/`brp-fix`; unify review entry
       points. `brainstorming`'s "MUST use before any creative work" wording still monopolises the
       trigger surface (58/80 skill loads in the 7-day corpus).
-- [ ] Delete the dead activation-fixture layer: `src/skills/activation-smoke.json`,
-      `src/skills/activation-acceptance.json`, `scripts/constants/SMOKE_PATH.ts`,
-      `scripts/constants/ACCEPTANCE_PATH.ts` — no consumers (verified 2026-08-13), superseded by
-      `ROUTER_TEST.ts` against verbatim transcript prompts.
-- [ ] Improve the `job-search` skill's trigger phrases — accepted alternative to the rejected
-      deterministic router lane (Codex 30-day pass); never verified as done.
+- [!] Improve the `job-search` skill's trigger phrases — accepted alternative to the rejected
+  deterministic router lane (Codex 30-day pass). Blocked: the skill exists nowhere on this machine
+  (not in the repo, not in `~/.agents/skills`, not lock-tracked). This machine was cloned from the
+  old MacBook Pro — smallest unblock: check that machine for the skill source, or drop the item.
 - [ ] Candidate skills from the Codex 30-day pass, unbuilt: `communications-work-intake` (13
       sessions; Slack/Discord/WhatsApp/email intake, wider than `stakeholder-recap`) and
       `document-intake-reconciler` (Downloads/PDF/OCR triage into Holded).
@@ -64,24 +60,15 @@
   on a decision: rebuild via `pnpm run validate:install` or delete the subsystem (gitignored dir —
   deletion needs explicit sign-off).
 
-## Rules
-
-- [ ] Staffbase rule auto-load gotcha: repos without `widget/`/`configuration/` markers (cli,
-      darkmode, drawer, smart-search, global-content, search-widget, `example-*`/`test-*`) no longer
-      load the rule; invoke `@staffbase` manually there or add `**/src/**` to its glob in
-      `src/rules/integrations/staffbase.mdc`.
-- [ ] Add the Context subscription-granularity reason (45ms/100 components vs 2ms/3 subscribers) to
-      `src/rules/react/state-management.mdc` — verified 2026-08-13 the rule states the practice
-      without the reason. Source: `~/p/brain/topics/react-modern.md`.
-
 ## Supply chain and secrets
 
 - [ ] Install `detect-secrets` as a pre-commit hook and enable GitHub secret scanning on the active
       repos. A leaked AWS key was used 11 minutes after the push in one documented case. Cheap,
       one-time. Source: `~/p/brain/topics/app-security.md`.
-- [ ] Add a variation-selector grep to CI or a pre-commit hook for the published repos —
-      `grep -rP '[\x{FE00}-\x{FE0F}\x{E0100}-\x{E01EF}]'` — GlassWorm hid payloads in zero-width
-      Unicode that no diff shows. Nearly free. Source: `~/p/brain/topics/supply-chain-security.md`.
+- [~] Add a variation-selector scan to CI for the published repos — GlassWorm hid payloads in
+  zero-width Unicode that no diff shows. This repo covered 2026-08-13 (`hygiene:test` in
+  `check:all`, scans all tracked files; `scripts/lib/isHiddenUnicode.ts` is reusable). Remaining:
+  the other published repos. Source: `~/p/brain/topics/supply-chain-security.md`.
 - [ ] Audit CI for long-lived registry publish tokens readable by third-party actions (the LiteLLM
       vector was a compromised Trivy action stealing `PYPI_PUBLISH`); prefer OIDC/Trusted
       Publishers. Source: `~/p/brain/topics/supply-chain-security.md`.
@@ -102,11 +89,13 @@ that surface land here.
 
 - [ ] Restore or rebuild the globally-installed `brain` and `invoice-quarter-close` skills — both
       missing before the 2026-08-13 restore, likely wiped by the pre-`aa2a972` link bug, and neither
-      is in `~/.agents/.skill-lock.json`. Smallest action: locate their source (brain skill probably
-      belongs to `~/p/brain` tooling; invoice-quarter-close see Router entry) or rebuild.
+      is in `~/.agents/.skill-lock.json`. Smallest action: check the old MacBook Pro this machine
+      was cloned from (the wipe or an incomplete copy may have skipped them), else locate their
+      source (brain skill probably belongs to `~/p/brain` tooling; invoice-quarter-close see Router
+      entry) or rebuild.
 - [!] 6 `ckm-*` skills (banner-design, brand, design, design-system, slides, ui-styling) missing and
-  never lock-tracked; installer unknown. Blocked: user must identify the source repo before any
-  reinstall.
+  never lock-tracked; installer unknown. Blocked: user must identify the source repo — the old
+  MacBook Pro this machine was cloned from is the first place to look — before any reinstall.
 - [ ] Rewrite `~/.claude/claude-security-guidance.md` — built 2026-07-19 from 88 real ReviewHog
       findings (auth-present-but-not-authorized, fail-open error paths, SSRF, tenant scoping, Tauri
       boundaries), verified loaded at session end, now absent from disk. Investigate why it

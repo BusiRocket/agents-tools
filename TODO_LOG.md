@@ -108,6 +108,44 @@
     lacks a plain `check` alias) filed in that repo's TODO.
   - Evidence: `src/hooks/stop-verification-gate.sh`; Stop hook in `~/.claude/settings.json`.
 
+- [x] 2026-08-13 — **Router:** invoice-ops lane no longer summons the nonexistent skill.
+  - Result: the directive was rewritten to carry only the live-source verification rule; the
+    invoice-quarter-close rebuild stays open in `TODO.md` with the old MacBook Pro named as the
+    first place to look.
+  - Evidence: commit 82620a2; `pnpm run hooks:test` 10/10 after rebuild+relink.
+  - Files: `src/hooks/utils/route_prompt.py`, `scripts/lib/hooks/constants/LANE_MARKERS.ts`.
+
+- [x] 2026-08-13 — **Router:** Session-level lane idempotency shipped.
+  - Result: each lane fires at most once per session, tracked in a per-session temp file keyed by
+    the sanitized `session_id`; stateless (fires every time) when no session_id arrives, so existing
+    behavior and tests are unchanged. The multi-ask note still fires per prompt.
+  - Evidence: commit cc67b18; new "a lane fires at most once per session" case,
+    `pnpm run hooks:test` 11/11.
+  - Files: `src/hooks/utils/route_prompt.py`, `scripts/lib/hooks/ROUTER_TEST.ts`,
+    `scripts/lib/hooks/runRouterHook.ts`.
+
+- [x] 2026-08-13 — **Skills:** Dead activation-fixture layer deleted.
+  - Result: `activation-smoke.json`, `activation-acceptance.json`, `SMOKE_PATH.ts`,
+    `ACCEPTANCE_PATH.ts` removed (no consumers; superseded by `ROUTER_TEST.ts`), plus the two root
+    `.lint-*.json` files — committed ESLint output still pointing at the retired busirocket-agents
+    checkout.
+  - Evidence: commit d986366; type-check, lint and `skills:validate` green after removal.
+
+- [x] 2026-08-13 — **Rules:** Staffbase auto-load gap documented; store-vs-context reason added.
+  - Result: `staffbase.mdc` now states in-file that repos without `widget/`/`configuration/` markers
+    need a manual `@staffbase` (globs kept narrow on purpose — `**/src/**` would load the rule
+    everywhere, deviating from the TODO's suggested fix); `state-management.mdc` now carries the
+    measured selector-vs-Context rationale (~45ms/100 consumers vs ~2ms/3 subscribers).
+  - Evidence: commit 6fb29b1; `pnpm run rules:check` green after regeneration.
+
+- [x] 2026-08-13 — **Supply chain:** Hidden-Unicode scan gates this repo's check.
+  - Result: `hygiene:test` (in `check:all`) fails when any tracked text file carries variation
+    selectors or zero-width characters — the GlassWorm payload channel; predicate extracted to
+    `scripts/lib/isHiddenUnicode.ts` for reuse. The one existing offender was a decorative emoji in
+    the audit history, replaced per the text-hygiene rule. Other published repos remain open in
+    `TODO.md`.
+  - Evidence: commit 9d3609c; `pnpm run hygiene:test` 1/1.
+
 - [-] 2026-08-13 — **Audit:** "Merge the codex deep-pass findings into Round 1" closed as overtaken.
   - Resolution: the scratchpad reports (`findings.md`, `findings30.md`) no longer exist on disk;
     their content was reconstructed from the Codex rollouts during this audit and everything

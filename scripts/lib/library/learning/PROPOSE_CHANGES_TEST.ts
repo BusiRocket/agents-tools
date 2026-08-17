@@ -6,7 +6,12 @@ import { proposeChanges } from "./proposeChanges"
 void test("a covering skill that is parked is proposed for promotion", () => {
   const proposals = proposeChanges({
     procedures: [
-      { name: "implement ui from screenshot", requests: 24, projects: 1, covers: "frontend-design" },
+      {
+        name: "implement ui from screenshot",
+        requests: 24,
+        projects: 1,
+        covers: "frontend-design",
+      },
     ],
     manifest: PROPOSAL_MANIFEST,
     invocations: {},
@@ -32,7 +37,10 @@ void test("a covering skill that is visible but never fired is a trigger problem
     invocations: {},
     target: "claude",
   })
-  assert.equal(proposals.find((proposal) => proposal.kind === "fix-trigger")?.skill, "team-communications")
+  assert.equal(
+    proposals.find((proposal) => proposal.kind === "fix-trigger")?.skill,
+    "team-communications",
+  )
 })
 
 void test("a covering skill that is visible and fired produces no proposal", () => {
@@ -54,7 +62,10 @@ void test("a procedure nothing covers is a build candidate", () => {
     invocations: { "team-communications": 1, "old-thing": 1 },
     target: "claude",
   })
-  assert.equal(proposals.find((proposal) => proposal.kind === "build")?.procedure, "read discord messages")
+  assert.equal(
+    proposals.find((proposal) => proposal.kind === "build")?.procedure,
+    "read discord messages",
+  )
 })
 
 void test("a covering skill absent from the library is also a build candidate", () => {
@@ -64,7 +75,10 @@ void test("a covering skill absent from the library is also a build candidate", 
     invocations: { "team-communications": 1, "old-thing": 1 },
     target: "claude",
   })
-  assert.equal(proposals.find((proposal) => proposal.kind === "build")?.procedure, "sign pdf digitally")
+  assert.equal(
+    proposals.find((proposal) => proposal.kind === "build")?.procedure,
+    "sign pdf digitally",
+  )
 })
 
 void test("an adopted skill nothing points at and nothing invoked is proposed for parking", () => {

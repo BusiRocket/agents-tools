@@ -3,8 +3,6 @@ import test from "node:test"
 import { toTranscriptLine as line } from "./fixtures/toTranscriptLine"
 import { readTranscriptTurns } from "./readTranscriptTurns"
 
-
-
 void test("a plain user turn is observed", () => {
   const turns = readTranscriptTurns(
     line({ type: "user", message: { role: "user", content: "arregla el header en movil" } }),

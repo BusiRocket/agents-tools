@@ -44,29 +44,53 @@
       "preserve public interfaces" rule. Full spec: `docs/mattpocock-skills-diff-2026-08.md`
       section 4.
 
+## Skills library cleanup
+
+> Decided 2026-08-17: curate one list and link it to every IDE including Antigravity, rather than
+> the current split where Claude Code is offered 13 skills and the other 94 bundles reach only
+> Codex. Nothing is deleted; unused bundles leave the default fan-out and stay in the repo.
+> Measurements: `~/p/dotfiles/docs/machine-inventory/skills-triage.md`.
+
+- [ ] Link the curated list into `~/.claude/skills` and into Antigravity
+      (`~/.gemini/config/skills`, which currently carries only the 7 BRP skills). Claude Code sees
+      13 of 273 skills today and all 13 are BRP; the rest were never offered to it.
+- [ ] Review skill by skill against the work actually done here, deciding for each what it does and
+      whether it earns its place. This is the real cleanup: the library is an accumulation of
+      experiments that were never triaged. Start with the six bundles holding ~170 SKILL.md files
+      and one recorded call between them (`engineering-advanced-skills` 47, `marketing-skills` 45,
+      `engineering-skills` 37, `product-skills` 17, `ra-qm-skills` 14, `pm-skills` 8), then the 21
+      Java/Spring `unit-test-*` bundles, which match no codebase in `~/p`.
+- [ ] Resolve the capabilities that exist on several surfaces at once: `frontend-design` is both an
+      `~/.agents` bundle and an official plugin, both called 11 times; `context7` is a plugin, an
+      MCP server and an always-on rule. Pick one surface each.
+- [ ] Re-check `brp-rust-quality` and `lovable-sync` after another month. Both are linked and had
+      zero calls in the 30-day window, but both are recent and narrow, so the window is too short to
+      conclude anything.
+- [ ] Re-run the classification for `pm-skills/SKILL.md` and `drizzle-orm-patterns/SKILL.md`, the
+      two the mining pass dropped.
+
 ## Machine provisioning
 
 > Scope decided 2026-08-17: this repo stays public and data-free and holds the engine (schemas,
 > capture readers, per-target renderers, CLI). The manifests carrying real values stay in the
-> private `BusiRocket/dotfiles` repo, which already owns brew, shell, symlinks, launchd and
-> secrets. Measured inventories behind these items:
-> `~/p/dotfiles/docs/machine-inventory/`.
+> private `BusiRocket/dotfiles` repo, which already owns brew, shell, symlinks, launchd and secrets.
+> Measured inventories behind these items: `~/p/dotfiles/docs/machine-inventory/`.
 
 - [ ] MCP manifest: one declarative schema rendered to all four targets (`~/.claude.json`,
-      `~/.claude-favish/.claude.json`, `~/.codex/config.toml`,
-      `~/.gemini/config/mcp_config.json`). Model absence with a `targets` list, not partial files;
-      reserve `target_overrides` for real semantic deltas only (Serena's context `claude-code` vs
-      `ide-assistant`, chrome-devtools `--autoConnect`), never for serialization differences.
-      Measured drift: 28 distinct servers, only 3 shared across scopes.
+      `~/.claude-favish/.claude.json`, `~/.codex/config.toml`, `~/.gemini/config/mcp_config.json`).
+      Model absence with a `targets` list, not partial files; reserve `target_overrides` for real
+      semantic deltas only (Serena's context `claude-code` vs `ide-assistant`, chrome-devtools
+      `--autoConnect`), never for serialization differences. Measured drift: 28 distinct servers,
+      only 3 shared across scopes.
 - [ ] Schema must reject credential literals in `args`, `env` and `headers`, accepting only named
       references. This is the fix for the 2026-08-17 leak, which happened because nothing validated
       it. See the security item below.
 - [ ] Plugin manifest: marketplaces plus plugins pinned by version, and the enabled/disabled state,
       which is the part no current tooling records (18 enabled, 18 disabled today). Reinstalling all
       36 and leaving them on does not reproduce the machine.
-- [ ] Plugin cache hygiene: 16 plugins keep stale older versions on disk (Figma 5, Amplitude,
-      Sentry and Superpowers 4 each) inside a 2.7 GB cache. Decide whether the apply step prunes
-      versions that no plugin resolves to.
+- [ ] Plugin cache hygiene: 16 plugins keep stale older versions on disk (Figma 5, Amplitude, Sentry
+      and Superpowers 4 each) inside a 2.7 GB cache. Decide whether the apply step prunes versions
+      that no plugin resolves to.
 - [ ] Services: render launchd plists and systemd units from one description. Every user-authored
       LaunchAgent except two hardcodes an absolute home path.
 - [ ] Profiles: compose domains into named targets (`full` for a primary machine with both Claude
@@ -90,10 +114,10 @@
 ## Supply chain and secrets
 
 - [!] Rotate the eight still-live credentials recovered on 2026-08-17 from
-      `~/.gemini/mcp_config.json`, and delete the copies that reached `portatil` and the `neo` VPS
-      through `dotfiles/bin/sync-ai`, which rsyncs `~/.gemini` wholesale. Values and their uses are
-      in `~/p/brain/business/misc-credentials.md`; the two ZeroHedge MongoDB URIs only need
-      revoking. Blocked on the rotation being done by hand. The local file is already clean.
+  `~/.gemini/mcp_config.json`, and delete the copies that reached `portatil` and the `neo` VPS
+  through `dotfiles/bin/sync-ai`, which rsyncs `~/.gemini` wholesale. Values and their uses are in
+  `~/p/brain/business/misc-credentials.md`; the two ZeroHedge MongoDB URIs only need revoking.
+  Blocked on the rotation being done by hand. The local file is already clean.
 - [ ] Install `detect-secrets` as a pre-commit hook and enable GitHub secret scanning on the active
       repos. A leaked AWS key was used 11 minutes after the push in one documented case. Cheap,
       one-time. Source: `~/p/brain/topics/app-security.md`.

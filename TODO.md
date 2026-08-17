@@ -92,21 +92,22 @@
 ## Skill library and learning loop
 
 > Shipped 2026-08-18: the four curation states, seeding from the lock, per-skill curation, linking
-> what is adopted, the transcript observer, trigger learning and proposals. Claude Code went from 13
-> skills offered to 30. Spec and plan:
+> what is adopted, the transcript observer, trigger learning with secret redaction, delegated
+> classification, the router audit, proposals and automatic parking behind a grace period. Claude
+> Code went from 13 skills offered to 30. Spec and plan:
 > `docs/superpowers/specs/2026-08-18-skill-library-and-learning-loop-design.md`.
 
-- [ ] Classification stage: a delegated command that turns observed requests into procedures. It is
-      deliberately not a dependency of the engine, so today the procedures file is produced by hand
-      with `agy`. Wire `library:classify --command <cmd>` so the loop closes without manual steps.
-- [ ] Write learned triggers into the descriptions of our own skills, and turn the phrases that
-      failed to select a skill into router fixtures. The manifest already carries the measured
-      phrases for 14 skills; nothing consumes them yet.
-- [ ] Patch reapplication for `forked` entries: fetch upstream, reapply the patch against the
-      recorded hash, report the conflict instead of swallowing it. No entry is forked yet, so this
-      is unexercised rather than broken.
-- [ ] The two automatic actions the policy allows: adding measured phrases to our own descriptions,
-      and parking an entry after a configured idle period. Everything else stays signed off.
+- [ ] Widen the router lanes the audit proved are silent. 175 of 209 measured phrases fire no lane,
+      and `el header se ve mal en movil` hits `debug` before `frontend` - the precedence bug this
+      backlog recorded without a cause. Evidence per phrase: `~/.agents-learning/router-audit.json`.
+- [ ] Promote the audited phrases into `src/hooks/router-fixtures.json` once the lanes are widened,
+      so each fix keeps the verbatim prompt that motivated it.
+- [ ] Writing measured phrases into skill descriptions is still not automated, deliberately:
+      descriptions are validated for activation boundaries and specificity, so a generated edit can
+      fail the build or blunt a good description. Decide whether to generate a proposal for review
+      rather than applying it.
+- [ ] Exercise patch reapplication against a real fork. The path is implemented and tested for the
+      conflict case, but nothing is forked yet, so it has never run for real.
 - [ ] Rules have no provenance, no lock and no state. The same four states apply; nothing is
       instrumented.
 - [ ] Codex-side invocation signal. Its rollouts show the catalogue being listed rather than skills

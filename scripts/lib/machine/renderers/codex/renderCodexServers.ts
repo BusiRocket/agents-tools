@@ -1,0 +1,49 @@
+import { resolveValueMap } from "../claude/resolveValueMap"
+import { escapeTomlString } from "./escapeTomlString"
+import type { McpManifest } from "../../domains/mcp/McpManifest"
+
+export const renderCodexServers = (manifest: McpManifest, env: NodeJS.ProcessEnv) => {
+  const blocks: string[] = []
+  const missing: string[] = []
+
+  for (const [name, server] of Object.entries(manifest.servers)) {
+    if (!server.targets.includes("codex")) {
+      continue
+    }
+
+    const envMap = resolveValueMap(server.env ?? {}, env)
+    if (envMap.missing.length > 0) {
+      missing.push(...envMap.missing)
+      continue
+    }
+
+    const lines = [`[mcp_servers.${name}]`]
+
+    if (server.transport === "stdio") {
+      lines.push(`command = ${escapeTomlString(server.command ?? "")}`)
+
+      const args = [
+        ...(server.args ?? []).filter((value): value is string => typeof value === "string"),
+        ...(server.target_overrides?.["codex"]?.args_append ?? []),
+      ]
+
+      if (args.length > 0) {
+        lines.push(`args = [${args.map(escapeTomlString).join(", ")}]`)
+      }
+    } else {
+      lines.push(`url = ${escapeTomlString(server.url ?? "")}`)
+    }
+
+    const envEntries = Object.entries(envMap.values).map(
+      ([key, value]) => `${key} = ${escapeTomlString(value)}`,
+    )
+
+    if (envEntries.length > 0) {
+      lines.push("", `[mcp_servers.${name}.env]`, ...envEntries)
+    }
+
+    blocks.push(lines.join("\n"))
+  }
+
+  return { toml: blocks.join("\n\n"), missing }
+}

@@ -1,8 +1,9 @@
 import assert from "node:assert/strict"
 import test from "node:test"
+import { toTranscriptLine as line } from "./fixtures/toTranscriptLine"
 import { readTranscriptTurns } from "./readTranscriptTurns"
 
-const line = (value: unknown) => JSON.stringify(value)
+
 
 void test("a plain user turn is observed", () => {
   const turns = readTranscriptTurns(

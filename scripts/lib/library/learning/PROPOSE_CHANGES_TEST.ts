@@ -13,8 +13,9 @@ void test("a covering skill that is parked is proposed for promotion", () => {
     target: "claude",
   })
   const promote = proposals.find((proposal) => proposal.kind === "promote")
-  assert.equal(promote?.skill, "frontend-design")
-  assert.equal(promote?.requests, 24)
+  assert.ok(promote)
+  assert.equal(promote.skill, "frontend-design")
+  assert.equal(promote.requests, 24)
 })
 
 void test("a covering skill that is visible but never fired is a trigger problem", () => {

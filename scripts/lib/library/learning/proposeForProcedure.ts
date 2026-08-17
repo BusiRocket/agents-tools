@@ -1,4 +1,4 @@
-import type { CurationManifest } from "../../types/CurationManifest"
+import type { CurationManifest } from "../types/CurationManifest"
 import type { Procedure } from "./types/Procedure"
 import type { Proposal } from "./types/Proposal"
 

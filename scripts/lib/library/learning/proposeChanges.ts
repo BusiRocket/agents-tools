@@ -1,4 +1,4 @@
-import { selectFannedOutSkills } from "../selectFannedOutSkills"
+import { selectFannedOutSkills } from "../selectors/selectFannedOutSkills"
 import { proposeForProcedure } from "./proposeForProcedure"
 import { proposeIdleParking } from "./proposeIdleParking"
 import type { Proposal } from "./types/Proposal"

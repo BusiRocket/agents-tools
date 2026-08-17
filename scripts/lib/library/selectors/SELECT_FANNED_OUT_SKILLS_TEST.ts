@@ -1,6 +1,6 @@
 import assert from "node:assert/strict"
 import test from "node:test"
-import { FAN_OUT_MANIFEST } from "./fixtures/FAN_OUT_MANIFEST"
+import { FAN_OUT_MANIFEST } from "../fixtures/FAN_OUT_MANIFEST"
 import { selectFannedOutSkills } from "./selectFannedOutSkills"
 
 void test("adopted and forked fan out, parked and extracted never do", () => {

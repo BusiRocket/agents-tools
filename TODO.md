@@ -76,15 +76,6 @@
 > private `BusiRocket/dotfiles` repo, which already owns brew, shell, symlinks, launchd and secrets.
 > Measured inventories behind these items: `~/p/dotfiles/docs/machine-inventory/`.
 
-- [ ] MCP manifest: one declarative schema rendered to all four targets (`~/.claude.json`,
-      `~/.claude-favish/.claude.json`, `~/.codex/config.toml`, `~/.gemini/config/mcp_config.json`).
-      Model absence with a `targets` list, not partial files; reserve `target_overrides` for real
-      semantic deltas only (Serena's context `claude-code` vs `ide-assistant`, chrome-devtools
-      `--autoConnect`), never for serialization differences. Measured drift: 28 distinct servers,
-      only 3 shared across scopes.
-- [ ] Schema must reject credential literals in `args`, `env` and `headers`, accepting only named
-      references. This is the fix for the 2026-08-17 leak, which happened because nothing validated
-      it. See the security item below.
 - [ ] Plugin manifest: marketplaces plus plugins pinned by version, and the enabled/disabled state,
       which is the part no current tooling records (18 enabled, 18 disabled today). Reinstalling all
       36 and leaving them on does not reproduce the machine.

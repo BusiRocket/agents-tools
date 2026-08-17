@@ -4,6 +4,22 @@
 
 ## 2026
 
+### 2026-08
+
+- [x] 2026-08-18 - **Machine provisioning:** MCP domain shipped end to end on the new engine.
+  - Result: `machine:diff`, `machine:apply` and `machine:rollback` render one declarative manifest
+    into the Claude, Codex and Gemini config formats. Seven-domain contract in place (`read`,
+    `plan`, `apply`, `verify`) with `plan` pure; ownership sidecar so apply can retract its own keys
+    without touching foreign ones; per-run snapshots with tier-1 restore; secret references that
+    report what is missing instead of failing.
+  - Evidence: 90 tests in `machine:test`, wired into `check:all`; `pnpm run check` green. The
+    credential validator flags exactly the ten literals recovered from the leaked Gemini config and
+    nothing else. The idempotency test caught a real defect: Codex diffs compared a Claude-shaped
+    render against quoted TOML and always reported changed - fixed by normalizing both sides.
+    Commits 49319be (plan) through bc96241.
+  - Deferred by design to later plans: `verify` for MCP, rollback tiers 2 and 3, profiles, the
+    `machine-setup` skill, and the other six domains.
+
 ### 2026-07
 
 - [x] 2026-07-19 — **Router:** Deterministic `UserPromptSubmit` prompt router shipped and registered

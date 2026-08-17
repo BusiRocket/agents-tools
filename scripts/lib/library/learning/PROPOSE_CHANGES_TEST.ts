@@ -1,6 +1,7 @@
 import assert from "node:assert/strict"
 import test from "node:test"
 import { PROPOSAL_MANIFEST } from "./fixtures/PROPOSAL_MANIFEST"
+import { KEY_INDEX } from "./fixtures/KEY_INDEX"
 import { proposeChanges } from "./proposeChanges"
 
 void test("a covering skill that is parked is proposed for promotion", () => {
@@ -16,6 +17,7 @@ void test("a covering skill that is parked is proposed for promotion", () => {
     manifest: PROPOSAL_MANIFEST,
     invocations: {},
     target: "claude",
+    keyIndex: KEY_INDEX,
   })
   const promote = proposals.find((proposal) => proposal.kind === "promote")
   assert.ok(promote)
@@ -36,6 +38,7 @@ void test("a covering skill that is visible but never fired is a trigger problem
     manifest: PROPOSAL_MANIFEST,
     invocations: {},
     target: "claude",
+    keyIndex: KEY_INDEX,
   })
   assert.equal(
     proposals.find((proposal) => proposal.kind === "fix-trigger")?.skill,
@@ -51,6 +54,7 @@ void test("a covering skill that is visible and fired produces no proposal", () 
     manifest: PROPOSAL_MANIFEST,
     invocations: { "team-communications": 4, "old-thing": 1 },
     target: "claude",
+    keyIndex: KEY_INDEX,
   })
   assert.deepEqual(proposals, [])
 })
@@ -61,6 +65,7 @@ void test("a procedure nothing covers is a build candidate", () => {
     manifest: PROPOSAL_MANIFEST,
     invocations: { "team-communications": 1, "old-thing": 1 },
     target: "claude",
+    keyIndex: KEY_INDEX,
   })
   assert.equal(
     proposals.find((proposal) => proposal.kind === "build")?.procedure,
@@ -74,6 +79,7 @@ void test("a covering skill absent from the library is also a build candidate", 
     manifest: PROPOSAL_MANIFEST,
     invocations: { "team-communications": 1, "old-thing": 1 },
     target: "claude",
+    keyIndex: KEY_INDEX,
   })
   assert.equal(
     proposals.find((proposal) => proposal.kind === "build")?.procedure,
@@ -87,6 +93,7 @@ void test("an adopted skill nothing points at and nothing invoked is proposed fo
     manifest: PROPOSAL_MANIFEST,
     invocations: { "team-communications": 3 },
     target: "claude",
+    keyIndex: KEY_INDEX,
   })
   assert.deepEqual(
     proposals.filter((proposal) => proposal.kind === "park").map((proposal) => proposal.skill),
@@ -103,6 +110,7 @@ void test("proposals are ordered by measured volume, most first", () => {
     manifest: PROPOSAL_MANIFEST,
     invocations: { "team-communications": 1, "old-thing": 1 },
     target: "claude",
+    keyIndex: KEY_INDEX,
   })
   assert.equal(proposals[0]?.procedure, "big")
 })

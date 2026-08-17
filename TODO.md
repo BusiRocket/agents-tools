@@ -89,6 +89,32 @@
 - [ ] Re-run the classification for `pm-skills/SKILL.md` and `drizzle-orm-patterns/SKILL.md`, the
       two the mining pass dropped.
 
+## Skill library and learning loop
+
+> Shipped 2026-08-18: the four curation states, seeding from the lock, per-skill curation, linking
+> what is adopted, the transcript observer, trigger learning and proposals. Claude Code went from 13
+> skills offered to 30. Spec and plan:
+> `docs/superpowers/specs/2026-08-18-skill-library-and-learning-loop-design.md`.
+
+- [ ] Classification stage: a delegated command that turns observed requests into procedures. It is
+      deliberately not a dependency of the engine, so today the procedures file is produced by hand
+      with `agy`. Wire `library:classify --command <cmd>` so the loop closes without manual steps.
+- [ ] Write learned triggers into the descriptions of our own skills, and turn the phrases that
+      failed to select a skill into router fixtures. The manifest already carries the measured
+      phrases for 14 skills; nothing consumes them yet.
+- [ ] Patch reapplication for `forked` entries: fetch upstream, reapply the patch against the
+      recorded hash, report the conflict instead of swallowing it. No entry is forked yet, so this
+      is unexercised rather than broken.
+- [ ] The two automatic actions the policy allows: adding measured phrases to our own descriptions,
+      and parking an entry after a configured idle period. Everything else stays signed off.
+- [ ] Rules have no provenance, no lock and no state. The same four states apply; nothing is
+      instrumented.
+- [ ] Codex-side invocation signal. Its rollouts show the catalogue being listed rather than skills
+      being opened, so "never fired" currently means "never fired in Claude" and proposals should
+      say so.
+- [ ] Decide what to do with the 87 parked entries, now that parking is cheap and reversible. The 16
+      Java/Spring bundles are the obvious first pass.
+
 ## Machine provisioning
 
 > Scope decided 2026-08-17: this repo stays public and data-free and holds the engine (schemas,

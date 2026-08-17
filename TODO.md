@@ -44,11 +44,62 @@
       "preserve public interfaces" rule. Full spec: `docs/mattpocock-skills-diff-2026-08.md`
       section 4.
 
+## Machine provisioning
+
+> Scope decided 2026-08-17: this repo stays public and data-free and holds the engine (schemas,
+> capture readers, per-target renderers, CLI). The manifests carrying real values stay in the
+> private `BusiRocket/dotfiles` repo, which already owns brew, shell, symlinks, launchd and
+> secrets. Measured inventories behind these items:
+> `~/p/dotfiles/docs/machine-inventory/`.
+
+- [ ] MCP manifest: one declarative schema rendered to all four targets (`~/.claude.json`,
+      `~/.claude-favish/.claude.json`, `~/.codex/config.toml`,
+      `~/.gemini/config/mcp_config.json`). Model absence with a `targets` list, not partial files;
+      reserve `target_overrides` for real semantic deltas only (Serena's context `claude-code` vs
+      `ide-assistant`, chrome-devtools `--autoConnect`), never for serialization differences.
+      Measured drift: 28 distinct servers, only 3 shared across scopes.
+- [ ] Schema must reject credential literals in `args`, `env` and `headers`, accepting only named
+      references. This is the fix for the 2026-08-17 leak, which happened because nothing validated
+      it. See the security item below.
+- [ ] Plugin manifest: marketplaces plus plugins pinned by version, and the enabled/disabled state,
+      which is the part no current tooling records (18 enabled, 18 disabled today). Reinstalling all
+      36 and leaving them on does not reproduce the machine.
+- [ ] Plugin cache hygiene: 16 plugins keep stale older versions on disk (Figma 5, Amplitude,
+      Sentry and Superpowers 4 each) inside a 2.7 GB cache. Decide whether the apply step prunes
+      versions that no plugin resolves to.
+- [ ] Services: render launchd plists and systemd units from one description. Every user-authored
+      LaunchAgent except two hardcodes an absolute home path.
+- [ ] Profiles: compose domains into named targets (`full` for a primary machine with both Claude
+      profiles and the mempalace daemons, `lite` without daemons or the editable fork).
+- [ ] Capture readers per domain, so the manifests can be regenerated from a live machine rather
+      than hand-edited. Without them the manifests go stale in weeks, which is the failure mode the
+      current rsync mirroring already shows.
+- [ ] Record install provenance for the tools that have none: `agy`, `herdr`, `claude`, `codex`,
+      `cursor-agent` exist only as opaque binaries or app-managed symlinks. `agy` is currently
+      unrecoverable if the disk is lost.
+- [ ] Pin how `codegraph` and Serena are installed. Both run daily as MCP servers but neither
+      appears as a package in the runtime sweep, so no installer can claim completeness yet.
+- [ ] `config` apply must merge, never replace: third-party tools (orca, atuin, warp) inject hooks
+      into `settings.json` without asking, and a full rewrite drops them.
+- [ ] `statusLine` in `settings.json` points at caveman `25d22f864ad6` while the installed version
+      is `0d95a81d35a9`. Both directories exist so it works; it is a pin to a stale copy that a
+      cache prune would break.
+- [ ] `serena@claude-plugins-official` is installed but missing from `enabledPlugins`, so its state
+      is defaulted rather than declared. Declare it.
+
 ## Supply chain and secrets
 
+- [!] Rotate the eight still-live credentials recovered on 2026-08-17 from
+      `~/.gemini/mcp_config.json`, and delete the copies that reached `portatil` and the `neo` VPS
+      through `dotfiles/bin/sync-ai`, which rsyncs `~/.gemini` wholesale. Values and their uses are
+      in `~/p/brain/business/misc-credentials.md`; the two ZeroHedge MongoDB URIs only need
+      revoking. Blocked on the rotation being done by hand. The local file is already clean.
 - [ ] Install `detect-secrets` as a pre-commit hook and enable GitHub secret scanning on the active
       repos. A leaked AWS key was used 11 minutes after the push in one documented case. Cheap,
       one-time. Source: `~/p/brain/topics/app-security.md`.
+- [ ] Audit what else `sync-ai` ships wholesale. `~/.gemini` carried ten credentials for months; the
+      same script also mirrors `~/.codex`, `~/.agents`, `~/.claude/projects` and
+      `~/.claude/history.jsonl`, with exclusions maintained by hand.
 - [~] Add a variation-selector scan to CI for the published repos — GlassWorm hid payloads in
   zero-width Unicode that no diff shows. This repo covered 2026-08-13 (`hygiene:test` in
   `check:all`, scans all tracked files; `scripts/lib/isHiddenUnicode.ts` is reusable). Remaining:

@@ -1,3 +1,3 @@
-export type SecretReference = {
+export interface SecretReference {
   from_env: string
 }

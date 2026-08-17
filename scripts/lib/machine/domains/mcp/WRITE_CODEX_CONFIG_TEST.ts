@@ -1,19 +1,12 @@
 import assert from "node:assert/strict"
-import { mkdtemp, readFile, writeFile } from "node:fs/promises"
-import { tmpdir } from "node:os"
-import { join } from "node:path"
+import { readFile } from "node:fs/promises"
 import test from "node:test"
+import { createTempConfigFile } from "./fixtures/createTempConfigFile"
 import { writeCodexConfig } from "./writeCodexConfig"
 
-const configWith = async (contents: string) => {
-  const dir = await mkdtemp(join(tmpdir(), "machine-codex-"))
-  const path = join(dir, "config.toml")
-  await writeFile(path, contents)
-  return path
-}
-
 void test("settings outside mcp_servers are preserved", async () => {
-  const path = await configWith(
+  const path = await createTempConfigFile(
+    "config.toml",
     ['model = "gpt-5.6-sol"', 'model_reasoning_effort = "high"', ""].join("\n"),
   )
   await writeCodexConfig({
@@ -29,7 +22,10 @@ void test("settings outside mcp_servers are preserved", async () => {
 })
 
 void test("a foreign server block survives", async () => {
-  const path = await configWith(["[mcp_servers.foreign]", 'command = "keep-me"', ""].join("\n"))
+  const path = await createTempConfigFile(
+    "config.toml",
+    ["[mcp_servers.foreign]", 'command = "keep-me"', ""].join("\n"),
+  )
   await writeCodexConfig({
     path,
     toml: '[mcp_servers.a]\ncommand = "a"',
@@ -43,7 +39,10 @@ void test("a foreign server block survives", async () => {
 })
 
 void test("an owned block is replaced rather than duplicated", async () => {
-  const path = await configWith(["[mcp_servers.a]", 'command = "old"', ""].join("\n"))
+  const path = await createTempConfigFile(
+    "config.toml",
+    ["[mcp_servers.a]", 'command = "old"', ""].join("\n"),
+  )
   await writeCodexConfig({
     path,
     toml: '[mcp_servers.a]\ncommand = "new"',
@@ -58,7 +57,8 @@ void test("an owned block is replaced rather than duplicated", async () => {
 })
 
 void test("an owned sub-table is removed with its parent", async () => {
-  const path = await configWith(
+  const path = await createTempConfigFile(
+    "config.toml",
     [
       "[mcp_servers.a]",
       'command = "old"',
@@ -83,7 +83,7 @@ void test("an owned sub-table is removed with its parent", async () => {
 })
 
 void test("writing twice leaves an identical file", async () => {
-  const path = await configWith('model = "gpt-5.6-sol"\n')
+  const path = await createTempConfigFile("config.toml", 'model = "gpt-5.6-sol"\n')
   await writeCodexConfig({
     path,
     toml: '[mcp_servers.a]\ncommand = "a"',

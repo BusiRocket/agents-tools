@@ -1,6 +1,7 @@
 import { resolveValueMap } from "../claude/resolveValueMap"
+import { toStringArgs } from "../claude/toStringArgs"
 import { escapeTomlString } from "./escapeTomlString"
-import type { McpManifest } from "../../domains/mcp/McpManifest"
+import type { McpManifest } from "../../domains/mcp/types/McpManifest"
 
 export const renderCodexServers = (manifest: McpManifest, env: NodeJS.ProcessEnv) => {
   const blocks: string[] = []
@@ -23,11 +24,7 @@ export const renderCodexServers = (manifest: McpManifest, env: NodeJS.ProcessEnv
     if (server.transport === "stdio") {
       lines.push(`command = ${escapeTomlString(server.command ?? "")}`)
 
-      const args = [
-        ...(server.args ?? []).filter((value): value is string => typeof value === "string"),
-        ...(server.target_overrides?.["codex"]?.args_append ?? []),
-      ]
-
+      const args = toStringArgs(server.args, server.target_overrides?.codex?.args_append ?? [])
       if (args.length > 0) {
         lines.push(`args = [${args.map(escapeTomlString).join(", ")}]`)
       }

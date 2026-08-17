@@ -1,17 +1,12 @@
 import { join } from "node:path"
-
-type ResolveInstanceDirOptions = {
-  flag?: string
-  env: NodeJS.ProcessEnv
-  home: string
-}
+import type { ResolveInstanceDirOptions } from "./types/ResolveInstanceDirOptions"
 
 export const resolveInstanceDir = ({ flag, env, home }: ResolveInstanceDirOptions) => {
   if (flag) {
     return flag
   }
 
-  const fromEnv = env["AGENTS_MACHINE_DIR"]
+  const fromEnv = env.AGENTS_MACHINE_DIR
   if (fromEnv) {
     return fromEnv
   }

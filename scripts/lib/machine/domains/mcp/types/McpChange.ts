@@ -1,6 +1,6 @@
-import type { McpTarget } from "./McpManifest"
+import type { McpTarget } from "./McpTarget"
 
-export type McpChange = {
+export interface McpChange {
   target: McpTarget
   name: string
   operation: "add" | "update" | "remove"

@@ -1,5 +1,7 @@
 import { resolveValueMap } from "./resolveValueMap"
-import type { McpManifest, McpTarget } from "../../domains/mcp/McpManifest"
+import { toStringArgs } from "./toStringArgs"
+import type { McpManifest } from "../../domains/mcp/types/McpManifest"
+import type { McpTarget } from "../../domains/mcp/types/McpTarget"
 
 export const renderClaudeServers = (
   manifest: McpManifest,
@@ -23,13 +25,8 @@ export const renderClaudeServers = (
       continue
     }
 
-    const appended = server.target_overrides?.[target]?.args_append ?? []
-
     if (server.transport === "stdio") {
-      const args = [
-        ...(server.args ?? []).filter((value): value is string => typeof value === "string"),
-        ...appended,
-      ]
+      const args = toStringArgs(server.args, server.target_overrides?.[target]?.args_append ?? [])
 
       servers[name] = {
         type: "stdio",

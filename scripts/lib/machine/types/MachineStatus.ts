@@ -1,3 +1,3 @@
-export const MACHINE_STATUS = ["converged", "changed", "skipped", "needs-secret", "failed"] as const
+import type { MACHINE_STATUS } from "./MACHINE_STATUS"
 
 export type MachineStatus = (typeof MACHINE_STATUS)[number]

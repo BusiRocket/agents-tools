@@ -1,37 +1,31 @@
 import assert from "node:assert/strict"
-import { mkdtemp, readFile, writeFile } from "node:fs/promises"
+import { mkdtemp, readFile } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 import test from "node:test"
+import { createTempConfigFile } from "./fixtures/createTempConfigFile"
+import { readClaudeServersFromFile } from "./fixtures/readClaudeServersFromFile"
 import { writeClaudeConfig } from "./writeClaudeConfig"
 
-const configWith = async (contents: unknown) => {
-  const dir = await mkdtemp(join(tmpdir(), "machine-apply-"))
-  const path = join(dir, ".claude.json")
-  await writeFile(path, JSON.stringify(contents, null, 2))
-  return path
-}
-
-const serversOf = async (path: string) => {
-  const written = JSON.parse(await readFile(path, "utf8")) as {
-    mcpServers: Record<string, unknown>
-  }
-  return written.mcpServers
-}
+export const configWith = async (contents: unknown) =>
+  createTempConfigFile(".claude.json", JSON.stringify(contents, null, 2))
 
 void test("keys outside mcpServers survive the write", async () => {
   const path = await configWith({ theme: "dark", mcpServers: {} })
   await writeClaudeConfig({ path, servers: { a: { type: "stdio" } }, ownedNames: [] })
 
   const written = JSON.parse(await readFile(path, "utf8")) as Record<string, unknown>
-  assert.equal(written["theme"], "dark")
+  assert.equal(written.theme, "dark")
 })
 
 void test("a foreign server is preserved", async () => {
   const path = await configWith({ mcpServers: { foreign: { type: "stdio" } } })
   await writeClaudeConfig({ path, servers: { a: { type: "stdio" } }, ownedNames: [] })
 
-  assert.deepEqual(Object.keys(await serversOf(path)).sort(), ["a", "foreign"])
+  assert.deepEqual(
+    Object.keys(await readClaudeServersFromFile(path)).toSorted((a, b) => a.localeCompare(b)),
+    ["a", "foreign"],
+  )
 })
 
 void test("a previously owned server that is no longer desired is removed", async () => {
@@ -40,7 +34,10 @@ void test("a previously owned server that is no longer desired is removed", asyn
   })
   await writeClaudeConfig({ path, servers: { a: { type: "stdio" } }, ownedNames: ["stale"] })
 
-  assert.deepEqual(Object.keys(await serversOf(path)).sort(), ["a", "foreign"])
+  assert.deepEqual(
+    Object.keys(await readClaudeServersFromFile(path)).toSorted((a, b) => a.localeCompare(b)),
+    ["a", "foreign"],
+  )
 })
 
 void test("the returned ownership list is the servers just written", async () => {
@@ -51,7 +48,10 @@ void test("the returned ownership list is the servers just written", async () =>
     ownedNames: [],
   })
 
-  assert.deepEqual(owned.sort(), ["a", "b"])
+  assert.deepEqual(
+    owned.toSorted((a, b) => a.localeCompare(b)),
+    ["a", "b"],
+  )
 })
 
 void test("writing twice leaves an identical file", async () => {
@@ -68,5 +68,5 @@ void test("a missing config file is created", async () => {
   const path = join(dir, "absent.json")
 
   await writeClaudeConfig({ path, servers: { a: { type: "stdio" } }, ownedNames: [] })
-  assert.deepEqual(Object.keys(await serversOf(path)), ["a"])
+  assert.deepEqual(Object.keys(await readClaudeServersFromFile(path)), ["a"])
 })

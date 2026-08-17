@@ -1,11 +1,12 @@
-const TRANSPORT_WORDS = new Set(["stdio", "http", "sse"])
-const SUSPICIOUS_PREFIX = /^(ghp_|gho_|github_pat_|sk-|ctx7sk-|fc-|xox[baprs]-|eyJ)/
-const USERINFO_URL = /^[a-z][a-z0-9+.-]*:\/\/[^/@\s]+@/i
-const HIGH_ENTROPY = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z0-9_-]{24,}/
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+import { SCHEME_URL } from "./constants/SCHEME_URL"
+import { SUSPICIOUS_PREFIX } from "./constants/SUSPICIOUS_PREFIX"
+import { TRANSPORT_WORDS } from "./constants/TRANSPORT_WORDS"
+import { USERINFO_URL } from "./constants/USERINFO_URL"
+import { UUID_PATTERN } from "./constants/UUID_PATTERN"
+import { isHighEntropy } from "./isHighEntropy"
 
 export const isAllowedLiteral = (value: string) => {
-  if (SUSPICIOUS_PREFIX.test(value) || USERINFO_URL.test(value) || UUID.test(value)) {
+  if (SUSPICIOUS_PREFIX.test(value) || USERINFO_URL.test(value) || UUID_PATTERN.test(value)) {
     return false
   }
 
@@ -13,9 +14,9 @@ export const isAllowedLiteral = (value: string) => {
     return true
   }
 
-  if (/^[a-z][a-z0-9+.-]*:\/\//i.test(value)) {
+  if (SCHEME_URL.test(value)) {
     return true
   }
 
-  return !HIGH_ENTROPY.test(value)
+  return !isHighEntropy(value)
 }

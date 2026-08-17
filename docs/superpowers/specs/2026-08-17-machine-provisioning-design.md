@@ -304,21 +304,31 @@ valid rollback target.
 
 ## 15. Repository layout
 
+Engine code goes under `scripts/`, not `src/`. `tsconfig.json` includes only `scripts/**/*`, and
+`src/` holds skill and rule content rather than TypeScript.
+
 ```
-src/machine/
+scripts/lib/machine/
   domains/<domain>/read.ts plan.ts apply.ts verify.ts
   renderers/<target>/render.ts
   schemas/<domain>.schema.json
   secrets/resolveReference.ts
   ownership/readOwned.ts writeOwned.ts
   runs/createSnapshot.ts restoreSnapshot.ts listRuns.ts
+  types/
+scripts/commands/machine<Verb>.ts
 scripts/bin/
   run-machine-capture.ts run-machine-diff.ts run-machine-apply.ts
   run-machine-rollback.ts
 examples/machine/
 ```
 
-One exported unit per file, matching the existing `scripts/lib/link/operations/` convention.
+One exported unit per file, matching the existing `scripts/lib/link/operations/` convention: a
+`bin/` runner that only calls `main()` from a `commands/` module, which composes operations from
+`lib/`. Tests sit beside their subject as `NAME_TEST.ts` and run under `tsx --test`.
+
+`tsconfig.json` has `strict`, `noUncheckedIndexedAccess` and `exactOptionalPropertyTypes` enabled;
+optional fields must be omitted rather than set to `undefined`.
 
 ## 16. Migration
 

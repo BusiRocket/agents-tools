@@ -51,9 +51,9 @@
 > Codex. Nothing is deleted; unused bundles leave the default fan-out and stay in the repo.
 > Measurements: `~/p/dotfiles/docs/machine-inventory/skills-triage.md`.
 
-- [ ] Link the curated list into `~/.claude/skills` and into Antigravity
-      (`~/.gemini/config/skills`, which currently carries only the 7 BRP skills). Claude Code sees
-      13 of 273 skills today and all 13 are BRP; the rest were never offered to it.
+- [ ] Link the curated list into `~/.claude/skills` and into Antigravity (`~/.gemini/config/skills`,
+      which currently carries only the 7 BRP skills). Claude Code sees 13 of 273 skills today and
+      all 13 are BRP; the rest were never offered to it.
 - [ ] Review skill by skill against the work actually done here, deciding for each what it does and
       whether it earns its place. This is the real cleanup: the library is an accumulation of
       experiments that were never triaged. Start with the six bundles holding ~170 SKILL.md files

@@ -1,10 +1,7 @@
 import { readClaudeServers } from "./readClaudeServers"
 import { readCodexServers } from "./readCodexServers"
-import type { McpTarget } from "./McpManifest"
-
-export type McpState = {
-  byTarget: Record<McpTarget, Record<string, unknown>>
-}
+import type { McpState } from "./types/McpState"
+import type { McpTarget } from "./types/McpTarget"
 
 export const read = async (paths: Record<McpTarget, string>): Promise<McpState> => ({
   byTarget: {

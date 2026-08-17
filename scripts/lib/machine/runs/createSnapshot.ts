@@ -7,7 +7,7 @@ export const createSnapshot = async ({ runDir, files }: { runDir: string; files:
   const entries: SnapshotEntry[] = []
 
   for (const [index, path] of files.entries()) {
-    const encoded = `${index}-${path.replaceAll("/", "_")}`
+    const encoded = `${String(index)}-${path.replaceAll("/", "_")}`
 
     try {
       const contents = await fs.readFile(path)

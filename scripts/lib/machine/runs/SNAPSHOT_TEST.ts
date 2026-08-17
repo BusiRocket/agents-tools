@@ -44,9 +44,7 @@ void test("an interrupted run has no complete marker", async () => {
   const work = await mkdtemp(join(tmpdir(), "machine-runs-"))
   await mkdir(join(work, "2026-08-17T22-04-05-abc"), { recursive: true })
 
-  assert.deepEqual(await listRuns(work), [
-    { runId: "2026-08-17T22-04-05-abc", complete: false },
-  ])
+  assert.deepEqual(await listRuns(work), [{ runId: "2026-08-17T22-04-05-abc", complete: false }])
 })
 
 void test("a finished run is marked complete", async () => {

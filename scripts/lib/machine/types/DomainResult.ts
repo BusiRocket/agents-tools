@@ -1,6 +1,6 @@
 import type { MachineStatus } from "./MachineStatus"
 
-export type DomainResult = {
+export interface DomainResult {
   domain: string
   status: MachineStatus
   changes: number

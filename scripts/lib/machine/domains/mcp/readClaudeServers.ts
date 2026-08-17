@@ -1,27 +1,12 @@
-import { promises as fs } from "node:fs"
+import { readExistingJson } from "./readExistingJson"
 
 export const readClaudeServers = async (configPath: string): Promise<Record<string, unknown>> => {
-  let contents: string
-  try {
-    contents = await fs.readFile(configPath, "utf8")
-  } catch {
+  const parsed = await readExistingJson(configPath)
+  const servers = parsed.mcpServers
+
+  if (typeof servers !== "object" || servers === null) {
     return {}
   }
 
-  if (contents.trim() === "") {
-    return {}
-  }
-
-  try {
-    const parsed = JSON.parse(contents) as Record<string, unknown>
-    const servers = parsed["mcpServers"]
-
-    if (typeof servers !== "object" || servers === null) {
-      return {}
-    }
-
-    return servers as Record<string, unknown>
-  } catch {
-    return {}
-  }
+  return servers as Record<string, unknown>
 }

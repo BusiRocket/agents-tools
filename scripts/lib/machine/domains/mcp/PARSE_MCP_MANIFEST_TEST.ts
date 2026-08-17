@@ -20,11 +20,8 @@ void test("an http server without a url is rejected", () => {
   const result = parseMcpManifest({
     servers: { context7: { targets: ["codex"], transport: "http" } },
   })
-  assert.equal(result.ok, false)
-  assert.equal(
-    result.ok === false && result.errors.some((error) => error.includes("url")),
-    true,
-  )
+  assert.ok(!result.ok)
+  assert.ok(result.errors.some((error) => error.includes("url")))
 })
 
 void test("a stdio server carrying a url is rejected", () => {
@@ -40,11 +37,8 @@ void test("an unknown target is rejected and names the offender", () => {
   const result = parseMcpManifest({
     servers: { x: { targets: ["emacs"], transport: "stdio", command: "x" } },
   })
-  assert.equal(result.ok, false)
-  assert.equal(
-    result.ok === false && result.errors.some((error) => error.includes("emacs")),
-    true,
-  )
+  assert.ok(!result.ok)
+  assert.ok(result.errors.some((error) => error.includes("emacs")))
 })
 
 void test("a credential literal fails validation through the manifest parser", () => {
@@ -58,11 +52,8 @@ void test("a credential literal fails validation through the manifest parser", (
       },
     },
   })
-  assert.equal(result.ok, false)
-  assert.equal(
-    result.ok === false && result.errors.some((error) => error.includes("env.TOKEN")),
-    true,
-  )
+  assert.ok(!result.ok)
+  assert.ok(result.errors.some((error) => error.includes("env.TOKEN")))
 })
 
 void test("an empty targets list is rejected", () => {

@@ -1,26 +1,11 @@
 import { promises as fs } from "node:fs"
+import { readExistingJson } from "./readExistingJson"
+import { sortRecordKeys } from "./sortRecordKeys"
+import type { WriteClaudeConfigInput } from "./types/WriteClaudeConfigInput"
 
-type WriteInput = {
-  path: string
-  servers: Record<string, unknown>
-  ownedNames: string[]
-}
-
-const readExisting = async (path: string): Promise<Record<string, unknown>> => {
-  try {
-    const contents = await fs.readFile(path, "utf8")
-    if (contents.trim() === "") {
-      return {}
-    }
-    return JSON.parse(contents) as Record<string, unknown>
-  } catch {
-    return {}
-  }
-}
-
-export const writeClaudeConfig = async ({ path, servers, ownedNames }: WriteInput) => {
-  const existing = await readExisting(path)
-  const currentServers = (existing["mcpServers"] ?? {}) as Record<string, unknown>
+export const writeClaudeConfig = async ({ path, servers, ownedNames }: WriteClaudeConfigInput) => {
+  const existing = await readExistingJson(path)
+  const currentServers = (existing.mcpServers ?? {}) as Record<string, unknown>
   const merged: Record<string, unknown> = {}
 
   for (const [name, value] of Object.entries(currentServers)) {
@@ -29,16 +14,14 @@ export const writeClaudeConfig = async ({ path, servers, ownedNames }: WriteInpu
     }
   }
 
-  for (const name of Object.keys(servers).sort()) {
-    merged[name] = servers[name]
+  for (const [name, value] of Object.entries(servers)) {
+    merged[name] = value
   }
 
-  const sorted: Record<string, unknown> = {}
-  for (const name of Object.keys(merged).sort()) {
-    sorted[name] = merged[name]
-  }
-
-  await fs.writeFile(path, `${JSON.stringify({ ...existing, mcpServers: sorted }, null, 2)}\n`)
+  await fs.writeFile(
+    path,
+    `${JSON.stringify({ ...existing, mcpServers: sortRecordKeys(merged) }, null, 2)}\n`,
+  )
 
   return Object.keys(servers)
 }

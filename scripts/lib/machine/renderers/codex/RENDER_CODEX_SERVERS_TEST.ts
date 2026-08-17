@@ -2,7 +2,7 @@ import assert from "node:assert/strict"
 import test from "node:test"
 import { escapeTomlString } from "./escapeTomlString"
 import { renderCodexServers } from "./renderCodexServers"
-import type { McpManifest } from "../../domains/mcp/McpManifest"
+import type { McpManifest } from "../../domains/mcp/types/McpManifest"
 
 void test("quotes and backslashes are escaped", () => {
   assert.equal(escapeTomlString('a"b\\c'), '"a\\"b\\\\c"')

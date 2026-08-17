@@ -1,9 +1,9 @@
 import assert from "node:assert/strict"
 import test from "node:test"
 import { renderClaudeServers } from "./renderClaudeServers"
-import type { McpManifest } from "../../domains/mcp/McpManifest"
+import type { McpManifest } from "../../domains/mcp/types/McpManifest"
 
-const manifest: McpManifest = {
+export const manifest: McpManifest = {
   servers: {
     serena: {
       targets: ["claude-personal", "codex"],
@@ -24,12 +24,15 @@ const manifest: McpManifest = {
 
 void test("only servers targeting this scope are rendered", () => {
   const { servers } = renderClaudeServers(manifest, "claude-personal", { CONTEXT7_API_KEY: "k" })
-  assert.deepEqual(Object.keys(servers).sort(), ["context7", "serena"])
+  assert.deepEqual(
+    Object.keys(servers).toSorted((a, b) => a.localeCompare(b)),
+    ["context7", "serena"],
+  )
 })
 
 void test("the target override is appended to args", () => {
   const { servers } = renderClaudeServers(manifest, "claude-personal", { CONTEXT7_API_KEY: "k" })
-  assert.deepEqual(servers["serena"], {
+  assert.deepEqual(servers.serena, {
     type: "stdio",
     command: "uvx",
     args: ["serena", "start-mcp-server", "--context", "claude-code"],
@@ -38,7 +41,7 @@ void test("the target override is appended to args", () => {
 
 void test("a resolved header is written as a value", () => {
   const { servers } = renderClaudeServers(manifest, "claude-personal", { CONTEXT7_API_KEY: "k" })
-  assert.deepEqual(servers["context7"], {
+  assert.deepEqual(servers.context7, {
     type: "http",
     url: "https://mcp.context7.com/mcp",
     headers: { CONTEXT7_API_KEY: "k" },

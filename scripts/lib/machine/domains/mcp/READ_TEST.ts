@@ -1,17 +1,8 @@
 import assert from "node:assert/strict"
-import { mkdtemp, writeFile } from "node:fs/promises"
-import { tmpdir } from "node:os"
-import { join } from "node:path"
 import test from "node:test"
+import { createTempConfigFile as tempFile } from "./fixtures/createTempConfigFile"
 import { readClaudeServers } from "./readClaudeServers"
 import { readCodexServers } from "./readCodexServers"
-
-const tempFile = async (name: string, contents: string) => {
-  const dir = await mkdtemp(join(tmpdir(), "machine-read-"))
-  const path = join(dir, name)
-  await writeFile(path, contents)
-  return path
-}
 
 void test("claude servers are read from mcpServers", async () => {
   const path = await tempFile(
@@ -54,7 +45,7 @@ void test("codex tables are read into a record", async () => {
   )
   const servers = await readCodexServers(path)
   assert.deepEqual(Object.keys(servers), ["codegraph"])
-  assert.equal(servers["codegraph"]?.["command"], '"codegraph"')
+  assert.equal(servers.codegraph?.command, '"codegraph"')
 })
 
 void test("sections after mcp_servers do not leak into the last server", async () => {
@@ -63,7 +54,7 @@ void test("sections after mcp_servers do not leak into the last server", async (
     ["[mcp_servers.a]", 'command = "a"', "", "[sandbox]", 'mode = "workspace-write"'].join("\n"),
   )
   const servers = await readCodexServers(path)
-  assert.equal(servers["a"]?.["mode"], undefined)
+  assert.equal(servers.a?.mode, undefined)
 })
 
 void test("a missing codex config reads as empty", async () => {

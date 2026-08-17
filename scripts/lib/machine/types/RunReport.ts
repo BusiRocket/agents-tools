@@ -1,6 +1,6 @@
 import type { DomainResult } from "./DomainResult"
 
-export type RunReport = {
+export interface RunReport {
   runId: string
   profile: string
   domains: DomainResult[]

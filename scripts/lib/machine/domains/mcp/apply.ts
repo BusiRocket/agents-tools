@@ -1,16 +1,10 @@
 import { renderClaudeServers } from "../../renderers/claude/renderClaudeServers"
 import { renderCodexServers } from "../../renderers/codex/renderCodexServers"
-import { MCP_TARGETS } from "./McpManifest"
+import { MCP_TARGETS } from "./constants/MCP_TARGETS"
 import { writeClaudeConfig } from "./writeClaudeConfig"
 import { writeCodexConfig } from "./writeCodexConfig"
-import type { McpManifest, McpTarget } from "./McpManifest"
-
-type ApplyInput = {
-  manifest: McpManifest
-  paths: Record<McpTarget, string>
-  owned: Record<McpTarget, string[]>
-  env: NodeJS.ProcessEnv
-}
+import type { ApplyInput } from "./types/ApplyInput"
+import type { McpTarget } from "./types/McpTarget"
 
 export const apply = async ({ manifest, paths, owned, env }: ApplyInput) => {
   const nextOwned: Partial<Record<McpTarget, string[]>> = {}

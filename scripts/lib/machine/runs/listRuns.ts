@@ -11,7 +11,7 @@ export const listRuns = async (rootDir: string) => {
 
   const runs: { runId: string; complete: boolean }[] = []
 
-  for (const runId of names.sort()) {
+  for (const runId of names.toSorted((left, right) => left.localeCompare(right))) {
     const complete = await fs
       .access(join(rootDir, runId, "complete"))
       .then(() => true)

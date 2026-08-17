@@ -4,19 +4,19 @@ import { resolveInstanceDir } from "./resolveInstanceDir"
 
 void test("the explicit flag wins over everything", () => {
   const dir = resolveInstanceDir({
-    flag: "/tmp/explicit",
-    env: { AGENTS_MACHINE_DIR: "/tmp/from-env" },
+    flag: "/opt/explicit",
+    env: { AGENTS_MACHINE_DIR: "/opt/from-env" },
     home: "/home/someone",
   })
-  assert.equal(dir, "/tmp/explicit")
+  assert.equal(dir, "/opt/explicit")
 })
 
 void test("the environment variable is used when no flag is given", () => {
   const dir = resolveInstanceDir({
-    env: { AGENTS_MACHINE_DIR: "/tmp/from-env" },
+    env: { AGENTS_MACHINE_DIR: "/opt/from-env" },
     home: "/home/someone",
   })
-  assert.equal(dir, "/tmp/from-env")
+  assert.equal(dir, "/opt/from-env")
 })
 
 void test("it falls back to the dotfiles machine directory under home", () => {

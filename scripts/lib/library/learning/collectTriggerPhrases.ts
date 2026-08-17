@@ -1,3 +1,4 @@
+import { isContinuationPhrase } from "./isContinuationPhrase"
 import { mightCarrySecret } from "./mightCarrySecret"
 import type { ObservedTurn } from "./types/ObservedTurn"
 
@@ -11,7 +12,12 @@ export const collectTriggerPhrases = (turns: ObservedTurn[], maxLength: number) 
       continue
     }
 
-    if (previous === undefined || previous.length > maxLength || mightCarrySecret(previous)) {
+    if (
+      previous === undefined ||
+      previous.length > maxLength ||
+      isContinuationPhrase(previous) ||
+      mightCarrySecret(previous)
+    ) {
       continue
     }
 

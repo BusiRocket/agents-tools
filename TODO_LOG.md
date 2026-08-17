@@ -6,6 +6,26 @@
 
 ### 2026-08
 
+- [x] 2026-08-18 - **Rules:** `text-hygiene` gave contradictory guidance and produced a false
+      report.
+  - Problem, hit live in the nubenode repo: the rule said both "prefer ASCII punctuation in
+    edited/new text" and "keep edits minimal; do not reformat unrelated content", with no precedence
+    between them. Editing a doc whose house style is em dashes throughout satisfies one clause only
+    by breaking the other. The session matched the file, then spent a paragraph of its report
+    confessing to a violation that was not one - the rule made correct behaviour look like a
+    deviation worth flagging.
+  - Result: the rule now separates a hard tier from a soft one. `Never introduce` covers invisible
+    characters and smart quotes, with no file-convention exception, which is also exactly what
+    `hygiene:test` enforces - previously the rule read as if the whole of it were enforced that
+    strictly. The ASCII preference is explicitly overridden by an existing consistent convention in
+    the file being edited; new files still start ASCII. Output discipline now says to speak only
+    when the reader must act, so following house style draws no remark.
+  - Evidence: `pnpm run rules:compile` then `rules:check` reports "Rules are up to date";
+    `pnpm run hygiene:test` passes; the source `.mdc` is pure ASCII by `LC_ALL=C grep -n '[^ -~]'`.
+    Live in both profiles through the `~/.claude/rules/busirocket -> dist/global/.claude/rules`
+    symlink, so no relink was needed.
+  - Files: `src/rules/core/text-hygiene.mdc`.
+
 - [x] 2026-08-18 - **Machine provisioning:** MCP domain shipped end to end on the new engine.
   - Result: `machine:diff`, `machine:apply` and `machine:rollback` render one declarative manifest
     into the Claude, Codex and Gemini config formats. Seven-domain contract in place (`read`,

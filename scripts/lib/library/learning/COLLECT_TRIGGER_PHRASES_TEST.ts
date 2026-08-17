@@ -4,10 +4,18 @@ import { collectTriggerPhrases } from "./collectTriggerPhrases"
 
 void test("the request immediately before an invocation is that skill's trigger", () => {
   const phrases = collectTriggerPhrases(
-    [{ text: "ejecuta el backlog" }, { text: "", invokedSkill: "brp-todo-work" }],
+    [{ text: "ejecuta el backlog pendiente" }, { text: "", invokedSkill: "brp-todo-work" }],
     200,
   )
-  assert.deepEqual(phrases, { "brp-todo-work": ["ejecuta el backlog"] })
+  assert.deepEqual(phrases, { "brp-todo-work": ["ejecuta el backlog pendiente"] })
+})
+
+void test("a bare approval is not learned as a trigger, because it did not select anything", () => {
+  const phrases = collectTriggerPhrases(
+    [{ text: "adelante con todo" }, { text: "", invokedSkill: "brp-todo-work" }],
+    200,
+  )
+  assert.deepEqual(phrases, {})
 })
 
 void test("an invocation with no preceding request contributes nothing", () => {
@@ -17,14 +25,14 @@ void test("an invocation with no preceding request contributes nothing", () => {
 void test("the same phrase is recorded once, not once per invocation", () => {
   const phrases = collectTriggerPhrases(
     [
-      { text: "ejecuta el backlog" },
+      { text: "ejecuta el backlog pendiente" },
       { text: "", invokedSkill: "brp-todo-work" },
-      { text: "ejecuta el backlog" },
+      { text: "ejecuta el backlog pendiente" },
       { text: "", invokedSkill: "brp-todo-work" },
     ],
     200,
   )
-  assert.deepEqual(phrases["brp-todo-work"], ["ejecuta el backlog"])
+  assert.deepEqual(phrases["brp-todo-work"], ["ejecuta el backlog pendiente"])
 })
 
 void test("a phrase longer than the cap is not treated as a trigger", () => {
@@ -39,18 +47,18 @@ void test("only the nearest preceding request counts, not every earlier one", ()
   const phrases = collectTriggerPhrases(
     [
       { text: "primero esto" },
-      { text: "ahora ejecuta el backlog" },
+      { text: "ahora ejecuta el backlog pendiente" },
       { text: "", invokedSkill: "brp-todo-work" },
     ],
     200,
   )
-  assert.deepEqual(phrases["brp-todo-work"], ["ahora ejecuta el backlog"])
+  assert.deepEqual(phrases["brp-todo-work"], ["ahora ejecuta el backlog pendiente"])
 })
 
 void test("two skills keep their own phrases", () => {
   const phrases = collectTriggerPhrases(
     [
-      { text: "ejecuta el backlog" },
+      { text: "ejecuta el backlog pendiente" },
       { text: "", invokedSkill: "brp-todo-work" },
       { text: "resume donde lo dejamos" },
       { text: "", invokedSkill: "project-continuation" },

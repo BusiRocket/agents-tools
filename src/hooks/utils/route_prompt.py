@@ -120,10 +120,17 @@ ROUTES = [
         "Use the superpowers:systematic-debugging skill before proposing a fix. "
         "Reproduce first; do not guess at the cause.",
         r"\b(no funciona|no va\b|sigue (sin|igual|fallando|roto)|falla|fallando|"
-        r"est[aá] roto|se ha roto|has roto|crashe|petado|se cuelga|"
+        r"est[aá] roto|se ha roto|(has|hemos|hab[eé]is|han) roto|se rompi[oó]|"
+        r"se rompieron|crashe|petado|se cuelga|"
         r"no carga|no aparece|no sale|no me deja|da error|sale un error|"
-        r"sale[n]? mal|aparece[n]? mal|se ve[n]? mal|"
-        r"el ci .{0,20}falla|tarda much[oí]simo|se queda (lag|colgad|pillad))\b",
+        r"sale[n]? mal|aparece[n]? mal|"
+        # Added 2026-08-18 from router-audit evidence: these are verbatim phrasings
+        # the user actually used that fired no lane at all.
+        r"tengo un problema|hay un problema|no reacciona|no inicia|"
+        r"el ci .{0,20}falla|tarda much[oí]simo|"
+        # The trailing \b never matched the inflected forms these stems appear in
+        # ("colgado", "bloqueada"), so this branch had been dead since it was written.
+        r"se queda (lag\w*|colgad\w*|pillad\w*|bloquead\w*|congelad\w*))\b",
     ),
     (
         "environment-ops",
@@ -153,7 +160,10 @@ ROUTES = [
         "frontend",
         "Use the frontend-design skill. Match the existing design system; check "
         "the rendered result rather than assuming the markup is right.",
-        r"\b(tailwind|\bcss\b|layout|responsive|se ve (mal|raro|feo|fatal)|"
+        # "se ve mal" used to sit in the debug lane, which won the race and sent every
+        # visual complaint to systematic-debugging instead of the design skill. Measured
+        # 2026-08-18: "el header se ve mal en movil" fired debug, never frontend.
+        r"\b(tailwind|\bcss\b|layout|responsive|se ve[n]? (mal|raro|feo|fatal)|"
         r"el dise[ñn]o|la interfaz|\bui\b|landing|maquet|en m[oó]vil|"
         r"scroll|padding|margin|z-index)\b",
     ),

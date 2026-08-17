@@ -6,24 +6,39 @@
       "vale podemos preparar el trimestre para todas las empresas que tengo? ya avanzamos con vibra lab, ahora miremos el resto",
       "Vale mira los escaneos que hay en el disco duro porque ahí hay tickets y más facturas",
       "vibra lab abierto en holded",
-      "pulsa el icono de impresora y se abre un html buscate la vida para descargar las facturas"
+      "pulsa el icono de impresora y se abre un html buscate la vida para descargar las facturas",
+      "ahora que tenemos todo al día miremos los gastos por empresa e ingresos (sobre todo las SL y veoplan) para ver que nos falta meter en holded",
+      "vale con la nueva sección de administración me gustaría que casaramos o conciliaramos las cosas que ya se han pagado a hacienda para ver el overview total, empecemos por cristian/deluxe producciones",
+      "ha presentado ana el modelo de vibralab pero no tiene mucho que ver el IVA con lo que nosotros calculamos, puedes ver por que?"
     ],
     "debug": [
       "el ci de github falla",
       "o2 parece que falla vamos con los demas y dejemos esto para el final",
       "vale peor el solr que tienen montado ellos no funciona por algo? podríamos arreglarlo en vez de montar uno para nosotros",
-      "los nombres de las carpetas salen mal por ejemplo en vez de Cáceres sale C&AOE-ceres"
+      "los nombres de las carpetas salen mal por ejemplo en vez de Cáceres sale C&AOE-ceres",
+      "en el otro no sale nada ni al apagar el disco",
+      "tengo 2 cuentas de claude y lanzaba con comando: claude para mi cuenta claudef para la cuenta de favish pero orca (este terminal) no me deja hacerlo bien, puedes comprobar?",
+      "arregla el pnpm run check que falla",
+      "vale la web ahora mismo no funciona, pone:\n\nThis page couldn’t load\nReload to try again, or go back.\n\nReload\nBack"
     ],
     "frontend": [
       "vale ya solo falta que el editor se vea igual que el PDF, el PDF está perfecto pero el editor se ve raro, descarga el PDF y modifica el editor para que se vea así (espacios, alineaciones etc)",
-      "Abre el navegador en localhost:3000 y comprueba visualmente que el nuevo header se ve bien en móvil. No hagas nada más."
+      "Abre el navegador en localhost:3000 y comprueba visualmente que el nuevo header se ve bien en móvil. No hagas nada más.",
+      "arregla todo commitea pushea y aparte mira a ver porque no me funciona el scroll",
+      "vale tenemos una manera de mostrar las transcripciones en la UI? y de que cuando busquemos se muestre etc?",
+      "dame un PDF de contrarider para enviar con lo que ellos mandaron exactamente (si quieres mejorar el diseño hazlo)",
+      "vale lo de franklyn prepararlo para mañana, un solo contrato como el tenia el diseño 1:1 con todos los cambios que se han hablado",
+      "vale pero no tenemos botón en la UI para hacerlo, por eso, debería estar todo en el .env para cuando lo lance con pnpm tauri dev si funcine"
     ],
     "continuation": [
       "vale siguiendo la sesión anterior, no podemos conectarnos a nuestra cuenta de la SL que es donde están los pagos de pixelpotion vaya fail",
       "vale mira las conversaciones anteriores y termina los pasos que faltan ya que hemos cambiado la carpeta de nombre",
       "esto se ha quedado a medias"
     ],
-    "stakeholder-recap": ["Conéctate a slack y mira los últimos mensajes de todo"],
+    "stakeholder-recap": [
+      "Conéctate a slack y mira los últimos mensajes de todo",
+      "No soy capaz de entrar en el sitio dev mira los mensajes de phil en slack que nos dió todos los datos para acceder o los mensajes de pete"
+    ],
     "lovable-sync": [
       "me gustaría seguir con la conversión del diseño de lovable (creo que solo hicimos el paso 1)",
       "vale podríamos seguir con el resto de cosas paridad lovable",

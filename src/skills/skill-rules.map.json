@@ -1,6 +1,14 @@
 {
   "version": 1,
   "skills": {
+    "brain": {
+      "rules": [
+        "@rules/core/agent-discipline.mdc",
+        "@rules/core/git-workflow.mdc",
+        "@rules/core/security-baseline.mdc",
+        "@rules/core/text-hygiene.mdc"
+      ]
+    },
     "brp": {
       "rules": [
         "@rules/core/general.mdc",
@@ -68,17 +76,10 @@
         "@rules/core/boundaries.mdc"
       ]
     },
-    "lovable-sync": {
-      "rules": [
-        "@rules/core/code-quality-guidelines.mdc",
-        "@rules/react/performance.mdc",
-        "@rules/core/boundaries.mdc"
-      ]
-    },
-    "stakeholder-recap": {
+    "handoff": {
       "rules": [
         "@rules/core/agent-discipline.mdc",
-        "@rules/core/security-baseline.mdc",
+        "@rules/core/git-workflow.mdc",
         "@rules/core/text-hygiene.mdc"
       ]
     },
@@ -89,11 +90,11 @@
         "@rules/core/general.mdc"
       ]
     },
-    "handoff": {
+    "lovable-sync": {
       "rules": [
-        "@rules/core/agent-discipline.mdc",
-        "@rules/core/git-workflow.mdc",
-        "@rules/core/text-hygiene.mdc"
+        "@rules/core/code-quality-guidelines.mdc",
+        "@rules/react/performance.mdc",
+        "@rules/core/boundaries.mdc"
       ]
     },
     "project-continuation": {
@@ -101,6 +102,13 @@
         "@rules/core/general.mdc",
         "@rules/core/agent-discipline.mdc",
         "@rules/core/git-workflow.mdc"
+      ]
+    },
+    "stakeholder-recap": {
+      "rules": [
+        "@rules/core/agent-discipline.mdc",
+        "@rules/core/security-baseline.mdc",
+        "@rules/core/text-hygiene.mdc"
       ]
     }
   }

@@ -333,3 +333,16 @@
   - Evidence: report read from a shallow clone of `mattpocock/skills` (grilling, domain-modeling,
     tdd, diagnosing-bugs, improve-codebase-architecture, codebase-design payloads) against
     `src/skills` and `orchestrator/brp` references; four `[ ]` adoption items filed in `TODO.md`.
+
+- [x] 2026-08-17 — **Sync:** Local working-tree edits reconciled against `origin/main`; the 35
+      pending commits are now applied.
+  - Result: `.serena/project.yml`, `docs/agent-ready-repo-standard.md` and
+    `docs/templates/AGENTS.template.md` were byte-identical to `origin/main` (already shipped as
+    `5aa7162` and the `.serena` migration), so nothing was lost by discarding them; the local
+    `eslint.config.mjs` carried the same boundaries v7 `policies` migration as `f72a4bb` but
+    predated the `.venv-validate/**` ignore added with the agentskills validator, making the remote
+    copy strictly newer. Fast-forwarded to `2611a44` and dropped the temporary
+    `TODO-repository-sync.md`.
+  - Evidence: `git show origin/main:<path> | diff -` clean for the three files; stash
+    `pre-sync-20260817 superseded local edits` holds the discarded diff; `pnpm install` reported the
+    lockfile unchanged; `pnpm run build` and `pnpm run check` both green after the pull.

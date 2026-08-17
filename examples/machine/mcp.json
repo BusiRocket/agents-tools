@@ -1,0 +1,27 @@
+{
+  "servers": {
+    "serena": {
+      "targets": ["claude-personal", "claude-favish", "codex"],
+      "transport": "stdio",
+      "command": "uvx",
+      "args": ["--from", "git+https://github.com/oraios/serena", "serena", "start-mcp-server"],
+      "target_overrides": {
+        "codex": { "args_append": ["--context", "ide-assistant"] },
+        "claude-personal": { "args_append": ["--context", "claude-code"] },
+        "claude-favish": { "args_append": ["--context", "claude-code"] }
+      }
+    },
+    "context7": {
+      "targets": ["claude-personal", "claude-favish", "codex"],
+      "transport": "http",
+      "url": "https://mcp.context7.com/mcp",
+      "headers": { "CONTEXT7_API_KEY": { "from_env": "CONTEXT7_API_KEY" } }
+    },
+    "codegraph": {
+      "targets": ["claude-personal", "claude-favish", "codex"],
+      "transport": "stdio",
+      "command": "codegraph",
+      "args": ["serve", "--mcp"]
+    }
+  }
+}

@@ -5,6 +5,7 @@ import type { McpManifest } from "../../domains/mcp/McpManifest"
 export const renderCodexServers = (manifest: McpManifest, env: NodeJS.ProcessEnv) => {
   const blocks: string[] = []
   const missing: string[] = []
+  const names: string[] = []
 
   for (const [name, server] of Object.entries(manifest.servers)) {
     if (!server.targets.includes("codex")) {
@@ -43,7 +44,8 @@ export const renderCodexServers = (manifest: McpManifest, env: NodeJS.ProcessEnv
     }
 
     blocks.push(lines.join("\n"))
+    names.push(name)
   }
 
-  return { toml: blocks.join("\n\n"), missing }
+  return { toml: blocks.join("\n\n"), missing, names }
 }

@@ -3,7 +3,7 @@ import { CONTINUATION_TOKENS } from "./constants/CONTINUATION_TOKENS"
 export const isContinuationPhrase = (text: string) => {
   const trimmed = text.trim()
 
-  if (trimmed.length < 12) {
+  if (trimmed.length < 12 || trimmed.startsWith("[Image:")) {
     return true
   }
 

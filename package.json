@@ -53,7 +53,9 @@
     "library:propose": "tsx scripts/bin/run-library-propose.ts",
     "library:router-audit": "tsx scripts/bin/run-library-router-audit.ts",
     "library:classify": "tsx scripts/bin/run-library-classify.ts",
-    "library:auto": "tsx scripts/bin/run-library-auto.ts"
+    "library:auto": "tsx scripts/bin/run-library-auto.ts",
+    "library:describe": "tsx scripts/bin/run-library-describe.ts",
+    "library:observe-codex": "tsx scripts/bin/run-library-observe-codex.ts"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

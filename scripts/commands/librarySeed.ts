@@ -7,7 +7,11 @@ import { listSkillBundles } from "../lib/library/cli/listSkillBundles"
 import { readSkillLock } from "../lib/library/cli/readSkillLock"
 import { resolveLibraryDir } from "../lib/library/cli/resolveLibraryDir"
 import { formatSeedReport } from "../lib/library/formatters/formatSeedReport"
+import { listRulePaths } from "../lib/library/cli/listRulePaths"
+import { mergeSeedIntoManifest } from "../lib/library/mergeSeedIntoManifest"
+import { readCurationManifest } from "../lib/library/cli/readCurationManifest"
 import { seedManifestFromLock } from "../lib/library/seedManifestFromLock"
+import { seedRuleEntries } from "../lib/library/seedRuleEntries"
 
 export const main = async () => {
   const asJson = process.argv.includes("--json")
@@ -28,27 +32,27 @@ export const main = async () => {
     return
   }
 
-  const manifest = seedManifestFromLock(
+  const skills = seedManifestFromLock(
     lock,
     await listAuthoredBundles(libraryDir),
     await listSkillBundles(libraryDir),
   )
-  const target = join(libraryDir, "curation.json")
+
+  const rulesRoot = flagValue(process.argv, "--rules") ?? join(process.cwd(), "src/rules")
+  const rules = seedRuleEntries(await listRulePaths(rulesRoot), "agents-tools")
+  const seeded = { ...skills, entries: { ...skills.entries, ...rules } }
+  const current = await readCurationManifest(libraryDir)
+  const merged = current.ok
+    ? mergeSeedIntoManifest(current.manifest, seeded)
+    : { manifest: seeded, added: Object.keys(seeded.entries) }
 
   if (!dryRun) {
-    const exists = await fs
-      .access(target)
-      .then(() => true)
-      .catch(() => false)
-
-    if (exists && !process.argv.includes("--force")) {
-      console.error(`${target} already exists; pass --force to overwrite`)
-      process.exitCode = 1
-      return
-    }
-
-    await fs.writeFile(target, `${JSON.stringify(manifest, null, 2)}\n`)
+    await fs.writeFile(
+      join(libraryDir, "curation.json"),
+      `${JSON.stringify(merged.manifest, null, 2)}\n`,
+    )
   }
 
-  console.log(formatSeedReport(manifest, asJson))
+  console.log(formatSeedReport(merged.manifest, asJson))
+  console.log(`entries added by this seed: ${String(merged.added.length)}`)
 }

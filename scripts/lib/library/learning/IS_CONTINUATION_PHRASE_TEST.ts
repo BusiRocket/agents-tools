@@ -27,3 +27,7 @@ void test("a request about invoices is a trigger", () => {
 void test("anything too short to carry a subject is not a trigger", () => {
   assert.equal(isContinuationPhrase("como va?"), true)
 })
+
+void test("pasted image metadata is not a phrase a description could ever reflect", () => {
+  assert.equal(isContinuationPhrase("[Image: original 3456x2234, displayed at 2000x1293."), true)
+})

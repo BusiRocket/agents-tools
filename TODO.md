@@ -54,6 +54,26 @@
 - [ ] Link the curated list into `~/.claude/skills` and into Antigravity (`~/.gemini/config/skills`,
       which currently carries only the 7 BRP skills). Claude Code sees 13 of 273 skills today and
       all 13 are BRP; the rest were never offered to it.
+- [ ] Refill `brp-todo-work` and `brp-todo-create` from the prompt files they were compressed from.
+      Measured 2026-08-18: `~/p/Prompts/todo-workflows/execute-todo.md` (326 lines, eight numbered
+      phases) was invoked 70 times in 30 days against 7 for the skill, and
+      `create-todo-from-history.md` (318 lines) against `brp-todo-create` (78). The skills are lossy
+      compressions of artifacts that work better. Highest-confidence item in the study.
+- [ ] Build `communications-work-intake`: Discord, Slack, WhatsApp and email intake to context plus
+      drafted reply. 141 requests across four projects in 30 days; `stakeholder-recap` covers only
+      the narrower recap shape and fired once. Largest measured gap.
+- [ ] Build a screenshot-to-component skill for the real stack (shadcn/Radix/Tailwind, project
+      tokens, existing components). 182 requests arrive as pasted screenshots; the seven design
+      skills installed are all about taste or review and none does this job. Use `ckm-ui-styling` as
+      source material, not as a competitor.
+- [ ] Extend the business lane next to `invoice-quarter-close` (27 invocations, the most-used
+      non-Superpowers skill): contracts review and modification (26 requests) and digital PDF
+      signing (12) have no coverage.
+- [ ] Build a background-job watch procedure: 44 requests asking for progress on long-running jobs,
+      with no skill and only `/loop` as a harness feature.
+- [ ] Delete the 16 Java/Spring-only bundles (14 `unit-test-*` plus `clean-architecture` and
+      `docs-updater`). Body scan confirms no other tech signal, and no Spring codebase exists in
+      `~/p`.
 - [ ] Review skill by skill against the work actually done here, deciding for each what it does and
       whether it earns its place. This is the real cleanup: the library is an accumulation of
       experiments that were never triaged. Start with the six bundles holding ~170 SKILL.md files

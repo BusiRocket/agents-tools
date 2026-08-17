@@ -2,6 +2,7 @@ import { promises as fs } from "node:fs"
 import { homedir } from "node:os"
 import { join } from "node:path"
 import { flagValue } from "../lib/machine/cli/flagValue"
+import { resolveLearningDir } from "../lib/library/cli/resolveLearningDir"
 import { resolveLibraryDir } from "../lib/library/cli/resolveLibraryDir"
 import { observeTranscripts } from "../lib/library/learning/observeTranscripts"
 import { readTranscriptIndex } from "../lib/library/learning/readTranscriptIndex"
@@ -17,7 +18,12 @@ export const main = async () => {
     home,
   })
 
-  const learningDir = join(libraryDir, "learning")
+  const learningFlag = flagValue(process.argv, "--learning")
+  const learningDir = resolveLearningDir({
+    ...(learningFlag === undefined ? {} : { flag: learningFlag }),
+    env: process.env,
+    home,
+  })
   const indexPath = join(learningDir, "transcript-index.json")
 
   const seen = await readTranscriptIndex(indexPath)
@@ -30,7 +36,12 @@ export const main = async () => {
     await fs.writeFile(indexPath, `${JSON.stringify(index, null, 2)}\n`)
     await fs.writeFile(
       join(learningDir, "requests.jsonl"),
-      turns.map((turn) => JSON.stringify(turn)).join("\n") + "\n",
+      `${turns.map((turn) => JSON.stringify(turn)).join("\n")}\n`,
+    )
+    await fs.mkdir(join(libraryDir, "learning"), { recursive: true })
+    await fs.writeFile(
+      join(libraryDir, "learning", "invocations.json"),
+      `${JSON.stringify(summary.invocations, null, 2)}\n`,
     )
   }
 

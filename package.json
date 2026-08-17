@@ -46,7 +46,9 @@
     "machine:test": "tsx --test \"scripts/lib/machine/**/*_TEST.ts\"",
     "library:seed": "tsx scripts/bin/run-library-seed.ts",
     "library:observe": "tsx scripts/bin/run-library-observe.ts",
-    "library:test": "tsx --test \"scripts/lib/library/**/*_TEST.ts\""
+    "library:test": "tsx --test \"scripts/lib/library/**/*_TEST.ts\"",
+    "library:curate": "tsx scripts/bin/run-library-curate.ts",
+    "library:link": "tsx scripts/bin/run-library-link.ts"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

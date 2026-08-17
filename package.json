@@ -50,7 +50,10 @@
     "library:curate": "tsx scripts/bin/run-library-curate.ts",
     "library:link": "tsx scripts/bin/run-library-link.ts",
     "library:triggers": "tsx scripts/bin/run-library-triggers.ts",
-    "library:propose": "tsx scripts/bin/run-library-propose.ts"
+    "library:propose": "tsx scripts/bin/run-library-propose.ts",
+    "library:router-audit": "tsx scripts/bin/run-library-router-audit.ts",
+    "library:classify": "tsx scripts/bin/run-library-classify.ts",
+    "library:auto": "tsx scripts/bin/run-library-auto.ts"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

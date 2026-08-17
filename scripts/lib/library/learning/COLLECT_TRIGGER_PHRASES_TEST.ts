@@ -59,3 +59,14 @@ void test("two skills keep their own phrases", () => {
   )
   assert.deepEqual(phrases["project-continuation"], ["resume donde lo dejamos"])
 })
+
+void test("a phrase carrying a pasted credential is never stored as a trigger", () => {
+  const phrases = collectTriggerPhrases(
+    [
+      { text: "no me deja entrar, los datos son Kd%L6zwCMuo&p2As96s" },
+      { text: "", invokedSkill: "brp-todo-work" },
+    ],
+    200,
+  )
+  assert.deepEqual(phrases, {})
+})

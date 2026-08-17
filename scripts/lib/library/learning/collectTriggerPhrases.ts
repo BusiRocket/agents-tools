@@ -1,3 +1,4 @@
+import { mightCarrySecret } from "./mightCarrySecret"
 import type { ObservedTurn } from "./types/ObservedTurn"
 
 export const collectTriggerPhrases = (turns: ObservedTurn[], maxLength: number) => {
@@ -10,7 +11,7 @@ export const collectTriggerPhrases = (turns: ObservedTurn[], maxLength: number) 
       continue
     }
 
-    if (previous === undefined || previous.length > maxLength) {
+    if (previous === undefined || previous.length > maxLength || mightCarrySecret(previous)) {
       continue
     }
 

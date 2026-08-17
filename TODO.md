@@ -97,22 +97,17 @@
 > Code went from 13 skills offered to 30. Spec and plan:
 > `docs/superpowers/specs/2026-08-18-skill-library-and-learning-loop-design.md`.
 
-- [ ] Widen the router lanes the audit proved are silent. 175 of 209 measured phrases fire no lane,
-      and `el header se ve mal en movil` hits `debug` before `frontend` - the precedence bug this
-      backlog recorded without a cause. Evidence per phrase: `~/.agents-learning/router-audit.json`.
-- [ ] Promote the audited phrases into `src/hooks/router-fixtures.json` once the lanes are widened,
-      so each fix keeps the verbatim prompt that motivated it.
-- [ ] Writing measured phrases into skill descriptions is still not automated, deliberately:
-      descriptions are validated for activation boundaries and specificity, so a generated edit can
-      fail the build or blunt a good description. Decide whether to generate a proposal for review
-      rather than applying it.
-- [ ] Exercise patch reapplication against a real fork. The path is implemented and tested for the
-      conflict case, but nothing is forked yet, so it has never run for real.
-- [ ] Rules have no provenance, no lock and no state. The same four states apply; nothing is
-      instrumented.
-- [ ] Codex-side invocation signal. Its rollouts show the catalogue being listed rather than skills
-      being opened, so "never fired" currently means "never fired in Claude" and proposals should
-      say so.
+- [ ] Re-run the loop in a month and check whether the promoted skills fire. A promotion that does
+      not change invocation counts is a proposal to demote, and that is the first real test of
+      whether any of this works.
+- [ ] Review the description proposals `library:describe` produces. It reports which measured
+      phrases a description does not reflect and stops there, on purpose: descriptions are validated
+      for activation boundaries, so a generated edit can fail the build.
+- [ ] Exercise patch reapplication against a real fork. Implemented and tested for the conflict
+      case, never run for real, because nothing is forked yet.
+- [ ] Codex-side usage stays unmeasured. `library:observe-codex` refuses to report it: an anchored
+      read pattern returns 912, 911 and 913 across unrelated skills, which is a catalogue listing,
+      not use. Either Codex gains a real invocation signal or proposals stay Claude-scoped.
 - [ ] Decide what to do with the 87 parked entries, now that parking is cheap and reversible. The 16
       Java/Spring bundles are the obvious first pass.
 

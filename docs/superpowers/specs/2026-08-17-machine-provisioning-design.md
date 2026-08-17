@@ -265,7 +265,31 @@ This is deliberately the opposite of the current `bootstrap.sh`, which runs
 `brew bundle ... || true` and continues as if nothing happened, which is how a second machine ended
 up half-configured without anyone noticing.
 
-## 13. Testing
+## 13. Agent-driven operation
+
+The primary operator is an agent, not a person at a terminal. A human runs this occasionally; an
+agent runs it on every new machine and after every drift check. That changes three things.
+
+**Machine-readable output.** Every command takes `--json` and emits one object: the plan or the
+results, per domain, with a stable `status` enum (`converged`, `changed`, `skipped`, `failed`,
+`needs-secret`) and a `run_id`. An agent should never have to parse prose to know what happened.
+Human output is a rendering of the same object, not a separate code path.
+
+**Idempotency has to be provable, not asserted.** `apply` immediately followed by `apply` must
+report every domain `converged` and produce zero changes. This is a test, not a hope: an agent that
+cannot trust a re-run will either skip steps it should take or repeat ones it should not.
+
+**A skill, not a README.** `machine-setup` ships in this repo and encodes the order an agent must
+follow: capture or clone the instance manifests, run `diff --json`, present what will change, apply,
+verify, and on failure decide between retry and rollback from the reported status rather than by
+guessing. It also names the two things an agent must never do unattended: install GUI casks, and
+continue past a `needs-secret` status by inventing a value.
+
+The engine assumes it may be interrupted. A run directory is created before the first write and
+closed on completion, so an interrupted run is recognisable by a missing completion record and is a
+valid rollback target.
+
+## 14. Testing
 
 - `plan` is pure, so every domain gets table-driven tests over fabricated states: empty machine,
   machine already converged, machine with foreign keys present, machine with a stale entry this
@@ -278,7 +302,7 @@ up half-configured without anyone noticing.
   to the snapshot.
 - No test reads `$HOME`.
 
-## 14. Repository layout
+## 15. Repository layout
 
 ```
 src/machine/
@@ -296,7 +320,7 @@ examples/machine/
 
 One exported unit per file, matching the existing `scripts/lib/link/operations/` convention.
 
-## 15. Migration
+## 16. Migration
 
 The engine does not replace `~/p/dotfiles/bootstrap.sh`; it is called from it, after the brew and
 shell steps. `sync-ai` and `sync-env` stay as they are: they mirror live data between the user's own
@@ -307,7 +331,7 @@ the capture findings by hand once, then apply to a second machine and compare. T
 of the design is whether the laptop, provisioned from manifests alone with no SSH to the reference
 host, ends up usable.
 
-## 16. Open questions
+## 17. Open questions
 
 - **Install provenance for five tools.** `agy`, `herdr`, `claude`, `codex` and `cursor-agent` have
   no recorded installer. Until each is pinned to a source, `runtime` cannot claim to reproduce a

@@ -39,12 +39,13 @@ kubectl --context gke_favish-general_us-central1-a_ai-cluster -n zh-mcp get pods
 - The `mcp.zerohedge.net` A record now resolves to `34.70.102.43`. TLS validation succeeds,
   `/healthz` returns HTTP 200, and an unauthenticated MCP initialize request reaches the expected
   HTTP 401 OAuth boundary.
-- Claude now has a `ZeroHedge Production` remote connector using `https://mcp.zerohedge.net/mcp`. It
-  must be authenticated per Claude account before tools become available.
+- Claude now has an authenticated `ZeroHedge Production` remote connector using
+  `https://mcp.zerohedge.net/mcp`.
+- The retired `ZeroHedge` connector that used the unavailable development endpoint was removed from
+  Claude Settings after the production connector passed its live health check.
 
-The retired `ZeroHedge` connector may still appear in Claude because `claude mcp remove` cannot
-delete account-owned `claude.ai` connectors. Remove that legacy entry from Claude Settings only
-after `ZeroHedge Production` is authenticated and healthy.
+Account-owned `claude.ai` connectors cannot be removed with `claude mcp remove`; use Claude Settings
+when a future hosted connector replacement leaves a stale account entry.
 
 ## Repair and verification
 
@@ -55,7 +56,8 @@ The DNS repair can be rolled back without changing Kubernetes resources by resto
 `mcp.zerohedge.net` A record value, `35.196.136.19`, with TTL 300 in the `zerohedge-net` managed
 zone.
 
-Authenticate the production connector after the endpoint checks pass:
+Authenticate the production connector after the endpoint checks pass, or when setting up another
+Claude account:
 
 ```bash
 claude mcp login 'claude.ai ZeroHedge Production'

@@ -30,9 +30,24 @@ URL is transient authentication material and must not be stored.
 
 Do not repeat `claude mcp login openseo` while the doctor reports the `access-gateway` boundary. On
 2026-08-18, Cloudflare Access redirected `/mcp` to HTML and the OAuth attempt ended with
-`invalid_target`, meaning OAuth was not enabled for the MCP resource. The access application owner
-must first expose MCP-compatible OAuth metadata or provide an approved non-interactive service-token
-header mechanism. After that external policy change, run:
+`invalid_target`, meaning Managed OAuth was not enabled for the MCP resource.
+
+Enable Managed OAuth on the existing Access application while preserving every other application
+field. The required configuration is:
+
+- `oauth_configuration.enabled = true`
+- `oauth_configuration.dynamic_client_registration.enabled = true`
+- `oauth_configuration.dynamic_client_registration.allow_any_on_localhost = true`
+- `oauth_configuration.dynamic_client_registration.allow_any_on_loopback = true`
+
+Cloudflare requires the full current Access application configuration on update. Read the complete
+application first, modify only the four fields above, and write the complete result back. The API
+credential needs Access Apps and Policies Write permission. If that scope is missing, use the
+Cloudflare dashboard or refresh the deployment credential with the required scope. See
+[Cloudflare Managed OAuth](https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/managed-oauth/).
+
+After that policy change, verify that an unauthenticated MCP initialize request returns HTTP 401
+with OAuth resource metadata instead of an HTML redirect, then run:
 
 ```bash
 claude mcp login openseo

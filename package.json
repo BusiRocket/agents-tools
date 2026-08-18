@@ -55,7 +55,8 @@
     "library:classify": "tsx scripts/bin/run-library-classify.ts",
     "library:auto": "tsx scripts/bin/run-library-auto.ts",
     "library:describe": "tsx scripts/bin/run-library-describe.ts",
-    "library:observe-codex": "tsx scripts/bin/run-library-observe-codex.ts"
+    "library:observe-codex": "tsx scripts/bin/run-library-observe-codex.ts",
+    "library:loop": "tsx scripts/bin/run-library-loop.ts"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

@@ -57,6 +57,20 @@ export const main = async () => {
   const batchDir = join(learningDir, "batches")
   await fs.mkdir(batchDir, { recursive: true })
 
+  const anchorsPath = join(learningDir, "procedure-anchors.txt")
+  try {
+    const previous = JSON.parse(
+      await fs.readFile(join(learningDir, "procedures.json"), "utf8"),
+    ) as { name?: unknown }[]
+    const anchors = previous
+      .map((item) => item.name)
+      .filter((name): name is string => typeof name === "string")
+      .slice(0, 100)
+    await fs.writeFile(anchorsPath, `${anchors.join("\n")}\n`)
+  } catch {
+    await fs.writeFile(anchorsPath, "")
+  }
+
   const classified: { procedure: string; project?: string }[] = []
   let failed = 0
 
@@ -64,7 +78,7 @@ export const main = async () => {
     const batchPath = join(batchDir, `batch-${String(index + 1)}.txt`)
     await fs.writeFile(batchPath, `${batch.join("\n")}\n`)
 
-    const parsed = parseClassifierOutput(await runClassifier(command, batchPath))
+    const parsed = parseClassifierOutput(await runClassifier(command, batchPath, anchorsPath))
 
     if (parsed.length === 0) {
       failed++

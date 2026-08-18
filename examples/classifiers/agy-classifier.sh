@@ -23,6 +23,10 @@ prompt="$(
   echo "For each, name the underlying repeatable procedure in under ten words, phrased so that two requests asking for the same thing produce the same string."
   echo "Use an empty string when the request is a one-off or mid-session steering rather than a task."
   echo "Expect a substantial share of empty procedures: terse follow-ups are normal in this corpus, and giving every line a distinct procedure means you did not read the wording."
+  if [ -n "${LIBRARY_ANCHORS:-}" ] && [ -s "$LIBRARY_ANCHORS" ]; then
+    echo "Reuse these exact procedure names whenever they fit, instead of inventing a new wording:"
+    cat "$LIBRARY_ANCHORS"
+  fi
 )"
 
 agy -p "$prompt" \

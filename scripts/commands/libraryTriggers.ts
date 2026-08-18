@@ -9,7 +9,8 @@ import { writeCurationManifest } from "../lib/library/cli/writeCurationManifest"
 import { buildSkillKeyIndex } from "../lib/library/buildSkillKeyIndex"
 import { listSkillPaths } from "../lib/library/cli/listSkillPaths"
 import { collectTriggerPhrases } from "../lib/library/learning/collectTriggerPhrases"
-import { mergeTriggersIntoManifest } from "../lib/library/learning/mergeTriggersIntoManifest"
+import { selectRecurringTriggers } from "../lib/library/learning/selectors/selectRecurringTriggers"
+import { replaceTriggersInManifest } from "../lib/library/learning/replaceTriggersInManifest"
 import { observeTranscripts } from "../lib/library/learning/observeTranscripts"
 import type { ObservationResult } from "../lib/library/learning/types/ObservationResult"
 
@@ -41,12 +42,14 @@ export const main = async () => {
 
   const root = flagValue(process.argv, "--transcripts") ?? join(home, ".claude", "projects")
   const observed: ObservationResult = await observeTranscripts(root, {})
-  const phrases = collectTriggerPhrases(observed.sequence, 200)
+  const raw = collectTriggerPhrases(observed.sequence, 200)
+  const { kept: phrases, dropped } = selectRecurringTriggers(raw)
+  const droppedCount = Object.values(dropped).reduce((total, list) => total + list.length, 0)
   const keyIndex = buildSkillKeyIndex(
     Object.keys(parsed.manifest.entries),
     await listSkillPaths(libraryDir),
   )
-  const next = mergeTriggersIntoManifest(parsed.manifest, phrases, keyIndex, 8)
+  const next = replaceTriggersInManifest(parsed.manifest, phrases, keyIndex, 8)
 
   if (!process.argv.includes("--dry-run")) {
     await writeCurationManifest(libraryDir, next)
@@ -63,10 +66,11 @@ export const main = async () => {
 
   console.log(
     asJson
-      ? JSON.stringify({ skillsWithTriggers: learned.length, phrases }, null, 2)
+      ? JSON.stringify({ skillsWithTriggers: learned.length, droppedCount, phrases }, null, 2)
       : [
           `skills with measured trigger phrases: ${String(learned.length)}`,
           ...learned.map(([name, entry]) => `  ${name}: ${String((entry.triggers ?? []).length)}`),
+          `attributions dropped as unconfirmed: ${String(droppedCount)}`,
         ].join("\n"),
   )
 }

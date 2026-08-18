@@ -8,7 +8,10 @@ import { readCurationManifest } from "../lib/library/cli/readCurationManifest"
 import { resolveLibraryDir } from "../lib/library/cli/resolveLibraryDir"
 import { formatProposals } from "../lib/library/formatters/formatProposals"
 import { parseProceduresFile } from "../lib/library/learning/parseProceduresFile"
+import { guessCoveringSkill } from "../lib/library/learning/guessCoveringSkill"
 import { readInvocationCounts } from "../lib/library/learning/readInvocationCounts"
+import { readSkillDescription } from "../lib/library/cli/readSkillDescription"
+import type { SkillCatalogEntry } from "../lib/library/learning/types/SkillCatalogEntry"
 import { proposeChanges } from "../lib/library/learning/proposeChanges"
 
 export const main = async () => {
@@ -50,6 +53,18 @@ export const main = async () => {
 
   const invocations = await readInvocationCounts(join(libraryDir, "learning", "invocations.json"))
 
+  const catalog: SkillCatalogEntry[] = []
+  for (const [key, entry] of Object.entries(parsed.manifest.entries)) {
+    if (key.startsWith("rules/")) {
+      continue
+    }
+    const description = await readSkillDescription(join(libraryDir, "skills", key))
+    catalog.push({
+      key,
+      text: [key, description ?? "", ...(entry.triggers ?? [])].join(" "),
+    })
+  }
+
   const proposals = proposeChanges({
     procedures,
     manifest: parsed.manifest,
@@ -61,5 +76,19 @@ export const main = async () => {
     ),
   })
 
-  console.log(formatProposals(proposals, asJson))
+  const annotated = proposals.map((proposal) => {
+    if (proposal.kind !== "build" || proposal.procedure === undefined) {
+      return proposal
+    }
+    const guess = guessCoveringSkill(proposal.procedure, catalog)
+    if (guess === undefined) {
+      return proposal
+    }
+    return {
+      ...proposal,
+      why: `${proposal.why}; closest installed skill: ${guess.skill} (${guess.score.toFixed(2)})`,
+    }
+  })
+
+  console.log(formatProposals(annotated, asJson))
 }

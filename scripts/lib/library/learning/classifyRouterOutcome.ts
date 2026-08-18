@@ -11,5 +11,5 @@ export const classifyRouterOutcome = (
 
   const owned = LANE_SKILLS[lane] ?? []
 
-  return owned.includes(skill) ? "correct-lane" : "wrong-lane"
+  return owned === "policy-only" || !owned.includes(skill) ? "wrong-lane" : "correct-lane"
 }

@@ -2,17 +2,44 @@ import { promises as fs } from "node:fs"
 import { homedir } from "node:os"
 import { join } from "node:path"
 import { flagValue } from "../lib/machine/cli/flagValue"
+import { resolveLibraryDir } from "../lib/library/cli/resolveLibraryDir"
 import { resolveLearningDir } from "../lib/library/cli/resolveLearningDir"
 import { classifyRouterOutcome } from "../lib/library/learning/classifyRouterOutcome"
 import { laneFromContext } from "../lib/library/learning/laneFromContext"
 import { formatRouterOutcomeLine } from "../lib/library/formatters/formatRouterOutcomeLine"
 import { runRouterProbe } from "../lib/library/learning/runRouterProbe"
 import type { RouterOutcome } from "../lib/library/learning/types/RouterOutcome"
+import { validateRouterReachability } from "../lib/library/learning/validators/validateRouterReachability"
+import { isSkillTarget } from "../lib/library/isSkillTarget"
 
 export const main = async () => {
   const home = homedir()
   const asJson = process.argv.includes("--json")
   const learningFlag = flagValue(process.argv, "--learning")
+  const libraryFlag = flagValue(process.argv, "--library")
+  const target = flagValue(process.argv, "--target") ?? "codex"
+
+  if (!isSkillTarget(target)) {
+    console.error(`unsupported skill target: ${target}`)
+    process.exitCode = 1
+    return
+  }
+
+  const libraryDir = resolveLibraryDir({
+    ...(libraryFlag === undefined ? {} : { flag: libraryFlag }),
+    env: process.env,
+    home,
+  })
+  const reachabilityErrors = await validateRouterReachability(libraryDir, target)
+  if (reachabilityErrors.length > 0) {
+    console.error(
+      asJson
+        ? JSON.stringify({ target, reachabilityErrors }, null, 2)
+        : reachabilityErrors.join("\n"),
+    )
+    process.exitCode = 1
+    return
+  }
 
   const learningDir = resolveLearningDir({
     ...(learningFlag === undefined ? {} : { flag: learningFlag }),

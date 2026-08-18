@@ -1,4 +1,4 @@
-export const LANE_SKILLS: Record<string, string[]> = {
+export const LANE_SKILLS: Record<string, readonly string[] | "policy-only"> = {
   "invoice-ops": ["invoice-quarter-close"],
   frontend: ["frontend-design"],
   continuation: ["project-continuation"],
@@ -8,4 +8,9 @@ export const LANE_SKILLS: Record<string, string[]> = {
   "contract-ops": ["docx", "pdf"],
   "agent-config": ["brain"],
   debug: ["brp", "superpowers:systematic-debugging"],
+  plan: ["superpowers:brainstorming", "superpowers:writing-plans"],
+  docs: ["brp-docs"],
+  release: ["brp-release"],
+  "environment-ops": "policy-only",
+  "repo-modernization": "policy-only",
 }

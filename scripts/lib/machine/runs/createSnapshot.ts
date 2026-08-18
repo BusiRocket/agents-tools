@@ -10,9 +10,18 @@ export const createSnapshot = async ({ runDir, files }: { runDir: string; files:
     const encoded = `${String(index)}-${path.replaceAll("/", "_")}`
 
     try {
-      const contents = await fs.readFile(path)
-      await fs.writeFile(join(runDir, "files", encoded), contents)
-      entries.push({ encoded, path, existed: true })
+      const stat = await fs.lstat(path)
+      if (stat.isSymbolicLink()) {
+        await fs.writeFile(join(runDir, "files", encoded), await fs.readlink(path))
+        entries.push({ encoded, path, existed: true, kind: "symlink" })
+      } else if (stat.isDirectory()) {
+        await fs.cp(path, join(runDir, "files", encoded), { recursive: true })
+        entries.push({ encoded, path, existed: true, kind: "directory" })
+      } else {
+        const contents = await fs.readFile(path)
+        await fs.writeFile(join(runDir, "files", encoded), contents)
+        entries.push({ encoded, path, existed: true, kind: "file" })
+      }
     } catch {
       entries.push({ encoded, path, existed: false })
     }

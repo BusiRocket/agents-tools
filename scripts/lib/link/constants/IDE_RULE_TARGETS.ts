@@ -66,8 +66,8 @@ export const IDE_RULE_TARGETS: RuleTarget[] = [
     ide: findIde("windsurf"),
     links: [
       {
-        source: path.join(ROOT, "dist", "markdown", "WINDSURF.md"),
-        target: path.join(HOME, ".windsurf", "rules", "global.md"),
+        source: path.join(ROOT, "src", "core", "windsurf-global-rules.md"),
+        target: path.join(HOME, ".codeium", "windsurf", "memories", "global_rules.md"),
         method: "copy",
       },
     ],

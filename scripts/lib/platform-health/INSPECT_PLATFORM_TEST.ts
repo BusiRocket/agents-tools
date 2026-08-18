@@ -61,3 +61,43 @@ void test("an unavailable platform does not fail missing capability paths", asyn
   const result = await inspectPlatform({ definition, runtime, paths: {} })
   assert.equal(result.capabilities[0]?.status, "not-applicable")
 })
+
+void test("Claude security settings require the owned safe policy", async () => {
+  const root = await mkdtemp(join(tmpdir(), "platform-security-"))
+  const personal = join(root, "personal.json")
+  const favish = join(root, "favish.json")
+  const safeSettings = JSON.stringify({
+    permissions: { defaultMode: "auto" },
+    skipDangerousModePermissionPrompt: false,
+    remoteControlAtStartup: true,
+  })
+  await writeFile(personal, safeSettings)
+  await writeFile(favish, safeSettings)
+
+  const definition: PlatformDefinition = {
+    registryId: "claude",
+    capabilities: ["security"],
+    probe: { configPaths: [root] },
+  }
+  const runtime: PlatformRuntimeState = {
+    registryId: "claude",
+    lifecycle: "provisioned",
+    probes: [],
+  }
+
+  const healthy = await inspectPlatform({
+    definition,
+    runtime,
+    paths: { securitySettingsPaths: [personal, favish] },
+  })
+  assert.equal(healthy.capabilities[0]?.status, "healthy")
+
+  await writeFile(favish, JSON.stringify({ permissions: { defaultMode: "default" } }))
+  const failed = await inspectPlatform({
+    definition,
+    runtime,
+    paths: { securitySettingsPaths: [personal, favish] },
+  })
+  assert.equal(failed.capabilities[0]?.status, "failed")
+  assert.deepEqual(failed.capabilities[0].findings, [favish])
+})

@@ -22,3 +22,17 @@ void test("Cursor uses canonical user skills without a duplicate target", () => 
   assert.equal(cursor.skillsDir, undefined)
   assert.equal(cursor.linkStrategy, undefined)
 })
+
+void test("Windsurf uses canonical user skills without a duplicate target", () => {
+  const windsurf = IDE_REGISTRY.find(({ id }) => id === "windsurf")
+  assert.ok(windsurf, "windsurf must stay registered for rule linking and detection")
+  assert.equal(windsurf.skillsDir, undefined)
+  assert.equal(windsurf.linkStrategy, undefined)
+})
+
+void test("TRAE uses canonical user skills without a duplicate target", () => {
+  const trae = IDE_REGISTRY.find(({ id }) => id === "trae")
+  assert.ok(trae, "trae must stay registered for platform detection")
+  assert.equal(trae.skillsDir, undefined)
+  assert.equal(trae.linkStrategy, undefined)
+})

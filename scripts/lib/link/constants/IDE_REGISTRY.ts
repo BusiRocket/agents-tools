@@ -52,10 +52,10 @@ export const IDE_REGISTRY: IdeRegistryEntry[] = [
     linkStrategy: "symlink",
   },
   {
+    // Windsurf discovers cross-agent skills from ~/.agents/skills.
     id: "windsurf",
     rootDir: path.join(HOME, ".codeium"),
-    skillsDir: path.join(HOME, ".codeium", "windsurf", "skills"),
-    linkStrategy: "symlink",
+    detectPaths: [path.join(HOME, ".codeium"), "/Applications/Windsurf.app"],
   },
   {
     id: "antigravity",
@@ -159,9 +159,9 @@ export const IDE_REGISTRY: IdeRegistryEntry[] = [
     linkStrategy: "symlink",
   },
   {
+    // TRAE discovers cross-agent skills from ~/.agents/skills.
     id: "trae",
     rootDir: path.join(HOME, ".trae"),
-    skillsDir: path.join(HOME, ".trae", "skills"),
-    linkStrategy: "symlink",
+    detectPaths: [path.join(HOME, ".trae"), "/Applications/Trae.app"],
   },
 ]

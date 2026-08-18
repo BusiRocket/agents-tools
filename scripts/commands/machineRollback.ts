@@ -20,7 +20,7 @@ export const main = async () => {
       runId: "rollback",
       profile: "full",
       domains: [
-        { domain: "mcp", status: "failed", changes: 0, messages: ["no runs to roll back"] },
+        { domain: "machine", status: "failed", changes: 0, messages: ["no runs to roll back"] },
       ],
       ok: false,
     }
@@ -36,7 +36,7 @@ export const main = async () => {
     profile: "full",
     domains: [
       {
-        domain: "mcp",
+        domain: "machine",
         status: "changed",
         changes: restored.length,
         messages: restored.map((path) => `restored ${path}`),

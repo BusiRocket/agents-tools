@@ -1,5 +1,5 @@
 import assert from "node:assert/strict"
-import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises"
+import { lstat, mkdir, mkdtemp, readFile, readlink, rm, symlink, writeFile } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 import test from "node:test"
@@ -38,6 +38,29 @@ void test("a file that did not exist is recorded and removed on restore", async 
   await restoreSnapshot({ runDir })
 
   await assert.rejects(readFile(target, "utf8"))
+})
+
+void test("a snapshot restores directories and symbolic links", async () => {
+  const work = await mkdtemp(join(tmpdir(), "machine-run-tree-"))
+  const source = join(work, "source")
+  const directory = join(work, "directory")
+  const link = join(work, "link")
+  await mkdir(source)
+  await mkdir(directory)
+  await writeFile(join(directory, "before.txt"), "before")
+  await symlink(source, link)
+
+  const runDir = join(work, "runs", "r1")
+  await createSnapshot({ runDir, files: [directory, link] })
+  await writeFile(join(directory, "after.txt"), "after")
+  await rm(link)
+  await writeFile(link, "replacement")
+  await restoreSnapshot({ runDir })
+
+  assert.equal(await readFile(join(directory, "before.txt"), "utf8"), "before")
+  await assert.rejects(readFile(join(directory, "after.txt"), "utf8"))
+  assert.equal((await lstat(link)).isSymbolicLink(), true)
+  assert.equal(await readlink(link), source)
 })
 
 void test("an interrupted run has no complete marker", async () => {

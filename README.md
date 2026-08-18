@@ -31,11 +31,18 @@ pnpm run sync
 `sync` is the canonical bootstrap command (install, build, check, rules:link, skills:link). To
 update dependencies and refresh everything: `pnpm run update`.
 
-The tracked machine instance lives under `machine/`. Inspect MCP drift without changing client
-configuration:
+The tracked machine instance lives under `machine/`. Inspect MCP, shared security policy, and
+managed capability drift without changing client configuration:
 
 ```bash
 pnpm run machine:diff -- --json
+```
+
+Apply the inspected plan, or restore the most recent pre-apply snapshot:
+
+```bash
+pnpm run machine:apply -- --json
+pnpm run machine:rollback -- --json
 ```
 
 Use `--instance <path>` or `AGENTS_MACHINE_DIR` only when intentionally testing another instance.
@@ -53,7 +60,8 @@ The doctor reports each platform as `active` when its command or desktop applica
 `provisioned` when managed configuration exists without a detected runtime, or `unavailable` when
 neither exists. Missing optional clients do not fail the command. A failed required capability on an
 active or provisioned client exits with status 1; an invalid platform manifest exits with status 2.
-Both human and JSON output are redacted before printing.
+Both human and JSON output are redacted before printing. `unsupported` is a capability status, not a
+lifecycle: the client is present but has no compatible adapter for that feature.
 
 For Codex and other skill-capable IDEs, the main BRP workflow surface is the global skills pipeline.
 `AGENTS.md` remains useful as lightweight global guidance and routing, but it is not the primary
@@ -74,11 +82,12 @@ orchestrator (`src/skills/orchestrator/brp/references/`), not as standalone skil
 
 ### As a multi-IDE distribution
 
-`pnpm run skills:link` fans skills out to Cursor, Codex, Copilot, Windsurf, Antigravity (Gemini),
-Continue, Cline, Goose, OpenCode, Augment, Roo, Kiro, Junie, Kilo, OpenHands, Zencoder, AdaL, Qoder,
-Qwen Code, Trae, and OpenClaw. Claude Code receives the full `dist/skills/` variant with
-Anthropic-only fields (`allowed-tools`, `paths`, `agent`, etc.). Every other IDE receives the
-stripped `dist/skills-portable/` variant.
+`pnpm run skills:link` stages the canonical skill library used natively by Cursor, Codex, Gemini
+CLI, Windsurf, and TRAE, then fans portable copies out to Copilot, Antigravity, Continue, Cline,
+Goose, OpenCode, Augment, Roo, Kiro, Junie, Kilo, OpenHands, Zencoder, AdaL, Qoder, Qwen Code, and
+OpenClaw. Claude Code receives the full `dist/skills/` variant with Anthropic-only fields
+(`allowed-tools`, `paths`, `agent`, etc.). Clients requiring a distributed copy receive the stripped
+`dist/skills-portable/` variant.
 
 ## Workflow Commands
 
@@ -224,7 +233,7 @@ busirocket-agents-tools/
 BRP uses a dual-layer model for global distribution:
 
 - `~/.agents/skills` is the canonical user directory managed by this product and discovered directly
-  by Codex
+  by Codex, Cursor, Gemini CLI, Windsurf, and TRAE
 - `pnpm skills:link` fans those compiled skills out only to IDEs that require another location
 - `AGENTS.md` remains a lightweight guidance layer and should not be treated as the primary BRP
   workflow surface for Codex
@@ -411,10 +420,10 @@ identity or credentials:
 | Codex canonical |             102 |            0 |
 | Gemini CLI      |             102 |            0 |
 
-Both Claude profiles share the same non-identity skills directory. Codex and Gemini discover the
-canonical library directly, so target-compiled catalogs are validated artifacts rather than a second
-linked runtime copy. Gemini also reported four unrelated `GEMINI.md` import errors; those are
-platform-rule diagnostics, not broken skill links.
+Both Claude profiles share the same non-identity skills directory. Codex, Cursor, Gemini CLI,
+Windsurf, and TRAE discover the canonical library directly, so target-compiled catalogs are
+validated artifacts rather than a second linked runtime copy. Optional executable warnings remain
+visible without being misreported as broken skill imports.
 
 `pnpm run skills:validate` also writes `dist/reports/skills-quality-report.{json,md}` so
 low-fidelity skills and activation collisions can be ranked instead of only pass/fail checked.

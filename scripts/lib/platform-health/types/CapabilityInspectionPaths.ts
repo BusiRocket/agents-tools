@@ -4,4 +4,5 @@ export interface CapabilityInspectionPaths {
   hookPaths?: string[]
   pluginSettingsPath?: string
   mcpConfigPath?: string
+  securitySettingsPaths?: string[]
 }

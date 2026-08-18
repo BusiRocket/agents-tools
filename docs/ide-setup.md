@@ -15,7 +15,8 @@
 ## Machine MCP Configuration
 
 The default machine instance is the tracked `machine/` directory in this repository. Check its
-desired MCP state against Claude personal, Claude Favish, Codex, and Gemini without writing files:
+desired MCP state against Claude personal, Claude Favish, Codex, Gemini, and Cursor, together with
+shared security policy and managed capability links, without writing files:
 
 ```bash
 pnpm run machine:diff -- --json
@@ -23,6 +24,16 @@ pnpm run machine:diff -- --json
 
 For an alternate instance, pass `--instance /absolute/path` or set `AGENTS_MACHINE_DIR`. Secret
 values stay in the environment; tracked manifests use `from_env` references.
+
+After inspecting every planned path, apply all managed domains and require a converged second diff:
+
+```bash
+pnpm run machine:apply -- --json
+pnpm run machine:diff -- --json
+```
+
+Every apply snapshots files, directories, and symbolic links first. Restore the newest snapshot with
+`pnpm run machine:rollback -- --json`, or select one with `--to <run-id>`.
 
 ## Cross-Platform Health Check
 
@@ -40,6 +51,10 @@ Lifecycle meanings:
 - `active`: a client command or desktop application is installed.
 - `provisioned`: managed configuration exists, but no runtime is detected.
 - `unavailable`: neither a runtime nor managed configuration is present.
+
+Capability status `unsupported` means the client is present but exposes no compatible integration
+for that capability. It is intentionally distinct from a missing client and is never emulated with
+an undocumented path.
 
 An unavailable optional client is informational. A required capability failure on an active or
 provisioned client exits with status 1, while a malformed `machine/platforms.json` exits with
@@ -93,8 +108,16 @@ automatically when the project is open.
 
 ### Global-Level
 
-Copy or symlink the `.cursor/rules/` directory to your global Cursor configuration, or use the
-Cursor Marketplace when BRP is published there.
+Run `pnpm rules:link`; the managed rules are linked at `~/.cursor/rules/busirocket`. Cursor reads
+skills directly from `~/.agents/skills`, so no `~/.cursor/skills` duplicate is created. Machine MCP
+configuration is stored in `~/.cursor/mcp.json` and verified with:
+
+```bash
+cursor-agent mcp list
+cursor-agent mcp list-tools codegraph
+cursor-agent mcp list-tools context7
+cursor-agent mcp list-tools serena
+```
 
 ---
 
@@ -218,29 +241,37 @@ To install BRP skills for Antigravity as well:
 pnpm skills:link
 ```
 
-This copies compiled skills into Antigravity's global skills directory
-`~/.gemini/antigravity/skills`.
+This copies the portable BRP bundle into Antigravity's configured skills directory
+`~/.gemini/config/skills`.
 
-Antigravity workspace skills live under `<workspace-root>/.agents/skills`. This is separate from
-Gemini CLI's shared global skills directory at `~/.gemini/skills`, which `pnpm skills:link` also
-populates when Gemini CLI is installed.
+Antigravity workspace skills live under `<workspace-root>/.agents/skills`. Gemini CLI discovers the
+canonical global directory `~/.agents/skills` directly, so no duplicate Gemini CLI skill root is
+populated. Both use native MCP configuration in `~/.gemini/settings.json`.
 
-`pnpm skills:link` also distributes compiled skills into all detected supported IDE targets managed
-by this product, including Cursor, Claude Code, Codex, Continue, Cline, Windsurf, Gemini CLI, Goose,
-OpenHands, Augment, Roo, Kiro, Copilot, OpenCode, OpenClaw, Crush, Zencoder, AdaL, Trae, Qoder, and
-Qwen Code.
+`pnpm skills:link` also distributes compiled skills into detected clients that require private
+locations. Cursor, Codex, Gemini CLI, Windsurf, and TRAE instead discover the canonical directory.
 
 ---
 
 ## Windsurf
 
-Link the `WINDSURF.md` and Windsurf rules globally:
+Install the concise global Windsurf policy:
 
 ```bash
 pnpm rules:link
 ```
 
-This creates symlinks for the Windsurf configuration.
+This copies the policy to Windsurf's documented global rule file at
+`~/.codeium/windsurf/memories/global_rules.md`. It stays below the vendor's 6,000-character global
+limit. Windsurf discovers skills directly from `~/.agents/skills`, so no duplicate global skill tree
+is created.
+
+---
+
+## TRAE
+
+TRAE discovers Agent Skills directly from `~/.agents/skills`. Run `pnpm skills:link` to refresh the
+canonical library; the linker intentionally does not create `~/.trae/skills`.
 
 ---
 
@@ -264,9 +295,9 @@ pnpm run library:router-audit -- --dry-run --json
 ```
 
 The 2026-08-18 inventory found 38 readable skills in each shared Claude profile and 102 readable
-canonical skills for both Codex and Gemini, with zero broken links on all four surfaces. Gemini's
-separate `GEMINI.md` import diagnostics remain visible to the platform doctor and are not counted as
-skill-link failures.
+canonical skills for Codex, Cursor, Gemini CLI, Windsurf, and TRAE, with zero broken links on the
+managed surfaces. A missing optional executable warning from a client is reported separately and is
+not counted as a skill import failure.
 
 To validate skills using the AgentSkills specification:
 

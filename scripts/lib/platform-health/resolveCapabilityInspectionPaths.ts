@@ -12,12 +12,13 @@ export const resolveCapabilityInspectionPaths = (
   const ide = IDE_REGISTRY.find(({ id }) => id === registryId)
   const ruleId = registryId === "gemini-cli" ? "antigravity" : registryId
   const ruleTarget = IDE_RULE_TARGETS.find(({ ide: target }) => target.id === ruleId)
-  const skillsDir = registryId === "codex" ? CANONICAL_SKILLS_DIR : ide?.skillsDir
+  const canonicalSkillReaders = new Set(["codex", "cursor", "gemini-cli", "trae", "windsurf"])
+  const skillsDir = canonicalSkillReaders.has(registryId) ? CANONICAL_SKILLS_DIR : ide?.skillsDir
   const mcpConfigs: Record<string, string> = {
     claude: join(home, ".claude.json"),
     codex: join(home, ".codex", "config.toml"),
-    "gemini-cli": join(home, ".gemini", "config", "mcp_config.json"),
-    antigravity: join(home, ".gemini", "config", "mcp_config.json"),
+    "gemini-cli": join(home, ".gemini", "settings.json"),
+    antigravity: join(home, ".gemini", "settings.json"),
     cursor: join(home, ".cursor", "mcp.json"),
   }
   const hookPaths =
@@ -39,5 +40,13 @@ export const resolveCapabilityInspectionPaths = (
       ? { pluginSettingsPath: join(home, ".claude", "settings.json") }
       : {}),
     ...(mcpConfigs[registryId] === undefined ? {} : { mcpConfigPath: mcpConfigs[registryId] }),
+    ...(registryId === "claude"
+      ? {
+          securitySettingsPaths: [
+            join(home, ".claude", "settings.json"),
+            join(home, ".claude-favish", "settings.json"),
+          ],
+        }
+      : {}),
   }
 }

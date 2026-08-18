@@ -22,6 +22,14 @@ void test("a partial discovery failure is degraded", async () => {
   assert.equal(result.status, "degraded")
 })
 
+void test("a benign missing optional executable warning remains healthy", async () => {
+  const command = await createProbeExecutable(
+    "printf 'Ripgrep is not available. Falling back to GrepTool.\\n'",
+  )
+  const result = await runLiveProbe(createLiveProbeDefinition(command))
+  assert.equal(result.status, "healthy")
+})
+
 void test("an MCP table auth column does not override a successful command", async () => {
   const command = await createProbeExecutable("printf 'context7 enabled Not logged in\\n'")
   const result = await runLiveProbe(createLiveProbeDefinition(command))

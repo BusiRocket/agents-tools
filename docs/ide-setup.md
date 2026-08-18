@@ -49,6 +49,12 @@ status 2. Reports replace the home directory and credential-shaped values before
 
 ## Claude Code
 
+The tracked security policy keeps the personal and Favish profiles as separate identity roots while
+sharing only non-identity settings. Claude's `auto` permission mode remains the low-friction normal
+mode. The dangerous-mode warning is enabled; restoring that warning does not add prompts to ordinary
+`auto`-mode operations. Remote control at startup remains an explicit, documented exception for the
+established remote terminal workflow.
+
 ### As a Plugin (Recommended)
 
 Load the project as a plugin using `--plugin-dir`:

@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "claude": {
+    "profiles": ["claude-personal", "claude-favish"],
+    "defaultMode": "auto",
+    "skipDangerousModePermissionPrompt": false,
+    "remoteControlAtStartup": true,
+    "remoteControlExceptionReason": "Explicitly retained for the established remote terminal workflow"
+  },
+  "codex": {
+    "forcedLoginMethod": "chatgpt"
+  }
+}

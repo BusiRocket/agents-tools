@@ -1,5 +1,7 @@
 import { homedir } from "node:os"
 import { ROOT } from "../constants/ROOT"
+import { inspectClaudeConnectorCapability } from "../lib/connectors/inspectClaudeConnectorCapability"
+import { loadConnectorManifest } from "../lib/connectors/loadConnectorManifest"
 import { flagValue } from "../lib/machine/cli/flagValue"
 import { resolveInstanceDir } from "../lib/machine/instance/resolveInstanceDir"
 import { applyLiveProbe } from "../lib/platform-health/applyLiveProbe"
@@ -29,6 +31,13 @@ export const main = async () => {
     process.exitCode = healthExitCode([], false)
     return
   }
+  const connectors = await loadConnectorManifest(instanceDir)
+  if (!connectors.ok) {
+    const errors = connectors.errors.map((error) => redactHealthText(error, home))
+    console.log(JSON.stringify({ ok: false, errors }, null, 2))
+    process.exitCode = healthExitCode([], false)
+    return
+  }
 
   const report = []
   for (const definition of parsed.manifest.platforms) {
@@ -39,8 +48,16 @@ export const main = async () => {
       paths: resolveCapabilityInspectionPaths(definition.registryId, home),
     })
     if (runtime.lifecycle === "active") {
+      if (definition.registryId === "claude") {
+        health = applyLiveProbe(
+          health,
+          await inspectClaudeConnectorCapability(connectors.manifest.connectors, home),
+        )
+      }
       for (const probe of LIVE_PROBES.filter(
-        ({ platformId }) => platformId === definition.registryId,
+        ({ platformId, capability }) =>
+          platformId === definition.registryId &&
+          !(definition.registryId === "claude" && capability === "mcp"),
       )) {
         health = applyLiveProbe(health, await runLiveProbe(probe))
       }

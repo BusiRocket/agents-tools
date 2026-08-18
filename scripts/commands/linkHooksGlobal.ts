@@ -1,6 +1,5 @@
-import { cp, mkdir, rm } from "node:fs/promises"
-import path from "node:path"
 import { CANONICAL_HOOKS_DIR } from "../lib/link/constants/CANONICAL_HOOKS_DIR"
+import { applyCapabilityLinks } from "../lib/machine/domains/capabilities/applyCapabilityLinks"
 import { HOOKS_DIST_DIR } from "./constants/HOOKS_DIST_DIR"
 
 /**
@@ -11,9 +10,13 @@ import { HOOKS_DIST_DIR } from "./constants/HOOKS_DIST_DIR"
  * moves. Settings should reference ~/.agents/hooks/<name> instead.
  */
 export const main = async () => {
-  await rm(CANONICAL_HOOKS_DIR, { recursive: true, force: true })
-  await mkdir(path.dirname(CANONICAL_HOOKS_DIR), { recursive: true })
-  await cp(HOOKS_DIST_DIR, CANONICAL_HOOKS_DIR, { recursive: true })
+  await applyCapabilityLinks({
+    id: "canonical-hooks",
+    capability: "hooks",
+    support: "supported",
+    detectPaths: [],
+    links: [{ source: HOOKS_DIST_DIR, target: CANONICAL_HOOKS_DIR, method: "copy" }],
+  })
   console.log(`Hooks -> ${CANONICAL_HOOKS_DIR}`)
   console.log("Point ~/.claude/settings.json at that path so hooks survive a repo move.")
 }

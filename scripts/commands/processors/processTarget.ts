@@ -1,62 +1,64 @@
+import path from "node:path"
 import type { IdeRegistryEntry } from "../../lib/link/types/IdeRegistryEntry"
 import { CANONICAL_SKILLS_DIR } from "../../lib/link/constants/CANONICAL_SKILLS_DIR"
 import { CANONICAL_SKILLS_PORTABLE_DIR } from "../../lib/link/constants/CANONICAL_SKILLS_PORTABLE_DIR"
-import { copySkillsToTarget } from "../../lib/link/operations/copySkillsToTarget"
-import { linkSkillsToTarget } from "../../lib/link/operations/linkSkillsToTarget"
-import { pathExists } from "../../lib/link/operations/pathExists"
-import { cleanGlobalPrefix } from "../../lib/link/operations/cleanGlobalPrefix"
+import { applyCapabilityLinks } from "../../lib/machine/domains/capabilities/applyCapabilityLinks"
+import type { CapabilityTarget } from "../../lib/machine/domains/capabilities/types/CapabilityTarget"
 
 export const processTarget = async (
   target: IdeRegistryEntry,
   skillNames: string[],
 ): Promise<boolean> => {
   const detectPaths = target.detectPaths ?? (target.rootDir ? [target.rootDir] : [])
-  const detectResults = await Promise.all(detectPaths.map((candidate) => pathExists(candidate)))
-  const ideExists = detectResults.some(Boolean)
-  if (!ideExists) {
+  const flatten = target.flattenSkills ?? false
+  const bundle = target.skillsBundle ?? "portable"
+  const sourceDir = bundle === "claude" ? CANONICAL_SKILLS_DIR : CANONICAL_SKILLS_PORTABLE_DIR
+  const usesCanonicalDirectory = target.skillsDir === undefined || target.linkStrategy === undefined
+  let links: CapabilityTarget["links"]
+  let cleanup: NonNullable<CapabilityTarget["cleanup"]>
+  if (target.skillsDir === undefined || target.linkStrategy === undefined) {
+    links = [
+      { source: CANONICAL_SKILLS_DIR, target: CANONICAL_SKILLS_DIR, method: "native" as const },
+    ]
+    cleanup = []
+  } else {
+    const skillsDir = target.skillsDir
+    const strategy = target.linkStrategy
+    links = skillNames.map((skillName) => ({
+      source: path.join(sourceDir, skillName),
+      target: path.join(skillsDir, flatten ? path.basename(skillName) : skillName),
+      method: strategy,
+    }))
+    cleanup = ["busirocket-", "react-doctor"].map((prefix) => ({
+      dir: skillsDir,
+      prefix,
+    }))
+  }
+  const result = await applyCapabilityLinks({
+    id: target.id,
+    capability: "skills",
+    support: "supported",
+    detectPaths,
+    cleanup,
+    links,
+  })
+
+  if (result.status === "unavailable") {
     console.log(`- ${target.id}: skipped (target root not detected)`)
     return false
   }
-
-  if (target.skillsDir === undefined || target.linkStrategy === undefined) {
+  if (usesCanonicalDirectory) {
     console.log(`- ${target.id}: skipped (reads skills from the canonical directory)`)
     return false
   }
 
-  await cleanGlobalPrefix(target.skillsDir, "busirocket-")
-  await cleanGlobalPrefix(target.skillsDir, "brp-")
-  await cleanGlobalPrefix(target.skillsDir, "brp")
-  await cleanGlobalPrefix(target.skillsDir, "react-doctor")
-
-  const strategy = target.linkStrategy
-  const flatten = target.flattenSkills ?? false
-  const bundle = target.skillsBundle ?? "portable"
-  const sourceDir = bundle === "claude" ? CANONICAL_SKILLS_DIR : CANONICAL_SKILLS_PORTABLE_DIR
-
-  if (strategy === "copy") {
-    const result = await copySkillsToTarget({
-      sourceDir,
-      targetDir: target.skillsDir,
-      skillNames,
-      prefix: "",
-      flatten,
-    })
-    const verb = result.copied.length > 0 ? "copied" : "unchanged"
-    console.log(
-      `+ ${target.id}: ${String(skillNames.length)} skills (${bundle}) distributed via copy (${verb})`,
-    )
-  } else {
-    await linkSkillsToTarget({
-      sourceDir,
-      targetDir: target.skillsDir,
-      skillNames,
-      prefix: "",
-      flatten,
-    })
-    console.log(
-      `+ ${target.id}: ${String(skillNames.length)} skills (${bundle}) distributed via symlink`,
-    )
-  }
+  const strategy = target.linkStrategy ?? "symlink"
+  const changed = strategy === "copy" ? result.copied : result.linked
+  let verb = "unchanged"
+  if (changed > 0) verb = strategy === "copy" ? "copied" : "linked"
+  console.log(
+    `+ ${target.id}: ${String(skillNames.length)} skills (${bundle}) distributed via ${strategy} (${verb})`,
+  )
 
   return true
 }

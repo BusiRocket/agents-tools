@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "sources": [
+    {
+      "id": "superpowers",
+      "source": "obra/superpowers",
+      "resolvedCommit": "b36e0829c6d0140e93cfef2ca599b1b07d4a7797",
+      "skills": [
+        "brainstorming",
+        "writing-plans",
+        "systematic-debugging",
+        "executing-plans",
+        "subagent-driven-development",
+        "verification-before-completion",
+        "requesting-code-review",
+        "receiving-code-review"
+      ],
+      "targets": ["claude", "codex", "gemini-cli"],
+      "securityExceptions": [
+        {
+          "skill": "brainstorming",
+          "ruleId": "CI003",
+          "file": "scripts/server.cjs",
+          "line": 537,
+          "reason": "The pinned source exposes an explicit opt-in browser launcher through BRAINSTORM_OPEN_CMD; default launchers use execFile with argument arrays."
+        }
+      ]
+    }
+  ]
+}

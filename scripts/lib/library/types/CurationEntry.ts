@@ -8,6 +8,7 @@ export interface CurationEntry {
   upstreamHash?: string
   licence?: string
   targets?: string[]
+  aliases?: Record<string, string>
   triggers?: string[]
   patch?: string
   extractedInto?: string

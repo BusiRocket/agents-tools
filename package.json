@@ -31,6 +31,7 @@
     "skills:test": "tsx scripts/commands/testSkills.ts",
     "link:test": "tsx --test scripts/lib/link/constants/IDE_REGISTRY_TEST.ts scripts/lib/link/operations/CLEAN_GLOBAL_PREFIX_TEST.ts scripts/lib/link/operations/REMOVE_STALE_NAMESPACE_ENTRIES_TEST.ts scripts/lib/link/renderers/RENDER_CODEX_AGENT_TEST.ts",
     "skills:validate": "tsx scripts/commands/validators/validateSkills.ts",
+    "skills:portability": "tsx scripts/bin/run-audit-skill-portability.ts",
     "type-check": "node node_modules/@typescript/native/bin/tsc --noEmit",
     "skills:version:check": "tsx scripts/bin/run-check-version.ts",
     "sync": "pnpm install && pnpm run build && pnpm run check && pnpm run rules:link && pnpm run skills:link && pnpm run hooks:link",

@@ -171,6 +171,34 @@ After linking, verify three separate behaviors:
 
 Restart Codex after linking if changes are not picked up immediately.
 
+### State Recovery and Session Retention
+
+Inspect Codex state without modifying it:
+
+```bash
+pnpm run codex:doctor -- --json
+pnpm run codex:repair
+pnpm run codex:archive -- --retention-days 90
+```
+
+The 2026-08-18 baseline found one corrupt derived database (`memories_1.sqlite`), two malformed
+rollouts, and 4,059 active session files totaling 1,379,019,627 bytes. The 90-day archive plan
+selected 236 sessions totaling 486,568,388 bytes. Apply commands refuse to run while a Codex process
+or thread-writer lock is active.
+
+After closing every Codex client, apply the reversible operations:
+
+```bash
+pnpm run codex:repair -- --apply
+pnpm run codex:archive -- --retention-days 90 --apply
+```
+
+Each applied command prints its checksummed run directory and exact `pnpm run codex:restore`
+command. Restore is a dry-run unless `--apply` is present and refuses destination collisions. Active
+sessions remain under `~/.codex/sessions`; archived sessions live outside that tree under
+`~/.codex/session-archive/<run-id>/`. Add repeatable `--sessions <path>` flags to
+`library:observe-codex` when archived history should be included explicitly.
+
 ---
 
 ## Antigravity (Gemini)

@@ -97,9 +97,12 @@
 > Code went from 13 skills offered to 30. Spec and plan:
 > `docs/superpowers/specs/2026-08-18-skill-library-and-learning-loop-design.md`.
 
-- [ ] Re-run the loop in a month and check whether the promoted skills fire. A promotion that does
-      not change invocation counts is a proposal to demote, and that is the first real test of
-      whether any of this works.
+- [ ] Check the weekly loop reports (`~/.agents-learning/reports/`, LaunchAgent
+      `com.cristian.library-loop`, Sundays 06:30) and whether the promoted skills fire. A promotion
+      that does not change invocation counts is a proposal to demote, and that is the first real
+      test of whether any of this works. First scheduled run will also do the first full
+      classification pass (~26 agy batches), so expect it to take a while and check
+      `~/.agents-learning/loop.log` if the report is missing.
 - [ ] Review the description proposals `library:describe` produces. It reports which measured
       phrases a description does not reflect and stops there, on purpose: descriptions are validated
       for activation boundaries, so a generated edit can fail the build.

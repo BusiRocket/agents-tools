@@ -5,6 +5,6 @@ export interface ProfileConnectorResult {
   profile: "claude-personal" | "claude-favish" | "codex"
   status: ConnectorStatus
   criticality: "required" | "optional"
-  boundary: "client" | "hosted-connector"
+  boundary: "client" | "hosted-connector" | "access-gateway"
   summary: string
 }

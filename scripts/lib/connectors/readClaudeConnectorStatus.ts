@@ -1,5 +1,6 @@
 import type { ConnectorDefinition } from "./types/ConnectorDefinition"
 import type { ProfileConnectorResult } from "./types/ProfileConnectorResult"
+import { resolveConnectorBoundary } from "./resolveConnectorBoundary"
 
 export const readClaudeConnectorStatus = (
   output: string,
@@ -16,7 +17,7 @@ export const readClaudeConnectorStatus = (
         .map((line) => line.trim())
         .filter((line) => line.startsWith(prefix))
       const joined = lines.join("\n")
-      const boundary = definition.id === "zerohedge" ? "hosted-connector" : "client"
+      const boundary = resolveConnectorBoundary(definition.id)
       if (lines.length === 0) {
         return {
           id: definition.id,
@@ -45,6 +46,16 @@ export const readClaudeConnectorStatus = (
           criticality: definition.criticality,
           boundary,
           summary: "connector disabled",
+        }
+      }
+      if (/unexpected content type:\s*text\/html/i.test(joined)) {
+        return {
+          id: definition.id,
+          profile,
+          status: "failed",
+          criticality: definition.criticality,
+          boundary,
+          summary: "access gateway returned HTML instead of MCP",
         }
       }
       if (/failed to connect|HTTP\s+5\d\d|unavailable/i.test(joined)) {

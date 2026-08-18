@@ -29,6 +29,14 @@ export const definitions: ConnectorDefinition[] = [
     criticality: "optional",
   },
   {
+    id: "openseo",
+    match: "openseo",
+    profiles: ["claude-personal"],
+    ownership: "account",
+    probe: "native-cli",
+    criticality: "required",
+  },
+  {
     id: "disabled",
     match: "disabled",
     profiles: ["claude-personal"],
@@ -52,6 +60,7 @@ void test("Claude connector output is reduced to safe status categories", () => 
       "healthy: command - ✔ Connected",
       "oauth: https://example.test - ! Needs authentication",
       "claude.ai ZeroHedge: https://example.test - ✘ Failed to connect — HTTP 503: private body",
+      "openseo: https://example.test - ✘ Failed to connect — CLIENT_HTTP_UNEXPECTED_CONTENT: Unexpected content type: text/html",
       "disabled: command - disabled",
       "plugin:duplicate:one: https://example.test - ✔ Connected",
       "plugin:duplicate:two: https://example.test - ✔ Connected",
@@ -65,11 +74,13 @@ void test("Claude connector output is reduced to safe status categories", () => 
       ["healthy", "healthy"],
       ["oauth", "auth-required"],
       ["zerohedge", "failed"],
+      ["openseo", "failed"],
       ["disabled", "disabled"],
       ["duplicate", "healthy"],
     ],
   )
   assert.equal(JSON.stringify(results).includes("private body"), false)
+  assert.equal(results.find(({ id }) => id === "openseo")?.boundary, "access-gateway")
 })
 
 void test("missing expected connectors are failed", () => {

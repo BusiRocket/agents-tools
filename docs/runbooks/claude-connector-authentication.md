@@ -14,7 +14,6 @@ claude mcp login plugin:cloudflare:cloudflare-api
 claude mcp login plugin:cloudflare:cloudflare-bindings
 claude mcp login plugin:cloudflare:cloudflare-builds
 claude mcp login plugin:cloudflare:cloudflare-observability
-claude mcp login openseo
 ```
 
 Verify the same profile after each completed browser flow:
@@ -26,6 +25,19 @@ pnpm run connectors:doctor -- --profile personal --json
 If the browser does not open, use the one-time URL printed by the CLI. If the redirect cannot reach
 the local callback listener, paste the complete redirect URL only into the waiting CLI prompt. The
 URL is transient authentication material and must not be stored.
+
+### OpenSEO access gateway
+
+Do not repeat `claude mcp login openseo` while the doctor reports the `access-gateway` boundary. On
+2026-08-18, Cloudflare Access redirected `/mcp` to HTML and the OAuth attempt ended with
+`invalid_target`, meaning OAuth was not enabled for the MCP resource. The access application owner
+must first expose MCP-compatible OAuth metadata or provide an approved non-interactive service-token
+header mechanism. After that external policy change, run:
+
+```bash
+claude mcp login openseo
+pnpm run connectors:doctor -- --profile personal --json
+```
 
 ## Favish profile
 

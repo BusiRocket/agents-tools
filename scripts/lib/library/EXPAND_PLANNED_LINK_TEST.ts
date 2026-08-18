@@ -15,8 +15,16 @@ void test("a directory that is itself a skill is left alone", async () => {
     name: "frontend-design",
     target,
     entryKey: "frontend-design",
+    logicalName: "frontend-design",
   })
-  assert.deepEqual(expanded, [{ name: "frontend-design", target, entryKey: "frontend-design" }])
+  assert.deepEqual(expanded, [
+    {
+      name: "frontend-design",
+      target,
+      entryKey: "frontend-design",
+      logicalName: "frontend-design",
+    },
+  ])
 })
 
 void test("a bundle with no SKILL.md expands to the skills inside it", async () => {
@@ -27,7 +35,12 @@ void test("a bundle with no SKILL.md expands to the skills inside it", async () 
   await writeFile(join(bundle, "brp-docs", "SKILL.md"), "x")
   await writeFile(join(bundle, "brp-release", "SKILL.md"), "x")
 
-  const expanded = await expandPlannedLink({ name: "core", target: bundle, entryKey: "core" })
+  const expanded = await expandPlannedLink({
+    name: "core",
+    target: bundle,
+    entryKey: "core",
+    logicalName: "core",
+  })
   assert.deepEqual(
     expanded.map((link) => link.name).toSorted((a, b) => a.localeCompare(b)),
     ["brp-docs", "brp-release"],
@@ -42,7 +55,12 @@ void test("a child directory without a SKILL.md is not linked", async () => {
   await mkdir(join(bundle, "brp-docs"), { recursive: true })
   await writeFile(join(bundle, "brp-docs", "SKILL.md"), "x")
 
-  const expanded = await expandPlannedLink({ name: "core", target: bundle, entryKey: "core" })
+  const expanded = await expandPlannedLink({
+    name: "core",
+    target: bundle,
+    entryKey: "core",
+    logicalName: "core",
+  })
   assert.deepEqual(
     expanded.map((link) => link.name),
     ["brp-docs"],

@@ -7,4 +7,5 @@ export const planLinks = (skillsRoot: string, entryKeys: string[]): PlannedLink[
     name: toLinkName(entryKey),
     target: resolveSkillPath(skillsRoot, entryKey),
     entryKey,
+    logicalName: entryKey,
   }))

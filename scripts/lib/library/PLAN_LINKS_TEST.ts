@@ -5,7 +5,12 @@ import { planLinks } from "./planLinks"
 
 void test("a top-level bundle links under its own name", () => {
   assert.deepEqual(planLinks("/lib/skills", ["frontend-design"]), [
-    { name: "frontend-design", target: "/lib/skills/frontend-design", entryKey: "frontend-design" },
+    {
+      name: "frontend-design",
+      target: "/lib/skills/frontend-design",
+      entryKey: "frontend-design",
+      logicalName: "frontend-design",
+    },
   ])
 })
 
@@ -15,6 +20,7 @@ void test("a nested skill links under the skill name, not the bundle name", () =
       name: "jira-expert",
       target: "/lib/skills/pm-skills/jira-expert",
       entryKey: "pm-skills/jira-expert",
+      logicalName: "pm-skills/jira-expert",
     },
   ])
 })

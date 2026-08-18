@@ -30,7 +30,8 @@ export const expandPlannedLink = async (link: PlannedLink): Promise<PlannedLink[
       .catch(() => false)
 
     if (childIsSkill) {
-      expanded.push({ name: child, target, entryKey: `${link.entryKey}/${child}` })
+      const entryKey = `${link.entryKey}/${child}`
+      expanded.push({ name: child, target, entryKey, logicalName: entryKey })
     }
   }
 

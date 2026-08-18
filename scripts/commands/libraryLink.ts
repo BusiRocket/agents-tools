@@ -3,12 +3,17 @@ import { join } from "node:path"
 import { flagValue } from "../lib/machine/cli/flagValue"
 import { readCurationManifest } from "../lib/library/cli/readCurationManifest"
 import { resolveLibraryDir } from "../lib/library/cli/resolveLibraryDir"
+import { compileLibraryTarget } from "../lib/library/compileLibraryTarget"
+import { deduplicatePlannedLinks } from "../lib/library/deduplicatePlannedLinks"
 import { expandPlannedLink } from "../lib/library/expandPlannedLink"
 import { findLinkCollisions } from "../lib/library/findLinkCollisions"
 import { installLink } from "../lib/library/installLink"
+import { isSkillTarget } from "../lib/library/isSkillTarget"
 import { formatLinkReport } from "../lib/library/formatters/formatLinkReport"
 import { planLinks } from "../lib/library/planLinks"
 import { selectFannedOutSkills } from "../lib/library/selectors/selectFannedOutSkills"
+import type { PlannedLink } from "../lib/library/types/PlannedLink"
+import { validateCompiledLibrary } from "../lib/library/validators/validateCompiledLibrary"
 
 export const main = async () => {
   const home = homedir()
@@ -23,6 +28,12 @@ export const main = async () => {
     home,
   })
 
+  if (!isSkillTarget(target)) {
+    console.error(`unsupported skill target: ${target}`)
+    process.exitCode = 1
+    return
+  }
+
   const parsed = await readCurationManifest(libraryDir)
 
   if (!parsed.ok) {
@@ -32,8 +43,33 @@ export const main = async () => {
   }
 
   const skillsRoot = join(libraryDir, "skills")
-  const planned = planLinks(skillsRoot, selectFannedOutSkills(parsed.manifest, target))
-  const links = (await Promise.all(planned.map(expandPlannedLink))).flat()
+  const entryKeys = selectFannedOutSkills(parsed.manifest, target)
+  const missing: string[] = []
+  let links: PlannedLink[]
+  if (target === "claude") {
+    const planned = planLinks(skillsRoot, entryKeys)
+    links = deduplicatePlannedLinks((await Promise.all(planned.map(expandPlannedLink))).flat())
+  } else {
+    const result = await compileLibraryTarget(
+      skillsRoot,
+      join(libraryDir, "compiled", target, "skills"),
+      target,
+      entryKeys,
+    )
+    const errors = await validateCompiledLibrary(result.compiled, target)
+    if (errors.length > 0) {
+      console.error(errors.join("\n"))
+      process.exitCode = 1
+      return
+    }
+    links = result.compiled.map(({ logicalName, targetName, outputPath }) => ({
+      name: targetName,
+      target: outputPath,
+      entryKey: logicalName,
+      logicalName,
+    }))
+    missing.push(...result.missing)
+  }
   const collisions = findLinkCollisions(links)
 
   if (collisions.length > 0) {
@@ -44,7 +80,6 @@ export const main = async () => {
 
   const linkDir = flagValue(process.argv, "--into") ?? join(home, ".claude", "skills")
   const created: string[] = []
-  const missing: string[] = []
   const foreign: string[] = []
 
   for (const link of links) {
@@ -57,7 +92,14 @@ export const main = async () => {
 
   console.log(
     formatLinkReport(
-      { target, planned: links.length, linked: created.length, created, missing, foreign },
+      {
+        target,
+        planned: links.length + missing.length,
+        linked: created.length,
+        created,
+        missing,
+        foreign,
+      },
       asJson,
     ),
   )

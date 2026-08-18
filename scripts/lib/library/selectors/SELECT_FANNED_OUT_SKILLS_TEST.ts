@@ -25,3 +25,13 @@ void test("an entry with no targets reaches every target", () => {
 void test("an empty manifest fans out nothing", () => {
   assert.deepEqual(selectFannedOutSkills({ version: 1, entries: {} }, "claude"), [])
 })
+
+void test("rule entries never fan out through the skill linker", () => {
+  assert.deepEqual(
+    selectFannedOutSkills(
+      { version: 1, entries: { "rules/core/general.mdc": { state: "adopted" } } },
+      "codex",
+    ),
+    [],
+  )
+})

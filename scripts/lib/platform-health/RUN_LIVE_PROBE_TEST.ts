@@ -34,6 +34,12 @@ void test("an empty required MCP inventory is failed", async () => {
   assert.equal(result.status, "failed")
 })
 
+void test("an API-key Codex login fails the ChatGPT security policy", async () => {
+  const command = await createProbeExecutable("printf 'Logged in using an API key\\n'")
+  const result = await runLiveProbe(createLiveProbeDefinition(command))
+  assert.equal(result.status, "failed")
+})
+
 void test("a timeout is failed", async () => {
   const command = await createProbeExecutable("sleep 2")
   const result = await runLiveProbe({ ...createLiveProbeDefinition(command), timeoutMs: 20 })

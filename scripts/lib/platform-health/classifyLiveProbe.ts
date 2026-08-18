@@ -7,6 +7,7 @@ export const classifyLiveProbe = (
 ): CapabilityStatus => {
   if (timedOut) return "failed"
   if (/no MCP servers configured/i.test(output)) return "failed"
+  if (/logged in using an API key/i.test(output)) return "failed"
   if (/failed to connect|failed to import|disconnected|unavailable/i.test(output)) return "degraded"
   if (/needs authentication|signed.?out|authentication required/i.test(output)) {
     return "auth-required"

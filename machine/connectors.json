@@ -43,7 +43,7 @@
     },
     {
       "id": "zerohedge",
-      "match": "claude.ai ZeroHedge",
+      "match": "claude.ai ZeroHedge Production",
       "profiles": ["claude-personal", "claude-favish"],
       "ownership": "account",
       "probe": "native-cli",

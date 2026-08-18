@@ -28,25 +28,38 @@ kubectl --context gke_favish-general_us-central1-a_ai-cluster -n zh-mcp get cert
 kubectl --context gke_favish-general_us-central1-a_ai-cluster -n zh-mcp get pods,service,endpoints -o wide
 ```
 
-## Observed boundary on 2026-08-18
+## Resolved production boundary
 
-- The hosted Claude connector returned HTTP 503 for both Claude profiles.
-- Normal TLS validation for `mcp.zerohedge.net` failed because DNS reached an ingress presenting the
-  Kubernetes fake self-signed certificate.
-- The production certificate resource in the intended cluster was ready, and the service had a ready
-  pod and endpoint.
-- The public DNS address did not equal the intended production ingress address.
-- The dev hostname had a valid certificate, but its MCP service had no ready endpoint and returned
-  HTTP 503.
+- The legacy Claude connector used `mcp.zh.dev.favish.com`, whose MCP service had no ready endpoint
+  and returned HTTP 503.
+- `mcp.zerohedge.net` previously resolved to `35.196.136.19`, an ingress presenting the Kubernetes
+  fake self-signed certificate.
+- The production ingress at `34.70.102.43` had a ready service endpoint and a valid certificate for
+  `mcp.zerohedge.net`.
+- The `mcp.zerohedge.net` A record now resolves to `34.70.102.43`. TLS validation succeeds,
+  `/healthz` returns HTTP 200, and an unauthenticated MCP initialize request reaches the expected
+  HTTP 401 OAuth boundary.
+- Claude now has a `ZeroHedge Production` remote connector using `https://mcp.zerohedge.net/mcp`. It
+  must be authenticated per Claude account before tools become available.
 
-This evidence places the production failure at DNS/ingress routing, before the ZeroHedge MCP
-application. A code change or timeout increase cannot repair it.
+The retired `ZeroHedge` connector may still appear in Claude because `claude mcp remove` cannot
+delete account-owned `claude.ai` connectors. Remove that legacy entry from Claude Settings only
+after `ZeroHedge Production` is authenticated and healthy.
 
 ## Repair and verification
 
-Changing public DNS or applying Kubernetes manifests is a production mutation. Obtain the
-repository-required deployment approval, then point the production hostname at the intended ingress
-and wait for DNS propagation. Do not replace the ready certificate secret or copy credentials.
+Changing public DNS or applying Kubernetes manifests is a production mutation. Obtain the required
+approval before a future change. Do not replace the ready certificate secret or copy credentials.
+
+The DNS repair can be rolled back without changing Kubernetes resources by restoring the previous
+`mcp.zerohedge.net` A record value, `35.196.136.19`, with TTL 300 in the `zerohedge-net` managed
+zone.
+
+Authenticate the production connector after the endpoint checks pass:
+
+```bash
+claude mcp login 'claude.ai ZeroHedge Production'
+```
 
 After the approved infrastructure change, rerun every safe check above, then verify both profiles:
 
@@ -57,4 +70,4 @@ pnpm run connectors:doctor -- --json
 ```
 
 Success means TLS verification is clean, `/healthz` is HTTP 200, the unauthenticated MCP request
-reaches the OAuth boundary, and the hosted connector no longer reports an unexplained 503.
+reaches the OAuth boundary, and `ZeroHedge Production` reports connected with tools available.

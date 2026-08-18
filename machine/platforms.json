@@ -1,0 +1,148 @@
+{
+  "version": 1,
+  "platforms": [
+    {
+      "registryId": "amp",
+      "capabilities": ["skills"],
+      "probe": { "configPaths": ["$HOME/.config/amp"] }
+    },
+    {
+      "registryId": "cursor",
+      "capabilities": ["skills", "rules", "mcp"],
+      "probe": {
+        "commands": ["cursor-agent"],
+        "appPaths": ["/Applications/Cursor.app"],
+        "configPaths": ["$HOME/.cursor"]
+      }
+    },
+    {
+      "registryId": "claude",
+      "capabilities": ["skills", "rules", "hooks", "plugins", "mcp", "security"],
+      "probe": { "commands": ["claude"], "configPaths": ["$HOME/.claude"] }
+    },
+    {
+      "registryId": "codex",
+      "capabilities": ["skills", "rules", "hooks", "plugins", "mcp", "security"],
+      "probe": { "commands": ["codex"], "configPaths": ["$HOME/.codex", "/etc/codex"] }
+    },
+    {
+      "registryId": "copilot",
+      "capabilities": ["skills"],
+      "probe": { "configPaths": ["$HOME/.copilot"] }
+    },
+    {
+      "registryId": "continue",
+      "capabilities": ["skills"],
+      "probe": { "configPaths": ["$HOME/.continue"] }
+    },
+    {
+      "registryId": "cline",
+      "capabilities": ["skills"],
+      "probe": { "configPaths": ["$HOME/.cline"] }
+    },
+    {
+      "registryId": "windsurf",
+      "capabilities": ["skills", "rules"],
+      "probe": {
+        "appPaths": ["/Applications/Windsurf.app"],
+        "configPaths": ["$HOME/.codeium"]
+      }
+    },
+    {
+      "registryId": "antigravity",
+      "capabilities": ["skills", "rules", "mcp"],
+      "probe": {
+        "appPaths": ["/Applications/Antigravity.app"],
+        "configPaths": ["$HOME/.gemini"]
+      }
+    },
+    {
+      "registryId": "augment",
+      "capabilities": ["skills"],
+      "probe": { "configPaths": ["$HOME/.augment"] }
+    },
+    {
+      "registryId": "gemini-cli",
+      "capabilities": ["skills", "rules", "mcp"],
+      "probe": { "commands": ["gemini"], "configPaths": ["$HOME/.gemini"] }
+    },
+    {
+      "registryId": "goose",
+      "capabilities": ["skills"],
+      "probe": { "configPaths": ["$HOME/.config/goose"] }
+    },
+    {
+      "registryId": "openclaw",
+      "capabilities": ["skills"],
+      "probe": {
+        "configPaths": ["$HOME/.openclaw", "$HOME/.clawdbot", "$HOME/.moltbot"]
+      }
+    },
+    {
+      "registryId": "opencode",
+      "capabilities": ["skills"],
+      "probe": { "configPaths": ["$HOME/.config/opencode"] }
+    },
+    {
+      "registryId": "roo",
+      "capabilities": ["skills"],
+      "probe": { "configPaths": ["$HOME/.roo"] }
+    },
+    {
+      "registryId": "crush",
+      "capabilities": ["skills"],
+      "probe": { "configPaths": ["$HOME/.config/crush"] }
+    },
+    {
+      "registryId": "kiro",
+      "capabilities": ["skills"],
+      "probe": {
+        "appPaths": ["/Applications/Kiro.app"],
+        "configPaths": ["$HOME/.kiro"]
+      }
+    },
+    {
+      "registryId": "junie",
+      "capabilities": ["skills"],
+      "probe": { "configPaths": ["$HOME/.junie"] }
+    },
+    {
+      "registryId": "kilo",
+      "capabilities": ["skills"],
+      "probe": { "configPaths": ["$HOME/.kilocode"] }
+    },
+    {
+      "registryId": "openhands",
+      "capabilities": ["skills"],
+      "probe": { "configPaths": ["$HOME/.openhands"] }
+    },
+    {
+      "registryId": "zencoder",
+      "capabilities": ["skills"],
+      "probe": { "configPaths": ["$HOME/.zencoder"] }
+    },
+    {
+      "registryId": "adal",
+      "capabilities": ["skills"],
+      "probe": { "configPaths": ["$HOME/.adal"] }
+    },
+    {
+      "registryId": "qoder",
+      "capabilities": ["skills"],
+      "probe": { "configPaths": ["$HOME/.qoder"] }
+    },
+    {
+      "registryId": "qwen-code",
+      "capabilities": ["skills"],
+      "probe": { "configPaths": ["$HOME/.qwen"] }
+    },
+    {
+      "registryId": "trae",
+      "capabilities": ["skills"],
+      "probe": {
+        "appPaths": ["/Applications/Trae.app"],
+        "configPaths": ["$HOME/.trae"]
+      }
+    }
+  ]
+}

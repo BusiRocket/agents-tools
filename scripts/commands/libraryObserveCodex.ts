@@ -2,6 +2,7 @@ import { promises as fs } from "node:fs"
 import { homedir } from "node:os"
 import { join } from "node:path"
 import { flagValue } from "../lib/machine/cli/flagValue"
+import { flagValues } from "../lib/machine/cli/flagValues"
 import { resolveLibraryDir } from "../lib/library/cli/resolveLibraryDir"
 import { listCodexRollouts } from "../lib/library/learning/listCodexRollouts"
 import { looksLikeListingArtifact } from "../lib/library/learning/looksLikeListingArtifact"
@@ -18,8 +19,11 @@ export const main = async () => {
     home,
   })
 
-  const root = flagValue(process.argv, "--sessions") ?? join(home, ".codex", "sessions")
-  const files = await listCodexRollouts(root)
+  const sessionRoots = flagValues(process.argv, "--sessions")
+  const roots = sessionRoots.length === 0 ? [join(home, ".codex", "sessions")] : sessionRoots
+  const files = [
+    ...new Set((await Promise.all(roots.map((root) => listCodexRollouts(root)))).flat()),
+  ]
   const counts: Record<string, number> = {}
 
   for (const file of files) {

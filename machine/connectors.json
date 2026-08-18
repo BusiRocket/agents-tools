@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "connectors": [
+    {
+      "id": "codegraph",
+      "match": "codegraph",
+      "profiles": ["claude-personal", "claude-favish", "codex"],
+      "ownership": "machine",
+      "probe": "native-cli",
+      "criticality": "required"
+    },
+    {
+      "id": "context7",
+      "match": "context7",
+      "profiles": ["claude-personal", "claude-favish", "codex"],
+      "ownership": "machine",
+      "probe": "native-cli",
+      "criticality": "required"
+    },
+    {
+      "id": "serena",
+      "match": "serena",
+      "profiles": ["claude-personal", "claude-favish", "codex"],
+      "ownership": "machine",
+      "probe": "native-cli",
+      "criticality": "required"
+    },
+    {
+      "id": "cloudflare",
+      "match": "plugin:cloudflare:",
+      "profiles": ["claude-personal", "claude-favish"],
+      "ownership": "account",
+      "probe": "claude-cli-prefix",
+      "criticality": "required"
+    },
+    {
+      "id": "openseo",
+      "match": "openseo",
+      "profiles": ["claude-personal"],
+      "ownership": "account",
+      "probe": "native-cli",
+      "criticality": "required"
+    },
+    {
+      "id": "zerohedge",
+      "match": "claude.ai ZeroHedge",
+      "profiles": ["claude-personal", "claude-favish"],
+      "ownership": "account",
+      "probe": "native-cli",
+      "criticality": "optional"
+    }
+  ]
+}

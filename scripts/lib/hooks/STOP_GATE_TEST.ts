@@ -21,6 +21,14 @@ void test("blocks when a failing check exists", () => {
   }
 })
 
+void test("recognizes Codex apply_patch edits", () => {
+  const reason = runStopGate(
+    makeStopGateProject({ "package.json": '{"scripts":{"check":"exit 1"}}' }, true, "apply_patch"),
+  )
+  assert.notEqual(reason, null)
+  assert.match(String(reason), /Verification gate FAILED/)
+})
+
 void test("stays silent when the check passes", () => {
   assert.equal(
     runStopGate(makeStopGateProject({ "package.json": '{"scripts":{"check":"exit 0"}}' }, true)),

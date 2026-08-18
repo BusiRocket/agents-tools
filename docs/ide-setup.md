@@ -34,13 +34,14 @@ Skills are available as `/busirocket-agents-tools:<skill-name>`:
 
 ### As Global Rules
 
-Link the generated `CLAUDE.md` to your Claude Code config:
+Link the generated Claude rules to your Claude Code config:
 
 ```bash
-pnpm rules:link:claude
+pnpm rules:link
 ```
 
-This symlinks `CLAUDE.md` and `.claude/rules/` to your home directory.
+This symlinks `.claude/rules/` to your home directory. The lean global `~/.claude/CLAUDE.md` remains
+hand-maintained.
 
 ---
 
@@ -66,10 +67,35 @@ Cursor Marketplace when BRP is published there.
 pnpm rules:link
 ```
 
-This copies the generated `AGENTS.md` and Codex `default.rules` into your Codex config. `AGENTS.md`
-is lightweight global guidance; `default.rules` is Codex exec-policy Starlark and must not contain
-Markdown prose. In this project, `AGENTS.md` is not the primary delivery mechanism for reusable BRP
-workflows; global skills are.
+This copies Codex `default.rules` into your Codex config. The global `~/.codex/AGENTS.md` remains
+hand-maintained; `default.rules` is Codex exec-policy Starlark and must not contain Markdown prose.
+In this project, `AGENTS.md` is not the primary delivery mechanism for reusable BRP workflows;
+global skills are.
+
+### Existing Claude Code Projects
+
+To make Codex load repositories that have `CLAUDE.md` but no `AGENTS.md`, add this at the top level
+of `~/.codex/config.toml` and restart Codex:
+
+```toml
+project_doc_fallback_filenames = ["CLAUDE.md"]
+project_doc_max_bytes = 65536
+```
+
+Instruction discovery checks `AGENTS.override.md`, then `AGENTS.md`, then the configured fallback
+names in each directory. When both `AGENTS.md` and `CLAUDE.md` exist together, `AGENTS.md` wins;
+prefer a one-line `CLAUDE.md` shim pointing to `AGENTS.md` for new cross-agent repositories.
+
+### Global Hooks
+
+```bash
+pnpm hooks:link
+```
+
+This refreshes the stable hook scripts under `~/.agents/hooks`. Register the desired commands in
+`~/.codex/hooks.json`, then review and trust them with `/hooks` in Codex. The BRP SessionStart
+reminder, UserPromptSubmit router, and Stop verification gate use hook payloads supported by both
+Claude Code and Codex.
 
 ### Global Skills (Primary for BRP)
 
@@ -91,6 +117,10 @@ Important:
 
 For Codex specifically, this means the project treats the canonical user skills directory as the
 primary BRP surface and keeps `~/.codex/AGENTS.md` as minimal policy/routing guidance.
+
+The same command compiles the canonical Markdown definitions under `src/agents/` into Codex custom
+agent TOML and links them into `~/.codex/agents`. Use `/agent` to inspect spawned threads; the
+`brp-reviewer` role is available for isolated findings-first review.
 
 ### What To Validate In Codex
 
@@ -140,7 +170,7 @@ Qwen Code.
 Link the `WINDSURF.md` and Windsurf rules globally:
 
 ```bash
-pnpm rules:link:windsurf
+pnpm rules:link
 ```
 
 This creates symlinks for the Windsurf configuration.
@@ -167,7 +197,7 @@ pnpm skills:validate
 ### Rules not showing up
 
 1. Ensure you ran `pnpm rules:compile` after any rule changes
-2. Check that the link script copied files into Codex config:
+2. Check the hand-maintained guidance and linked exec policy:
    `ls -la ~/.codex/AGENTS.md ~/.codex/rules/default.rules`
 3. Restart the IDE after linking
 

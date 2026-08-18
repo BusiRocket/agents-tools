@@ -11,9 +11,10 @@ BRP consolidates rules, skills, and an orchestration protocol into a single proj
 - A **Claude Code plugin** (`dist/plugins/claude/.claude-plugin/plugin.json`) with a marketplace
   manifest, bundled subagents, and opt-in hooks
 - A **multi-IDE rules exporter** for lightweight guidance layers
-- An **AgentSkills-compatible** skill collection (10 validated skills) with a Claude variant
+- An **AgentSkills-compatible** skill collection (14 validated skills) with a Claude variant
   (`dist/skills/`) and a portable variant (`dist/skills-portable/`, Anthropic-only frontmatter
   stripped) for non-Claude IDEs
+- A generated Codex custom-agent adapter for the BRP reviewer (`dist/agents/codex/`)
 - A **multi-IDE skill linker** for popular agents/editors including Cursor, Claude Code, Codex,
   Continue, Cline, Windsurf, Antigravity, Gemini CLI, Goose, OpenHands, Augment, Roo, Kiro, Copilot,
   OpenCode, OpenClaw, Crush, Zencoder, AdaL, Trae, Qoder, and Qwen Code
@@ -118,6 +119,7 @@ busirocket-agents-tools/
 │   │   └── WINDSURF.md
 │   ├── skills/                  # Claude variant (full Anthropic frontmatter)
 │   ├── skills-portable/         # Portable variant (Anthropic-only fields stripped)
+│   ├── agents/codex/            # Codex TOML agents generated from src/agents
 │   └── plugins/
 │       └── claude/
 │           ├── .claude-plugin/
@@ -137,18 +139,22 @@ busirocket-agents-tools/
 └── package.json
 ```
 
-## Skills (10 validated)
+## Skills (14 validated)
 
-### Core Workflow Skills (6)
+### Core Workflow Skills (10)
 
-| Skill                  | Purpose                                              |
-| ---------------------- | ---------------------------------------------------- |
-| `brp-docs`             | Documentation generation (README, API, ADR)          |
-| `brp-traffic-client`   | Traffic capture to maintainable HTTP client          |
-| `brp-todo-create`      | Build a backlog and work log from agent history      |
-| `brp-todo-work`        | Execute an existing TODO backlog under a gated plan  |
-| `handoff`              | Multi-agent handoff briefs                           |
-| `project-continuation` | Resume interrupted work from git/TODO/plan artifacts |
+| Skill                   | Purpose                                              |
+| ----------------------- | ---------------------------------------------------- |
+| `brp-docs`              | Documentation generation (README, API, ADR)          |
+| `brp-traffic-client`    | Traffic capture to maintainable HTTP client          |
+| `brp-todo-create`       | Build a backlog and work log from agent history      |
+| `brp-todo-work`         | Execute an existing TODO backlog under a gated plan  |
+| `brain`                 | Search and maintain project-scoped mempalace memory  |
+| `handoff`               | Multi-agent handoff briefs                           |
+| `invoice-quarter-close` | Reconcile quarterly invoices and tax evidence        |
+| `lovable-sync`          | Synchronize Lovable designs with working apps        |
+| `project-continuation`  | Resume interrupted work from git/TODO/plan artifacts |
+| `stakeholder-recap`     | Produce evidence-backed stakeholder updates          |
 
 ### Specialized (3)
 
@@ -166,9 +172,9 @@ busirocket-agents-tools/
 
 ### Subagents (1)
 
-| Subagent       | Purpose                              |
-| -------------- | ------------------------------------ |
-| `brp-reviewer` | Isolated, findings-first PR reviewer |
+| Subagent       | Purpose                                                        |
+| -------------- | -------------------------------------------------------------- |
+| `brp-reviewer` | Isolated, findings-first PR reviewer for Claude Code and Codex |
 
 ## Rule Categories
 
@@ -263,7 +269,7 @@ Task > Project > Stack > Global
 | `pnpm run skills:package`       | Package compiled skills as zip artifacts                                 |
 | `pnpm run rules:verify`         | Verify index-only outputs (DoD + CLAUDE golden master)                   |
 | `pnpm run rules:check`          | Verify compiled output is current                                        |
-| `pnpm run skills:validate`      | Validate all 15 skills against AgentSkills spec                          |
+| `pnpm run skills:validate`      | Validate all 14 skills against AgentSkills spec                          |
 | `pnpm run skills:test`          | Run schema/idempotence/source-purity/snapshot/smoke tests                |
 | `pnpm run skills:llms`          | Generate `llms.txt` for skill discovery                                  |
 | `pnpm run skills:prompt`        | Generate XML prompt with all skills                                      |
@@ -305,6 +311,8 @@ packages ship a `tsc` binary, `type-check` calls the native one by explicit path
   `src/skills/skill-rules.map.json`.
 - `pnpm skills:link` stages `dist/skills` into the product-managed canonical directory
   `~/.agents/skills` and then distributes those artifacts to IDE-specific targets.
+- `pnpm skills:link` also links generated Codex custom agents into `~/.codex/agents` and the
+  canonical Claude definitions into `~/.claude/agents`.
 - Each source skill must define `name` and `description` in frontmatter. It may also carry
   Claude-only execution hints (`allowed-tools`, `agent`, `context`, `model`, `effort`,
   `argument-hint`, `user-invocable`, etc.); these are listed in `ANTHROPIC_ONLY_FRONTMATTER_FIELDS`

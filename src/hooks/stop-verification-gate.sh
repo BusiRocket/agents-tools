@@ -29,7 +29,7 @@ transcript=$(get transcript_path)
 
 # Only verify if code was actually edited this session.
 if [ -n "$transcript" ] && [ -f "$transcript" ]; then
-  grep -Eq '"name"[[:space:]]*:[[:space:]]*"(Edit|Write|MultiEdit)"' "$transcript" || exit 0
+  grep -Eq '"(name|tool_name)"[[:space:]]*:[[:space:]]*"(Edit|Write|MultiEdit|apply_patch)"' "$transcript" || exit 0
 else
   exit 0
 fi

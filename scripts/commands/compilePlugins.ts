@@ -1,4 +1,5 @@
 import { promises as fs } from "node:fs"
+import { CODEX_AGENTS_DIST_DIR } from "../constants/CODEX_AGENTS_DIST_DIR"
 import { DIST_SKILLS_DIR } from "../constants/DIST_SKILLS_DIR"
 import { SRC_AGENTS_DIR } from "../constants/SRC_AGENTS_DIR"
 import { SRC_HOOKS_DIR } from "../constants/SRC_HOOKS_DIR"
@@ -8,6 +9,7 @@ import { copyAgentsIntoPluginRoot } from "../lib/plugins/builders/copyAgentsInto
 import { copyFlatSkillsIntoPluginRoot } from "../lib/plugins/builders/copyFlatSkillsIntoPluginRoot"
 import { copyHooksIntoPluginRoot } from "../lib/plugins/builders/copyHooksIntoPluginRoot"
 import { readPackageJson } from "../lib/plugins/builders/readPackageJson"
+import { compileAgentsForCodex } from "../lib/link/operations/compileAgentsForCodex"
 import { COMPILE_PLUGIN_PATHS } from "./constants/COMPILE_PLUGIN_PATHS"
 
 export const main = async () => {
@@ -34,6 +36,10 @@ export const main = async () => {
     srcAgentsDir: SRC_AGENTS_DIR,
     pluginAgentsDir: p.CLAUDE_PLUGIN_AGENTS_DIR,
   })
+  const codexAgents = await compileAgentsForCodex({
+    srcAgentsDir: SRC_AGENTS_DIR,
+    outputAgentsDir: CODEX_AGENTS_DIST_DIR,
+  })
 
   const hooksCount = await copyHooksIntoPluginRoot({
     srcHooksDir: SRC_HOOKS_DIR,
@@ -45,6 +51,11 @@ export const main = async () => {
   console.log(`Copied ${String(copied.length)} skills into ${p.CLAUDE_PLUGIN_SKILLS_DIR}`)
   if (agents.length > 0) {
     console.log(`Copied ${String(agents.length)} subagents into ${p.CLAUDE_PLUGIN_AGENTS_DIR}`)
+  }
+  if (codexAgents.length > 0) {
+    console.log(
+      `Compiled ${String(codexAgents.length)} custom agents into ${CODEX_AGENTS_DIST_DIR}`,
+    )
   }
   if (hooksCount > 0) {
     console.log(`Copied ${String(hooksCount)} hook artifacts into ${p.CLAUDE_PLUGIN_HOOKS_DIR}`)

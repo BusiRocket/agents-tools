@@ -1,9 +1,12 @@
 import path from "node:path"
+import { CODEX_AGENTS_DIST_DIR } from "../constants/CODEX_AGENTS_DIST_DIR"
 import { SRC_AGENTS_DIR } from "../constants/SRC_AGENTS_DIR"
 import { IDE_REGISTRY } from "../lib/link/constants/IDE_REGISTRY"
 import { CANONICAL_SKILLS_DIR } from "../lib/link/constants/CANONICAL_SKILLS_DIR"
 import { CANONICAL_SKILLS_PORTABLE_DIR } from "../lib/link/constants/CANONICAL_SKILLS_PORTABLE_DIR"
 import { CLAUDE_HOME } from "../lib/link/constants/CLAUDE_HOME"
+import { CODEX_HOME } from "../lib/link/constants/CODEX_HOME"
+import { linkAgentsToCodex } from "../lib/link/operations/linkAgentsToCodex"
 import { linkAgentsToClaude } from "../lib/link/operations/linkAgentsToClaude"
 import { SKILLS_DIST_DIR } from "./constants/SKILLS_DIST_DIR"
 import { SKILLS_PORTABLE_DIST_DIR } from "./constants/SKILLS_PORTABLE_DIST_DIR"
@@ -50,6 +53,16 @@ export const main = async () => {
   })
   if (linkedAgents.length > 0) {
     console.log(`+ claude: ${String(linkedAgents.length)} subagents linked into ~/.claude/agents/`)
+  }
+
+  const linkedCodexAgents = await linkAgentsToCodex({
+    compiledAgentsDir: CODEX_AGENTS_DIST_DIR,
+    targetAgentsDir: path.join(CODEX_HOME, "agents"),
+  })
+  if (linkedCodexAgents.length > 0) {
+    console.log(
+      `+ codex: ${String(linkedCodexAgents.length)} custom agents linked into ~/.codex/agents/`,
+    )
   }
 
   console.log(

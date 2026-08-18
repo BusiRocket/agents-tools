@@ -20,6 +20,9 @@
 
 ## Skills
 
+- [ ] Recreate `.venv-validate` from this checkout. Its `agentskills` shebang still points to the
+      retired `/Users/cristiandeluxe/p/busirocket-agents/` path, so `pnpm check` silently skips the
+      external AgentSkills validator even though the repository-local executable exists.
 - [ ] Candidate skills from the Codex 30-day pass, unbuilt: `communications-work-intake` (13
       sessions; Slack/Discord/WhatsApp/email intake, wider than `stakeholder-recap`) and
       `document-intake-reconciler` (Downloads/PDF/OCR triage into Holded).
@@ -121,6 +124,9 @@
 > private `BusiRocket/dotfiles` repo, which already owns brew, shell, symlinks, launchd and secrets.
 > Measured inventories behind these items: `~/p/dotfiles/docs/machine-inventory/`.
 
+- [ ] Restore or clone the private machine instance at `~/p/dotfiles/machine/mcp.json`.
+      `pnpm machine:diff -- --json` currently fails with `no mcp.json`, so the shipped MCP engine
+      cannot audit or reproduce the live Claude/Codex configuration on this machine.
 - [ ] Plugin manifest: marketplaces plus plugins pinned by version, and the enabled/disabled state,
       which is the part no current tooling records (18 enabled, 18 disabled today). Reinstalling all
       36 and leaving them on does not reproduce the machine.

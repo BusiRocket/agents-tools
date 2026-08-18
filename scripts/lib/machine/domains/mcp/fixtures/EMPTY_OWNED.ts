@@ -5,4 +5,5 @@ export const EMPTY_OWNED: Record<McpTarget, string[]> = {
   "claude-favish": [],
   codex: [],
   gemini: [],
+  cursor: [],
 }

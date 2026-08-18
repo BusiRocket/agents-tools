@@ -1,7 +1,7 @@
 {
   "servers": {
     "serena": {
-      "targets": ["claude-personal", "claude-favish", "codex", "gemini"],
+      "targets": ["claude-personal", "claude-favish", "codex", "gemini", "cursor"],
       "transport": "stdio",
       "command": "serena",
       "args": ["start-mcp-server"],
@@ -10,18 +10,19 @@
       "target_overrides": {
         "codex": { "args_append": ["--project-from-cwd", "--context=codex"] },
         "gemini": { "args_append": ["--project-from-cwd", "--context=agent"] },
+        "cursor": { "args_append": ["--project-from-cwd", "--context=ide"] },
         "claude-personal": { "args_append": ["--context", "claude-code"] },
         "claude-favish": { "args_append": ["--context", "claude-code"] }
       }
     },
     "context7": {
-      "targets": ["claude-personal", "claude-favish", "codex", "gemini"],
+      "targets": ["claude-personal", "claude-favish", "codex", "gemini", "cursor"],
       "transport": "http",
       "url": "https://mcp.context7.com/mcp",
       "headers": { "CONTEXT7_API_KEY": { "from_env": "CONTEXT7_API_KEY" } }
     },
     "codegraph": {
-      "targets": ["claude-personal", "claude-favish", "codex", "gemini"],
+      "targets": ["claude-personal", "claude-favish", "codex", "gemini", "cursor"],
       "transport": "stdio",
       "command": "codegraph",
       "args": ["serve", "--mcp"]

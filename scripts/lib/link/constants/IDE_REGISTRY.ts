@@ -15,10 +15,9 @@ export const IDE_REGISTRY: IdeRegistryEntry[] = [
     linkStrategy: "symlink",
   },
   {
+    // Cursor discovers canonical user skills from ~/.agents/skills.
     id: "cursor",
     rootDir: path.join(HOME, ".cursor"),
-    skillsDir: path.join(HOME, ".cursor", "skills"),
-    linkStrategy: "symlink",
   },
   {
     id: "claude",

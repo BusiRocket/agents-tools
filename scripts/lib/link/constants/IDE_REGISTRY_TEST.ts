@@ -15,3 +15,10 @@ void test("Gemini CLI uses canonical user skills without a duplicate target", ()
   assert.equal(gemini.skillsDir, undefined)
   assert.equal(gemini.linkStrategy, undefined)
 })
+
+void test("Cursor uses canonical user skills without a duplicate target", () => {
+  const cursor = IDE_REGISTRY.find(({ id }) => id === "cursor")
+  assert.ok(cursor, "cursor must stay registered for rule linking and detection")
+  assert.equal(cursor.skillsDir, undefined)
+  assert.equal(cursor.linkStrategy, undefined)
+})

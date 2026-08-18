@@ -1,10 +1,12 @@
 import { renderClaudeServers } from "../../renderers/claude/renderClaudeServers"
 import { renderCodexServers } from "../../renderers/codex/renderCodexServers"
 import { renderGeminiServers } from "../../renderers/gemini/renderGeminiServers"
+import { renderCursorServers } from "../../renderers/cursor/renderCursorServers"
 import { MCP_TARGETS } from "./constants/MCP_TARGETS"
 import { writeClaudeConfig } from "./writeClaudeConfig"
 import { writeCodexConfig } from "./writeCodexConfig"
 import { writeGeminiSettings } from "./writeGeminiSettings"
+import { writeCursorConfig } from "./writeCursorConfig"
 import type { ApplyInput } from "./types/ApplyInput"
 import type { McpTarget } from "./types/McpTarget"
 
@@ -33,6 +35,17 @@ export const apply = async ({ manifest, paths, owned, env }: ApplyInput) => {
         path: paths.gemini,
         servers: rendered.servers,
         ownedNames: owned.gemini,
+      })
+      continue
+    }
+
+    if (target === "cursor") {
+      const rendered = renderCursorServers(manifest, env)
+      missing.push(...rendered.missing)
+      nextOwned[target] = await writeCursorConfig({
+        path: paths.cursor,
+        servers: rendered.servers,
+        ownedNames: owned.cursor,
       })
       continue
     }

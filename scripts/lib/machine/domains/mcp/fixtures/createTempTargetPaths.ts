@@ -10,12 +10,14 @@ export const createTempTargetPaths = async (): Promise<Record<McpTarget, string>
     "claude-favish": join(dir, "favish.json"),
     codex: join(dir, "config.toml"),
     gemini: join(dir, "gemini.json"),
+    cursor: join(dir, "cursor.json"),
   }
 
   await writeFile(paths["claude-personal"], JSON.stringify({ theme: "dark", mcpServers: {} }))
   await writeFile(paths["claude-favish"], "{}")
   await writeFile(paths.codex, 'model = "gpt-5.6-sol"\n')
   await writeFile(paths.gemini, "")
+  await writeFile(paths.cursor, "{}")
 
   return paths
 }

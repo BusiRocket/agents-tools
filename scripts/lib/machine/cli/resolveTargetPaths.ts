@@ -6,4 +6,5 @@ export const resolveTargetPaths = (home: string): Record<McpTarget, string> => (
   "claude-favish": join(home, ".claude-favish", ".claude.json"),
   codex: join(home, ".codex", "config.toml"),
   gemini: join(home, ".gemini", "settings.json"),
+  cursor: join(home, ".cursor", "mcp.json"),
 })

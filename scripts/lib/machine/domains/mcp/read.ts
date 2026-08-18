@@ -9,5 +9,6 @@ export const read = async (paths: Record<McpTarget, string>): Promise<McpState> 
     "claude-favish": await readClaudeServers(paths["claude-favish"]),
     codex: await readCodexServers(paths.codex),
     gemini: await readClaudeServers(paths.gemini),
+    cursor: await readClaudeServers(paths.cursor),
   },
 })

@@ -9,5 +9,6 @@ export const toOwnedByTarget = (owned: OwnedRecord): Record<McpTarget, string[]>
     "claude-favish": domain["claude-favish"] ?? [],
     codex: domain.codex ?? [],
     gemini: domain.gemini ?? [],
+    cursor: domain.cursor ?? [],
   }
 }

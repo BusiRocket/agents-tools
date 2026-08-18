@@ -18,6 +18,7 @@ rules/compiled/
 
 # Build artifacts
 dist/
+.worktrees/
 *.log
 
 *.tsbuildinfo

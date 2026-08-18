@@ -8,3 +8,10 @@ void test("Codex is registered for rule linking but has no skills target", () =>
   assert.equal(codex.skillsDir, undefined)
   assert.equal(codex.linkStrategy, undefined)
 })
+
+void test("Gemini CLI uses canonical user skills without a duplicate target", () => {
+  const gemini = IDE_REGISTRY.find(({ id }) => id === "gemini-cli")
+  assert.ok(gemini, "gemini-cli must stay registered for platform detection")
+  assert.equal(gemini.skillsDir, undefined)
+  assert.equal(gemini.linkStrategy, undefined)
+})

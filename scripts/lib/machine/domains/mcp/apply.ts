@@ -1,8 +1,10 @@
 import { renderClaudeServers } from "../../renderers/claude/renderClaudeServers"
 import { renderCodexServers } from "../../renderers/codex/renderCodexServers"
+import { renderGeminiServers } from "../../renderers/gemini/renderGeminiServers"
 import { MCP_TARGETS } from "./constants/MCP_TARGETS"
 import { writeClaudeConfig } from "./writeClaudeConfig"
 import { writeCodexConfig } from "./writeCodexConfig"
+import { writeGeminiSettings } from "./writeGeminiSettings"
 import type { ApplyInput } from "./types/ApplyInput"
 import type { McpTarget } from "./types/McpTarget"
 
@@ -20,6 +22,17 @@ export const apply = async ({ manifest, paths, owned, env }: ApplyInput) => {
         toml: rendered.toml,
         ownedNames: owned.codex,
         renderedNames: rendered.names,
+      })
+      continue
+    }
+
+    if (target === "gemini") {
+      const rendered = renderGeminiServers(manifest, env)
+      missing.push(...rendered.missing)
+      nextOwned[target] = await writeGeminiSettings({
+        path: paths.gemini,
+        servers: rendered.servers,
+        ownedNames: owned.gemini,
       })
       continue
     }

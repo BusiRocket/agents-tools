@@ -1,4 +1,5 @@
 import { renderClaudeServers } from "../../renderers/claude/renderClaudeServers"
+import { renderGeminiServers } from "../../renderers/gemini/renderGeminiServers"
 import { actualServersFor } from "./actualServersFor"
 import { MCP_TARGETS } from "./constants/MCP_TARGETS"
 import { desiredCodexServers } from "./desiredCodexServers"
@@ -10,10 +11,10 @@ export const plan = ({ manifest, state, owned, env }: PlanInput) => {
   const changes: McpChange[] = []
 
   for (const target of MCP_TARGETS) {
-    const desired: Record<string, unknown> =
-      target === "codex"
-        ? desiredCodexServers(manifest, env)
-        : renderClaudeServers(manifest, target, env).servers
+    let desired: Record<string, unknown>
+    if (target === "codex") desired = desiredCodexServers(manifest, env)
+    else if (target === "gemini") desired = renderGeminiServers(manifest, env).servers
+    else desired = renderClaudeServers(manifest, target, env).servers
 
     changes.push(...planTarget(target, desired, actualServersFor(state, target), owned[target]))
   }

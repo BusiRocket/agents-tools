@@ -16,7 +16,7 @@
     "clean:dist": "node -e \"require('node:fs/promises').rm('dist', { recursive: true, force: true })\"",
     "rules:check": "tsx scripts/bin/run-compile-rules.ts --check",
     "rules:compile": "tsx scripts/bin/run-compile-rules.ts",
-    "rules:test": "tsx --test scripts/commands/VERIFY_INDEX_ONLY_OUTPUT_TEST.ts",
+    "rules:test": "tsx --test scripts/commands/VERIFY_INDEX_ONLY_OUTPUT_TEST.ts scripts/lib/rules/renderers/RENDER_ANTIGRAVITY_TEST.ts",
     "rules:verify": "tsx scripts/commands/verifyRulesOutput.ts",
     "rules:link": "tsx scripts/bin/run-link-rules-global.ts",
     "skills:compile": "tsx scripts/bin/run-compile-skills.ts",

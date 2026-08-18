@@ -72,10 +72,9 @@ export const IDE_REGISTRY: IdeRegistryEntry[] = [
     linkStrategy: "symlink",
   },
   {
+    // Gemini CLI discovers canonical user skills from ~/.agents/skills.
     id: "gemini-cli",
     rootDir: path.join(HOME, ".gemini"),
-    skillsDir: path.join(HOME, ".gemini", "config", "skills"),
-    linkStrategy: "symlink",
   },
   {
     id: "goose",

@@ -48,7 +48,7 @@ void test("a resolved header is written as an environment reference", () => {
   })
 })
 
-void test("Gemini receives the resolved header value", () => {
+void test("secret references are never rendered as literals", () => {
   const geminiManifest: McpManifest = {
     servers: {
       context7: {
@@ -66,7 +66,7 @@ void test("Gemini receives the resolved header value", () => {
   assert.deepEqual(servers.context7, {
     type: "http",
     url: "https://mcp.context7.com/mcp",
-    headers: { CONTEXT7_API_KEY: "k" },
+    headers: { CONTEXT7_API_KEY: "${CONTEXT7_API_KEY}" },
   })
 })
 

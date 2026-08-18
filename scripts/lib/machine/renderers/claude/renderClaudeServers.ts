@@ -16,8 +16,8 @@ export const renderClaudeServers = (
       continue
     }
 
-    const envMap = renderValueMapForTarget(server.env ?? {}, target, env)
-    const headerMap = renderValueMapForTarget(server.headers ?? {}, target, env)
+    const envMap = renderValueMapForTarget(server.env ?? {}, env)
+    const headerMap = renderValueMapForTarget(server.headers ?? {}, env)
     const serverMissing = [...envMap.missing, ...headerMap.missing]
 
     if (serverMissing.length > 0) {

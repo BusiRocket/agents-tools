@@ -26,5 +26,5 @@ export function renderAntigravity(bundle: RuleItem[]) {
     onLimit: "error",
 
     getRuleBadges: (item) => [getActivation(item)],
-  })
+  }).replace(/(?<!\w)@(?!\.agent\/(?:rules|workflows)\/)/g, "")
 }

@@ -11,6 +11,10 @@ void test("an active failed capability fails the doctor", () => {
   assert.equal(healthExitCode([createPlatformHealth("active", "failed")], true), 1)
 })
 
+void test("required authentication on an active capability fails the doctor", () => {
+  assert.equal(healthExitCode([createPlatformHealth("active", "auth-required")], true), 1)
+})
+
 void test("a malformed manifest uses the invocation error code", () => {
   assert.equal(healthExitCode([], false), 2)
 })

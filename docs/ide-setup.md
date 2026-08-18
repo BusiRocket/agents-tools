@@ -60,6 +60,27 @@ An unavailable optional client is informational. A required capability failure o
 provisioned client exits with status 1, while a malformed `machine/platforms.json` exits with
 status 2. Reports replace the home directory and credential-shaped values before serialization.
 
+## External Connector Health
+
+`machine/connectors.json` declares profile scope, ownership, probe kind, and criticality without
+credentials. Inspect it through the profile-aware doctor:
+
+```bash
+pnpm run connectors:doctor -- --json
+```
+
+Context7, Serena, and CodeGraph are required machine-managed MCP servers. Cloudflare is required in
+both Claude profiles, OpenSEO is required only in the personal profile, and ZeroHedge is an optional
+hosted connector. Consequently:
+
+- a missing required connector, required OAuth flow, or required disabled connector exits with 1;
+- an optional HTTP 503 remains visible as degraded and includes its responding boundary;
+- reports never serialize response bodies, request headers, tokens, cookies, or account IDs.
+
+Use `docs/runbooks/claude-connector-authentication.md` for profile-safe OAuth and
+`docs/runbooks/zerohedge-connector.md` for the direct boundary probe. `agents:doctor` reuses the
+same profile inspection instead of launching a duplicate Claude MCP inventory.
+
 ---
 
 ## Claude Code

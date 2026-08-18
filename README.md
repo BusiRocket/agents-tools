@@ -63,6 +63,19 @@ active or provisioned client exits with status 1; an invalid platform manifest e
 Both human and JSON output are redacted before printing. `unsupported` is a capability status, not a
 lifecycle: the client is present but has no compatible adapter for that feature.
 
+Audit expected external connectors separately by Claude profile:
+
+```bash
+pnpm run connectors:doctor -- --json
+pnpm run connectors:doctor -- --profile personal --json
+pnpm run connectors:doctor -- --profile favish --json
+```
+
+The connector report contains names and safe status categories only. Required authentication or a
+required connector failure exits with status 1. Optional external outages stay visible as degraded
+without failing otherwise healthy local MCP infrastructure. See
+`docs/runbooks/claude-connector-authentication.md` and `docs/runbooks/zerohedge-connector.md`.
+
 For Codex and other skill-capable IDEs, the main BRP workflow surface is the global skills pipeline.
 `AGENTS.md` remains useful as lightweight global guidance and routing, but it is not the primary
 delivery mechanism for reusable BRP workflows in this project. For Codex, `rules:link` copies
@@ -294,6 +307,11 @@ Task > Project > Stack > Global
 | `pnpm run check`                | Run all validations                                                      |
 | `pnpm run check:all`            | type-check, format, lint, rules:check, skills:validate/test, link:test   |
 | `pnpm run check:ci`             | CI alias of check:all                                                    |
+| `pnpm run machine:diff`         | Inspect MCP, security, and capability drift without writing              |
+| `pnpm run machine:apply`        | Snapshot and converge managed machine configuration                      |
+| `pnpm run agents:doctor`        | Inspect client lifecycle and managed capabilities                        |
+| `pnpm run connectors:doctor`    | Inspect expected external connectors by profile                          |
+| `pnpm run connectors:test`      | Test secret-free connector parsing and boundary probes                   |
 | `pnpm run rules:compile`        | Compile `src/rules/` to `dist/global/` + `dist/markdown/`                |
 | `pnpm run rules:link`           | Install compiled rule outputs into supported IDEs                        |
 | `pnpm run skills:compile`       | Compile skills from `src/skills/` to `dist/skills/`                      |

@@ -4,7 +4,8 @@ export const healthExitCode = (report: PlatformHealth[], manifestValid: boolean)
   if (!manifestValid) return 2
   const failed = report.some(
     ({ lifecycle, capabilities }) =>
-      lifecycle !== "unavailable" && capabilities.some(({ status }) => status === "failed"),
+      lifecycle !== "unavailable" &&
+      capabilities.some(({ status }) => status === "failed" || status === "auth-required"),
   )
   return failed ? 1 : 0
 }

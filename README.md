@@ -41,6 +41,20 @@ pnpm run machine:diff -- --json
 Use `--instance <path>` or `AGENTS_MACHINE_DIR` only when intentionally testing another instance.
 Tracked manifests contain environment references, never secret values.
 
+Audit every supported agent runtime and its managed capabilities without changing client
+configuration:
+
+```bash
+pnpm run agents:doctor
+pnpm --silent run agents:doctor -- --json > /tmp/agents-doctor.json
+```
+
+The doctor reports each platform as `active` when its command or desktop application is installed,
+`provisioned` when managed configuration exists without a detected runtime, or `unavailable` when
+neither exists. Missing optional clients do not fail the command. A failed required capability on an
+active or provisioned client exits with status 1; an invalid platform manifest exits with status 2.
+Both human and JSON output are redacted before printing.
+
 For Codex and other skill-capable IDEs, the main BRP workflow surface is the global skills pipeline.
 `AGENTS.md` remains useful as lightweight global guidance and routing, but it is not the primary
 delivery mechanism for reusable BRP workflows in this project. For Codex, `rules:link` copies

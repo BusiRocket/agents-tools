@@ -280,7 +280,7 @@ Add `pnpm run agents:test` to `check:all` before `machine:test`.
       return 1; malformed manifests return 2.
 - [ ] Implement the report composer, redactor, matrix formatter, and command.
 - [ ] Run `pnpm run agents:doctor` and verify all 25 registry IDs appear once.
-- [ ] Run `pnpm run agents:doctor -- --json > /tmp/agents-doctor.json` and validate it with
+- [ ] Run `pnpm --silent run agents:doctor -- --json > /tmp/agents-doctor.json` and validate it with
       `node -e 'JSON.parse(require("node:fs").readFileSync("/tmp/agents-doctor.json", "utf8"))'`.
 - [ ] Search the JSON for known secret prefixes and the literal home path; expect no matches.
 - [ ] Document lifecycle semantics and the exact commands that were run.

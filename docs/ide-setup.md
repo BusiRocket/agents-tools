@@ -24,6 +24,27 @@ pnpm run machine:diff -- --json
 For an alternate instance, pass `--instance /absolute/path` or set `AGENTS_MACHINE_DIR`. Secret
 values stay in the environment; tracked manifests use `from_env` references.
 
+## Cross-Platform Health Check
+
+Run the read-only doctor after setup or when an agent reports missing MCP servers, skills, rules,
+hooks, or plugins:
+
+```bash
+pnpm run agents:doctor
+pnpm --silent run agents:doctor -- --json > /tmp/agents-doctor.json
+node -e 'JSON.parse(require("node:fs").readFileSync("/tmp/agents-doctor.json", "utf8"))'
+```
+
+Lifecycle meanings:
+
+- `active`: a client command or desktop application is installed.
+- `provisioned`: managed configuration exists, but no runtime is detected.
+- `unavailable`: neither a runtime nor managed configuration is present.
+
+An unavailable optional client is informational. A required capability failure on an active or
+provisioned client exits with status 1, while a malformed `machine/platforms.json` exits with
+status 2. Reports replace the home directory and credential-shaped values before serialization.
+
 ---
 
 ## Claude Code

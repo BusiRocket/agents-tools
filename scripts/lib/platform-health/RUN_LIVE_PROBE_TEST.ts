@@ -28,6 +28,12 @@ void test("an MCP table auth column does not override a successful command", asy
   assert.equal(result.status, "healthy")
 })
 
+void test("an empty required MCP inventory is failed", async () => {
+  const command = await createProbeExecutable("printf 'No MCP servers configured.\\n'")
+  const result = await runLiveProbe(createLiveProbeDefinition(command))
+  assert.equal(result.status, "failed")
+})
+
 void test("a timeout is failed", async () => {
   const command = await createProbeExecutable("sleep 2")
   const result = await runLiveProbe({ ...createLiveProbeDefinition(command), timeoutMs: 20 })

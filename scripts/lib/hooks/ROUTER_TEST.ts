@@ -18,6 +18,9 @@ import { runRouterHook } from "./runRouterHook"
  */
 
 void test("every real prompt reaches its lane", () => {
+  const routedCount = Object.values(ROUTER_FIXTURES.routes).flat().length
+  assert.equal(routedCount + ROUTER_FIXTURES.silent.prompts.length, ROUTER_FIXTURES.phraseCount)
+  assert.equal(ROUTER_FIXTURES.sourceAssociationCount, 113)
   for (const [lane, prompts] of Object.entries(ROUTER_FIXTURES.routes)) {
     const marker = LANE_MARKERS[lane]
     assert.ok(marker, `no marker configured for lane ${lane}`)

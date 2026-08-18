@@ -14,4 +14,7 @@ export const LANE_MARKERS: Record<string, string> = {
   "agent-config": "Agent-configuration work",
   "environment-ops": "Environment/host work",
   "repo-modernization": "Repo modernization",
+  plan: "superpowers:brainstorming",
+  docs: "brp-docs",
+  release: "brp-release",
 }

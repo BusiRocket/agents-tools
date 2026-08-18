@@ -3,8 +3,8 @@ import path from "node:path"
 import { fileURLToPath } from "node:url"
 
 /**
- * Router fixtures loaded from src/hooks/router-fixtures.json. Every prompt there
- * is copied verbatim from a real transcript.
+ * Router fixtures compiled from the reviewed expectation corpus. Every prompt
+ * is copied verbatim from a measured transcript.
  */
 export const ROUTER_FIXTURES = JSON.parse(
   readFileSync(
@@ -15,6 +15,8 @@ export const ROUTER_FIXTURES = JSON.parse(
     "utf8",
   ),
 ) as {
+  phraseCount: number
+  sourceAssociationCount: number
   routes: Record<string, string[]>
   silent: { prompts: string[] }
 }

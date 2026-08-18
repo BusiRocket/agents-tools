@@ -2,6 +2,8 @@ import { promises as fs } from "node:fs"
 import { homedir } from "node:os"
 import { join } from "node:path"
 import { flagValue } from "../lib/machine/cli/flagValue"
+import { compareRouterExpectationCorpus } from "../lib/hooks/compareRouterExpectationCorpus"
+import { loadRouterExpectations } from "../lib/hooks/loadRouterExpectations"
 import { resolveLibraryDir } from "../lib/library/cli/resolveLibraryDir"
 import { resolveLearningDir } from "../lib/library/cli/resolveLearningDir"
 import { classifyRouterOutcome } from "../lib/library/learning/classifyRouterOutcome"
@@ -49,6 +51,9 @@ export const main = async () => {
 
   const routerPath =
     flagValue(process.argv, "--router") ?? join(process.cwd(), "src/hooks/utils/route_prompt.py")
+  const expectationsPath =
+    flagValue(process.argv, "--expectations") ??
+    join(process.cwd(), "src/hooks/router-expectations.json")
 
   let phrases: Record<string, string[]>
   try {
@@ -60,19 +65,28 @@ export const main = async () => {
     process.exitCode = 1
     return
   }
+  const expectationManifest = await loadRouterExpectations(expectationsPath)
+  const corpusErrors = compareRouterExpectationCorpus(phrases, expectationManifest.expectations)
+  if (corpusErrors.length > 0) {
+    console.error(corpusErrors.join("\n"))
+    process.exitCode = 1
+    return
+  }
 
   const outcomes: RouterOutcome[] = []
 
-  for (const [skill, list] of Object.entries(phrases)) {
-    for (const phrase of list) {
-      const lane = laneFromContext(await runRouterProbe(routerPath, phrase))
-      outcomes.push({
-        skill,
-        phrase,
-        ...(lane === undefined ? {} : { lane }),
-        verdict: classifyRouterOutcome(skill, lane),
-      })
-    }
+  for (const expectation of expectationManifest.expectations) {
+    const lane = laneFromContext(await runRouterProbe(routerPath, expectation.phrase))
+    const skill = expectation.sourceSkills.join(",")
+    outcomes.push({
+      skill,
+      phrase: expectation.phrase,
+      ...(lane === undefined ? {} : { lane }),
+      ...(expectation.expectedLane === undefined
+        ? { intentionalSilence: true as const }
+        : { expectedLane: expectation.expectedLane }),
+      verdict: classifyRouterOutcome(skill, lane, expectation),
+    })
   }
 
   const counts = {

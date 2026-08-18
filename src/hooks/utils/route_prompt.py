@@ -41,6 +41,7 @@ ROUTES = [
         "from git status, the active plan file, TODO.md, and any handoff document "
         "before acting. Do not ask the user to repeat context they already gave.",
         r"(siguiendo (la|el|nuestra)? ?(conversaci[oó]n|sesi[oó]n|hilo)|"
+        r"handoff.{0,20}(prosigue|contin[uú]a|sigue)|"
         r"(la )?(conversaci[oó]n|sesi[oó]n) anterior|se qued[oó] a medias|"
         r"esto se ha quedado a medias|donde lo dejamos|"
         r"lo que (falta|queda|falte) (por )?(hacer|terminar)|"
@@ -58,7 +59,26 @@ ROUTES = [
         r"esa regla (hazla|ponla) global|regla global|"
         r"convertir esto en una (regla|skill)|"
         r"(crea|haz|escribe) (una |un )?(regla|skill|hook)\b|"
-        r"ponlo como regla)",
+        r"ponlo como regla|"
+        r"(guarda|ingiere|ingerir|ingesta|ingestar) .{0,60}\bbrain\b|"
+        r"\b(newsletters?|clip nuevo|posts? de twitter|contenido)\b.{0,60}"
+        r"\b(ingerir|ingesta|ingestar|brain|twitter)\b|"
+        r"\b(ingestar|ingerir) contenido\b)",
+    ),
+    (
+        "plan",
+        "Use superpowers:brainstorming, then superpowers:writing-plans. Do not "
+        "start editing before the approach is agreed.",
+        r"\b(hazme un plan|haz un plan|dame un plan|crea(r)? un plan|"
+        r"dise[ñn]a(r)? (el|un) .{0,12}plan|necesito un plan|roadmap|"
+        r"c[oó]mo lo (har[ií]as|enfocar[ií]as)|c[oó]mo podr[ií]a hacer|"
+        r"antes de implementar|planifica|"
+        r"repensar\w* .{0,30}(flujo|sistema|arquitectura)|"
+        r"(flujo|sistema|arquitectura).{0,50}repensar\w*|"
+        r"me gustar[ií]a (algo m[aá]s|m[aá]s que|que .{0,50}(fuera|hici[eé]ramos))|"
+        r"prefiero que miremos c[oó]mo .{0,40}integrar|"
+        r"para .{0,50}(poder ver|decidir qu[eé] hacer)|"
+        r"en el futuro .{0,50}(campa[ñn]as|dejamos todo preparado))\b",
     ),
     (
         "invoice-ops",
@@ -66,7 +86,7 @@ ROUTES = [
         "method, and verify amounts and status against the live source "
         "(Holded, bank exports); never infer them from stale context.",
         r"\b(factura|facturas|trimestre|iva\b|irpf|holded|movimientos|"
-        r"ep[ií]grafe|hacienda|gastos? deducible|autonomo|aut[oó]nomo|"
+        r"ep[ií]grafe|hacienda|gastos? deducible|"
         r"modelo 30[03]|modelo 111|cierre trimestral)\b",
     ),
     (
@@ -86,6 +106,8 @@ ROUTES = [
         "run the project check and report what it says.",
         r"(busirocket/baseline|github\.com/busirocket/baseline|"
         r"cambia el proyecto a pnpm|migrar (el proyecto )?a pnpm|"
+        r"baseline .{0,60}(estrict|endurec|actualiza|implementa|meter)|"
+        r"(implementa|mete|meter|endurec\w*) .{0,40}baseline|"
         r"migrar a typescript ?7|typescript ?7\b)",
     ),
     (
@@ -127,6 +149,8 @@ ROUTES = [
         # Added 2026-08-18 from router-audit evidence: these are verbatim phrasings
         # the user actually used that fired no lane at all.
         r"tengo un problema|hay un problema|no reacciona|no inicia|"
+        r"no est[aá]n? .{0,20}(linkead\w*|vinculad\w*|asociad\w*)|"
+        r"no (soy|somos|es) (capaz|capaces)|\berror(?:es)?\b|"
         r"el ci .{0,20}falla|tarda much[oí]simo|"
         # The trailing \b never matched the inflected forms these stems appear in
         # ("colgado", "bloqueada"), so this branch had been dead since it was written.
@@ -164,16 +188,11 @@ ROUTES = [
         # visual complaint to systematic-debugging instead of the design skill. Measured
         # 2026-08-18: "el header se ve mal en movil" fired debug, never frontend.
         r"\b(tailwind|\bcss\b|layout|responsive|se ve[n]? (mal|raro|feo|fatal)|"
+        r"dise[ñn]o .{0,30}(horrible|anticuado|feo|raro)|"
+        r"monitores?.{0,80}(feo|fe[ií]sim|horrible|anticuado|bonito)|"
         r"el dise[ñn]o|la interfaz|\bui\b|landing|maquet|en m[oó]vil|"
+        r"navegaci[oó]n|chips?|"
         r"scroll|padding|margin|z-index)\b",
-    ),
-    (
-        "plan",
-        "Use superpowers:brainstorming, then superpowers:writing-plans. Do not "
-        "start editing before the approach is agreed.",
-        r"\b(hazme un plan|haz un plan|dame un plan|crea(r)? un plan|"
-        r"necesito un plan|roadmap|c[oó]mo lo (har[ií]as|enfocar[ií]as)|"
-        r"antes de implementar|planifica)\b",
     ),
 ]
 

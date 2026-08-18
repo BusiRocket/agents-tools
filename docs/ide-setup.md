@@ -246,6 +246,28 @@ This creates symlinks for the Windsurf configuration.
 
 ## Skills Validation (Optional)
 
+### Raw, Claude-native, and portable views
+
+`~/.agents/skills` is the provenance-preserving source library. Claude consumes its native skill
+format, including Claude-only frontmatter. Strict clients are checked against compiled views under
+`~/.agents/compiled/<target>/skills`, where client-only fields are removed and logical names such as
+`superpowers:systematic-debugging` receive safe aliases such as `superpowers-systematic-debugging`.
+
+Do not link both the canonical and compiled view into a client that already discovers
+`~/.agents/skills`; duplicate discovery creates precedence warnings. Run these non-mutating checks
+before changing runtime links:
+
+```bash
+pnpm run skills:portability -- --library ~/.agents --json
+pnpm run library:link -- --target codex --dry-run --json
+pnpm run library:router-audit -- --dry-run --json
+```
+
+The 2026-08-18 inventory found 38 readable skills in each shared Claude profile and 102 readable
+canonical skills for both Codex and Gemini, with zero broken links on all four surfaces. Gemini's
+separate `GEMINI.md` import diagnostics remain visible to the platform doctor and are not counted as
+skill-link failures.
+
 To validate skills using the AgentSkills specification:
 
 ```bash

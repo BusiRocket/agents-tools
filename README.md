@@ -389,6 +389,33 @@ pnpm run skills:package
 pnpm run skills:link
 ```
 
+The skill library has three deliberate views:
+
+- Raw source lives under `~/.agents/skills` with upstream files and provenance intact.
+- Claude-native output preserves Claude frontmatter such as `allowed-tools` and `argument-hint`.
+- Portable output under `~/.agents/compiled/<target>/skills` strips client-only fields and assigns
+  filesystem-safe aliases while retaining the logical key in curation metadata.
+
+Use `pnpm run skills:portability -- --library ~/.agents --json` to classify the raw library and
+`pnpm run library:link -- --target <id> --dry-run --json` to compile and inspect a target view.
+`check:all` validates the portable repository output and any managed Codex/Gemini catalog present on
+the machine without changing either source or runtime links.
+
+The 2026-08-18 live inventory recorded the following discovery surfaces without reading account
+identity or credentials:
+
+| Runtime         | Readable skills | Broken links |
+| --------------- | --------------: | -----------: |
+| Claude personal |              38 |            0 |
+| Claude Favish   |              38 |            0 |
+| Codex canonical |             102 |            0 |
+| Gemini CLI      |             102 |            0 |
+
+Both Claude profiles share the same non-identity skills directory. Codex and Gemini discover the
+canonical library directly, so target-compiled catalogs are validated artifacts rather than a second
+linked runtime copy. Gemini also reported four unrelated `GEMINI.md` import errors; those are
+platform-rule diagnostics, not broken skill links.
+
 `pnpm run skills:validate` also writes `dist/reports/skills-quality-report.{json,md}` so
 low-fidelity skills and activation collisions can be ranked instead of only pass/fail checked.
 

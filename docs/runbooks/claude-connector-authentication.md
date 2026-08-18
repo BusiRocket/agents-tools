@@ -5,9 +5,10 @@ profile-owned and must never be copied between Claude configuration roots.
 
 ## Personal profile
 
-Close other pending MCP login prompts, then run each command from a local terminal. Complete the
-browser flow using the personal account intended for this profile. Do not paste callback URLs into
-logs, issues, commits, or chat transcripts.
+Close other pending MCP login prompts, then run each command from a local terminal. Complete
+Cloudflare browser flows in the user's real Chrome profile. Use `chrome-cli` to inspect and interact
+with the tab when automation is required; isolated Playwright or Chromium profiles can trigger
+Cloudflare bot checks. Do not paste callback URLs into logs, issues, commits, or chat transcripts.
 
 ```bash
 claude mcp login plugin:cloudflare:cloudflare-api
@@ -28,9 +29,9 @@ URL is transient authentication material and must not be stored.
 
 ### OpenSEO access gateway
 
-Do not repeat `claude mcp login openseo` while the doctor reports the `access-gateway` boundary. On
-2026-08-18, Cloudflare Access redirected `/mcp` to HTML and the OAuth attempt ended with
-`invalid_target`, meaning Managed OAuth was not enabled for the MCP resource.
+On 2026-08-18, Cloudflare Access redirected `/mcp` to HTML and the OAuth attempt ended with
+`invalid_target`. Managed OAuth was then enabled on the existing OpenSEO Access application, and the
+personal Claude profile completed dynamic client registration successfully.
 
 Enable Managed OAuth on the existing Access application while preserving every other application
 field. The required configuration is:
@@ -40,14 +41,37 @@ field. The required configuration is:
 - `oauth_configuration.dynamic_client_registration.allow_any_on_localhost = true`
 - `oauth_configuration.dynamic_client_registration.allow_any_on_loopback = true`
 
-Cloudflare requires the full current Access application configuration on update. Read the complete
-application first, modify only the four fields above, and write the complete result back. The API
-credential needs Access Apps and Policies Write permission. If that scope is missing, use the
-Cloudflare dashboard or refresh the deployment credential with the required scope. See
+Cloudflare requires the full current Access application configuration on update. The repository
+client reads the complete application, removes read-only response fields, modifies only the Managed
+OAuth configuration, writes the result, and verifies it with a fresh read. It uses the named Alchemy
+OAuth profile directly, so no `.env` file or copied API token is required. The OAuth credential
+needs `access:read` and `access:write`. If those scopes are missing, refresh the profile in the
+user's real Chrome session:
+
+```bash
+pnpm exec alchemy login --profile default --configure
+```
+
+Select both Access scopes alongside the existing scopes. The direct client endpoint map is one
+resource: `GET` reads and verifies `/client/v4/accounts/:accountId/access/apps/:applicationId`;
+`PUT` updates the same resource. Preview or idempotently apply the change with:
+
+```bash
+pnpm run connectors:cloudflare-managed-oauth -- \
+  --account-id ba7bb095b9f90e40ec0983417ab3dcf2 \
+  --application-id f5070b90-1266-4e0d-b658-25591e060b07
+
+pnpm run connectors:cloudflare-managed-oauth -- \
+  --account-id ba7bb095b9f90e40ec0983417ab3dcf2 \
+  --application-id f5070b90-1266-4e0d-b658-25591e060b07 \
+  --apply
+```
+
+See
 [Cloudflare Managed OAuth](https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/managed-oauth/).
 
-After that policy change, verify that an unauthenticated MCP initialize request returns HTTP 401
-with OAuth resource metadata instead of an HTML redirect, then run:
+After the policy change, verify that an unauthenticated MCP initialize request returns HTTP 401 with
+OAuth resource metadata instead of an HTML redirect, then run:
 
 ```bash
 claude mcp login openseo

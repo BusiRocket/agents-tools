@@ -49,6 +49,7 @@
     "agents:doctor": "tsx scripts/bin/run-agent-doctor.ts",
     "agents:test": "tsx --test \"scripts/lib/platform-health/**/*_TEST.ts\"",
     "connectors:doctor": "tsx scripts/bin/run-connector-doctor.ts",
+    "connectors:cloudflare-managed-oauth": "tsx scripts/bin/run-configure-cloudflare-managed-oauth.ts",
     "connectors:test": "tsx --test \"scripts/lib/connectors/**/*_TEST.ts\"",
     "codex:doctor": "tsx scripts/bin/run-codex-state-doctor.ts",
     "codex:repair": "tsx scripts/bin/run-codex-state-repair.ts",

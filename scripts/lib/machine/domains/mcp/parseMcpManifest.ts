@@ -1,6 +1,8 @@
 import { findCredentialLiterals } from "../../schemas/findCredentialLiterals"
 import { collectTargetErrors } from "./collectTargetErrors"
 import { collectTransportErrors } from "./collectTransportErrors"
+import { collectStartupTimeoutErrors } from "./collectStartupTimeoutErrors"
+import { collectRequiredErrors } from "./collectRequiredErrors"
 import type { McpManifest } from "./types/McpManifest"
 import type { ParseResult } from "./types/ParseResult"
 
@@ -25,6 +27,8 @@ export const parseMcpManifest = (raw: unknown): ParseResult => {
     const server = value as Record<string, unknown>
     collectTargetErrors(name, server.targets, errors)
     collectTransportErrors(name, server, errors)
+    collectStartupTimeoutErrors(name, server.startup_timeout_sec, errors)
+    collectRequiredErrors(name, server.required, errors)
 
     for (const finding of findCredentialLiterals(server)) {
       errors.push(`${name}: ${finding}`)

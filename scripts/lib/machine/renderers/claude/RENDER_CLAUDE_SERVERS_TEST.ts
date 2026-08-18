@@ -39,8 +39,30 @@ void test("the target override is appended to args", () => {
   })
 })
 
-void test("a resolved header is written as a value", () => {
+void test("a resolved header is written as an environment reference", () => {
   const { servers } = renderClaudeServers(manifest, "claude-personal", { CONTEXT7_API_KEY: "k" })
+  assert.deepEqual(servers.context7, {
+    type: "http",
+    url: "https://mcp.context7.com/mcp",
+    headers: { CONTEXT7_API_KEY: "${CONTEXT7_API_KEY}" },
+  })
+})
+
+void test("Gemini receives the resolved header value", () => {
+  const geminiManifest: McpManifest = {
+    servers: {
+      context7: {
+        targets: ["gemini"],
+        transport: "http",
+        url: "https://mcp.context7.com/mcp",
+        headers: { CONTEXT7_API_KEY: { from_env: "CONTEXT7_API_KEY" } },
+      },
+    },
+  }
+
+  const { servers } = renderClaudeServers(geminiManifest, "gemini", {
+    CONTEXT7_API_KEY: "k",
+  })
   assert.deepEqual(servers.context7, {
     type: "http",
     url: "https://mcp.context7.com/mcp",

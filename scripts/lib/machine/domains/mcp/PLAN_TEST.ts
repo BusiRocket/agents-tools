@@ -24,6 +24,13 @@ void test("an identical server produces no change", () => {
   assert.deepEqual(plan({ manifest: SINGLE_SERVER_MANIFEST, state, owned, env: {} }), [])
 })
 
+void test("object key order does not create a false update", () => {
+  const state = createClaudeState({ serena: { command: "uvx", type: "stdio" } })
+  const owned = { ...EMPTY_OWNED, "claude-personal": ["serena"] }
+
+  assert.deepEqual(plan({ manifest: SINGLE_SERVER_MANIFEST, state, owned, env: {} }), [])
+})
+
 void test("a differing server is updated", () => {
   const state = createClaudeState({ serena: { type: "stdio", command: "old-command" } })
   const owned = { ...EMPTY_OWNED, "claude-personal": ["serena"] }

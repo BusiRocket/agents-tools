@@ -1,2 +1,3 @@
-export const hasSameShape = (left: unknown, right: unknown) =>
-  JSON.stringify(left) === JSON.stringify(right)
+import { isDeepStrictEqual } from "node:util"
+
+export const hasSameShape = (left: unknown, right: unknown) => isDeepStrictEqual(left, right)

@@ -46,6 +46,7 @@ void test("codex tables are read into a record", async () => {
   const servers = await readCodexServers(path)
   assert.deepEqual(Object.keys(servers), ["codegraph"])
   assert.equal(servers.codegraph?.command, '"codegraph"')
+  assert.equal(servers.codegraph["env.FOO"], '"bar"')
 })
 
 void test("sections after mcp_servers do not leak into the last server", async () => {

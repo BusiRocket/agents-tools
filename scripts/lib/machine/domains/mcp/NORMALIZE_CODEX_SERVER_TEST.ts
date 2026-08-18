@@ -26,8 +26,25 @@ void test("a url server normalizes to a url", () => {
   })
 })
 
-void test("keys that are not command, args or url are ignored", () => {
+void test("unrelated keys are ignored", () => {
   assert.deepEqual(normalizeCodexServer({ command: '"x"', FOO: '"bar"' }), { command: "x" })
+})
+
+void test("startup timeouts and header sub-tables are normalized", () => {
+  assert.deepEqual(
+    normalizeCodexServer({
+      url: '"https://mcp.context7.com/mcp"',
+      startup_timeout_sec: "15",
+      required: "true",
+      "env_http_headers.CONTEXT7_API_KEY": '"CONTEXT7_API_KEY"',
+    }),
+    {
+      url: "https://mcp.context7.com/mcp",
+      startup_timeout_sec: 15,
+      required: true,
+      env_http_headers: { CONTEXT7_API_KEY: "CONTEXT7_API_KEY" },
+    },
+  )
 })
 
 void test("an escaped quote inside a value is unescaped", () => {

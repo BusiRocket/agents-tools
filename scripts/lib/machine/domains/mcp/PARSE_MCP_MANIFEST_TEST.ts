@@ -67,3 +67,31 @@ void test("a manifest that is not an object is rejected", () => {
   assert.equal(parseMcpManifest("nope").ok, false)
   assert.equal(parseMcpManifest(null).ok, false)
 })
+
+void test("a non-positive startup timeout is rejected", () => {
+  const result = parseMcpManifest({
+    servers: {
+      serena: {
+        targets: ["codex"],
+        transport: "stdio",
+        command: "serena",
+        startup_timeout_sec: 0,
+      },
+    },
+  })
+  assert.equal(result.ok, false)
+})
+
+void test("a non-boolean required flag is rejected", () => {
+  const result = parseMcpManifest({
+    servers: {
+      serena: {
+        targets: ["codex"],
+        transport: "stdio",
+        command: "serena",
+        required: "yes",
+      },
+    },
+  })
+  assert.equal(result.ok, false)
+})

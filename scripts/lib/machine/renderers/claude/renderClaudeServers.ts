@@ -1,4 +1,4 @@
-import { resolveValueMap } from "./resolveValueMap"
+import { renderValueMapForTarget } from "./renderValueMapForTarget"
 import { toStringArgs } from "./toStringArgs"
 import type { McpManifest } from "../../domains/mcp/types/McpManifest"
 import type { McpTarget } from "../../domains/mcp/types/McpTarget"
@@ -16,8 +16,8 @@ export const renderClaudeServers = (
       continue
     }
 
-    const envMap = resolveValueMap(server.env ?? {}, env)
-    const headerMap = resolveValueMap(server.headers ?? {}, env)
+    const envMap = renderValueMapForTarget(server.env ?? {}, target, env)
+    const headerMap = renderValueMapForTarget(server.headers ?? {}, target, env)
     const serverMissing = [...envMap.missing, ...headerMap.missing]
 
     if (serverMissing.length > 0) {

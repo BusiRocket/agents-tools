@@ -10,6 +10,8 @@ export interface McpServer {
   url?: string
   env?: Record<string, McpValue>
   headers?: Record<string, McpValue>
+  startup_timeout_sec?: number
+  required?: boolean
   disabled?: boolean
   target_overrides?: Partial<Record<McpTarget, McpOverride>>
 }

@@ -4,7 +4,7 @@ import test from "node:test"
 import { apply } from "./apply"
 import { createTempTargetPaths } from "./fixtures/createTempTargetPaths"
 import { EMPTY_OWNED } from "./fixtures/EMPTY_OWNED"
-import { loadExampleManifest } from "./fixtures/loadExampleManifest"
+import { loadCanonicalManifest } from "./fixtures/loadCanonicalManifest"
 import { TEST_ENV } from "./fixtures/TEST_ENV"
 import { plan } from "./plan"
 import { read } from "./read"
@@ -12,7 +12,7 @@ import type { McpManifest } from "./types/McpManifest"
 
 void test("a second apply changes nothing", async () => {
   const paths = await createTempTargetPaths()
-  const manifest = await loadExampleManifest()
+  const manifest = await loadCanonicalManifest()
 
   const first = await apply({ manifest, paths, owned: EMPTY_OWNED, env: TEST_ENV })
   const afterFirst = await readFile(paths["claude-personal"], "utf8")
@@ -29,7 +29,7 @@ void test("a second apply changes nothing", async () => {
 
 void test("a foreign key added between runs is not disturbed", async () => {
   const paths = await createTempTargetPaths()
-  const manifest = await loadExampleManifest()
+  const manifest = await loadCanonicalManifest()
 
   const first = await apply({ manifest, paths, owned: EMPTY_OWNED, env: TEST_ENV })
 
@@ -49,7 +49,7 @@ void test("a foreign key added between runs is not disturbed", async () => {
 
 void test("a foreign codex block added between runs is not disturbed", async () => {
   const paths = await createTempTargetPaths()
-  const manifest = await loadExampleManifest()
+  const manifest = await loadCanonicalManifest()
 
   const first = await apply({ manifest, paths, owned: EMPTY_OWNED, env: TEST_ENV })
 
@@ -65,7 +65,7 @@ void test("a foreign codex block added between runs is not disturbed", async () 
 
 void test("dropping a server from the manifest removes it from every target", async () => {
   const paths = await createTempTargetPaths()
-  const manifest = await loadExampleManifest()
+  const manifest = await loadCanonicalManifest()
 
   const first = await apply({ manifest, paths, owned: EMPTY_OWNED, env: TEST_ENV })
 
@@ -87,7 +87,7 @@ void test("dropping a server from the manifest removes it from every target", as
 
 void test("a missing secret leaves the server out and is reported", async () => {
   const paths = await createTempTargetPaths()
-  const manifest = await loadExampleManifest()
+  const manifest = await loadCanonicalManifest()
 
   const result = await apply({ manifest, paths, owned: EMPTY_OWNED, env: {} })
   assert.equal(result.missing.includes("CONTEXT7_API_KEY"), true)

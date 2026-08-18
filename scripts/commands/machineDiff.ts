@@ -1,4 +1,5 @@
 import { homedir } from "node:os"
+import { ROOT } from "../constants/ROOT"
 import { flagValue } from "../lib/machine/cli/flagValue"
 import { loadMcpManifest } from "../lib/machine/cli/loadMcpManifest"
 import { resolveOwnedPath } from "../lib/machine/cli/resolveOwnedPath"
@@ -19,7 +20,7 @@ export const main = async () => {
   const instanceDir = resolveInstanceDir({
     ...(flag === undefined ? {} : { flag }),
     env: process.env,
-    home,
+    root: ROOT,
   })
 
   const parsed = await loadMcpManifest(instanceDir)

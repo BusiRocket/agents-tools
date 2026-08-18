@@ -6,7 +6,7 @@ void test("the explicit flag wins over everything", () => {
   const dir = resolveInstanceDir({
     flag: "/opt/explicit",
     env: { AGENTS_MACHINE_DIR: "/opt/from-env" },
-    home: "/home/someone",
+    root: "/repo",
   })
   assert.equal(dir, "/opt/explicit")
 })
@@ -14,17 +14,17 @@ void test("the explicit flag wins over everything", () => {
 void test("the environment variable is used when no flag is given", () => {
   const dir = resolveInstanceDir({
     env: { AGENTS_MACHINE_DIR: "/opt/from-env" },
-    home: "/home/someone",
+    root: "/repo",
   })
   assert.equal(dir, "/opt/from-env")
 })
 
-void test("it falls back to the dotfiles machine directory under home", () => {
-  const dir = resolveInstanceDir({ env: {}, home: "/home/someone" })
-  assert.equal(dir, "/home/someone/p/dotfiles/machine")
+void test("it falls back to the tracked machine directory under the repository root", () => {
+  const dir = resolveInstanceDir({ env: {}, root: "/repo" })
+  assert.equal(dir, "/repo/machine")
 })
 
 void test("an empty environment variable is treated as absent", () => {
-  const dir = resolveInstanceDir({ env: { AGENTS_MACHINE_DIR: "" }, home: "/home/someone" })
-  assert.equal(dir, "/home/someone/p/dotfiles/machine")
+  const dir = resolveInstanceDir({ env: { AGENTS_MACHINE_DIR: "" }, root: "/repo" })
+  assert.equal(dir, "/repo/machine")
 })

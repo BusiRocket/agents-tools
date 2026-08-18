@@ -1,7 +1,7 @@
 import { join } from "node:path"
 import type { ResolveInstanceDirOptions } from "./types/ResolveInstanceDirOptions"
 
-export const resolveInstanceDir = ({ flag, env, home }: ResolveInstanceDirOptions) => {
+export const resolveInstanceDir = ({ flag, env, root }: ResolveInstanceDirOptions) => {
   if (flag) {
     return flag
   }
@@ -11,5 +11,5 @@ export const resolveInstanceDir = ({ flag, env, home }: ResolveInstanceDirOption
     return fromEnv
   }
 
-  return join(home, "p", "dotfiles", "machine")
+  return join(root, "machine")
 }

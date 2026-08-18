@@ -12,6 +12,18 @@
   pnpm build
   ```
 
+## Machine MCP Configuration
+
+The default machine instance is the tracked `machine/` directory in this repository. Check its
+desired MCP state against Claude personal, Claude Favish, Codex, and Gemini without writing files:
+
+```bash
+pnpm run machine:diff -- --json
+```
+
+For an alternate instance, pass `--instance /absolute/path` or set `AGENTS_MACHINE_DIR`. Secret
+values stay in the environment; tracked manifests use `from_env` references.
+
 ---
 
 ## Claude Code

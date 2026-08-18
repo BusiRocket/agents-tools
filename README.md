@@ -31,6 +31,16 @@ pnpm run sync
 `sync` is the canonical bootstrap command (install, build, check, rules:link, skills:link). To
 update dependencies and refresh everything: `pnpm run update`.
 
+The tracked machine instance lives under `machine/`. Inspect MCP drift without changing client
+configuration:
+
+```bash
+pnpm run machine:diff -- --json
+```
+
+Use `--instance <path>` or `AGENTS_MACHINE_DIR` only when intentionally testing another instance.
+Tracked manifests contain environment references, never secret values.
+
 For Codex and other skill-capable IDEs, the main BRP workflow surface is the global skills pipeline.
 `AGENTS.md` remains useful as lightweight global guidance and routing, but it is not the primary
 delivery mechanism for reusable BRP workflows in this project. For Codex, `rules:link` copies

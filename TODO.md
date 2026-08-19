@@ -34,6 +34,21 @@
       template, `docs/adr/NNNN-slug.md`) and the `CONTEXT.md` glossary format (opinionated terms,
       avoid-lists, no implementation details). Full spec: `docs/mattpocock-skills-diff-2026-08.md`
       section 1.
+- [ ] Evaluate a conversation-only "grill" gate skill for business/marketing decisions (offer,
+      positioning, pricing), modeled on Pocock's grill-me as used by practitioners on non-code
+      ideas: questions in rounds (dependent questions wait), ~46 questions / 4 rounds as an
+      ordinary session, ends when nothing is left to ask, and the pushback rule ("a session with
+      no pushback is a session you didn't need"). Source:
+      `~/p/brain/topics/claude-skills-ecosystem.md` (2026-08-19 section).
+- [ ] Measure invoked token cost of each BRP skill and record it in the skill docs, with Pocock's
+      `/grilling` at 345 tokens invoked as the reference for a gate-shaped skill. Anything an
+      order of magnitude above that needs a reason. Source:
+      `~/p/brain/topics/claude-skills-ecosystem.md` (2026-08-19 section).
+- [ ] Candidate BRP rule/hook: require a screen-recording video attached to any PR that changes UI
+      state (steipete's one-line AGENTS.md rule at openclaw; GitHub accepts programmatic video
+      upload — worked example openclaw/openclaw#124013). Fits next to the existing
+      evidence-before-claims posture. Source: `~/p/brain/topics/claude-code-practice.md`
+      (2026-08-19 X sweep section).
 - [ ] Adopt into the `brp` test lane: pre-agreed seams gate, red-before-green + vertical slicing,
       the three test anti-patterns (implementation-coupled, tautological, side-channel), and the
       boundaries-only mocking policy. Full spec: `docs/mattpocock-skills-diff-2026-08.md` section 2.

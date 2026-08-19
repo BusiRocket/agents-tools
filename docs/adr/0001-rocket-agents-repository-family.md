@@ -5,11 +5,10 @@
 
 ## Context
 
-The agent environment depends on several repositories whose names predate their current roles.
-`agents-tools` is a control plane but still identifies itself as `busirocket-agents-tools` in some
-metadata. The repository checked out at `~/.agents` is named `claude-skills` even though it feeds
-many agent clients. `ai-state` describes an older memory and conversation transport that overlaps
-with the safe conversation synchronizer and MemPalace.
+The agent environment depended on several repositories whose names predated their current roles.
+`agents-tools` was the control plane and the repository checked out at `~/.agents` was named
+`claude-skills` even though it feeds many agent clients. `ai-state` described an older memory and
+conversation transport that overlaps with the safe conversation synchronizer and MemPalace.
 
 Giving every dependency the same prefix would hide real ownership boundaries. `dotfiles` manages the
 whole host, `brain` is a human knowledge vault, and `mempalace` is an upstream project with a local
@@ -34,14 +33,14 @@ implementation language, machine, or temporary transport are not used.
 
 ## Repository map
 
-| Current repository                        | Canonical role                                                                      | Target name                        | Decision                                            |
-| ----------------------------------------- | ----------------------------------------------------------------------------------- | ---------------------------------- | --------------------------------------------------- |
-| `BusiRocket/agents-tools`                 | Public control plane: policy, manifests, adapters, diagnostics, and synchronization | `BusiRocket/rocket-agents`         | Coordinated rename later                            |
-| `BusiRocket/claude-skills` at `~/.agents` | Private curated skill library consumed by multiple clients                          | `BusiRocket/rocket-agents-library` | Coordinated rename later                            |
-| `BusiRocket/dotfiles`                     | Private host bootstrap and machine-specific instance data                           | `BusiRocket/dotfiles`              | Keep                                                |
-| `CristianDeluxe/brain`                    | Human-authored personal knowledge and operational source material                   | `CristianDeluxe/brain`             | Keep                                                |
-| `CristianDeluxe/mempalace-fork`           | Search/index runtime derived from source material and conversations                 | `CristianDeluxe/mempalace-fork`    | Keep upstream identity                              |
-| `BusiRocket/ai-state`                     | Legacy snapshot transport                                                           | None                               | Preserve Git history, retire from active automation |
+| Repository                         | Canonical role                                                                      | Decision                                                      |
+| ---------------------------------- | ----------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| `BusiRocket/rocket-agents`         | Public control plane: policy, manifests, adapters, diagnostics, and synchronization | Canonical root of the Rocket Agents family                    |
+| `BusiRocket/rocket-agents-library` | Private curated skill library consumed by multiple clients                          | Canonical library; checked out at `~/p/rocket-agents-library` |
+| `BusiRocket/dotfiles`              | Private host bootstrap and machine-specific instance data                           | Keep                                                          |
+| `CristianDeluxe/brain`             | Human-authored personal knowledge and operational source material                   | Keep                                                          |
+| `CristianDeluxe/mempalace-fork`    | Search/index runtime derived from source material and conversations                 | Keep upstream identity                                        |
+| `BusiRocket/ai-state`              | Legacy snapshot transport                                                           | Preserve Git history, archive, and remove from automation     |
 
 ## Ownership boundaries
 
@@ -57,14 +56,10 @@ implementation language, machine, or temporary transport are not used.
 
 ## Migration policy
 
-Repository renames are one coordinated migration, not piecemeal edits. Before changing a GitHub
-name, inventory remote URLs, clone paths, package metadata, plugin namespaces, documentation links,
-and scheduled jobs. Keep compatibility wrappers for one migration window, then remove them in a
-separate verified change.
-
-Until that migration is executed, current clone paths and plugin namespaces remain valid. New
-documentation uses the Rocket Agents product name and the current repository slug where a literal
-path or URL is required.
+The repositories and their two-machine checkouts move in one coordinated migration. The stable
+compatibility path `~/.agents` remains as a symbolic link to `~/p/rocket-agents-library` because
+agent clients discover skills there. Git remotes, package metadata, plugin namespaces, documentation
+links, managed rule links, and scheduled jobs use the canonical names directly.
 
 ## Verification
 
@@ -76,13 +71,12 @@ pnpm run machine:diff -- --json
 ~/p/dotfiles/bin/sync-conversations macmini dry
 ```
 
-Expected results are the current `BusiRocket/agents-tools` remote, zero managed machine changes, and
-a conversation preview that excludes credentials, SQLite databases, and MemPalace storage.
+Expected results are the `BusiRocket/rocket-agents` remote, zero managed machine changes, and a
+conversation preview that excludes credentials, SQLite databases, and MemPalace storage.
 
 ## Consequences
 
 - Users get one stable name for the complete system and one distinct name for its workflow engine.
 - Future platform repositories have a predictable, capability-based name.
 - Existing external-purpose repositories keep honest names and ownership.
-- Two GitHub renames remain intentionally deferred until every compatibility surface can move
-  together.
+- The stable `~/.agents` discovery path does not expose the library's historical repository name.

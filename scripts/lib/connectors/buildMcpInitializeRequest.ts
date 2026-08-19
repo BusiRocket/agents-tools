@@ -5,6 +5,6 @@ export const buildMcpInitializeRequest = () => ({
   params: {
     protocolVersion: "2025-06-18",
     capabilities: {},
-    clientInfo: { name: "agents-tools-connector-doctor", version: "1.0.0" },
+    clientInfo: { name: "rocket-agents-connector-doctor", version: "1.0.0" },
   },
 })

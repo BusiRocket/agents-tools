@@ -11,7 +11,7 @@ export const IDE_RULE_TARGETS: RuleTarget[] = [
     links: [
       {
         source: path.join(ROOT, "dist", "global", ".cursor", "rules"),
-        target: path.join(HOME, ".cursor", "rules", "busirocket"),
+        target: path.join(HOME, ".cursor", "rules", "rocket-agents"),
         method: "symlink",
       },
     ],
@@ -27,7 +27,7 @@ export const IDE_RULE_TARGETS: RuleTarget[] = [
     links: [
       {
         source: path.join(ROOT, "dist", "global", ".claude", "rules"),
-        target: path.join(HOME, ".claude", "rules", "busirocket"),
+        target: path.join(HOME, ".claude", "rules", "rocket-agents"),
         method: "symlink",
       },
     ],

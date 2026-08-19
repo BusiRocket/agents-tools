@@ -47,7 +47,7 @@ export const main = async () => {
     manifest: parsed.manifest,
     invocations: counts,
     target,
-    authoredSource: "agents-tools",
+    authoredSource: "rocket-agents",
     today,
     idleDays: Number(flagValue(process.argv, "--idle-days") ?? "30"),
   })

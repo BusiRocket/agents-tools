@@ -7,7 +7,7 @@ export const buildPluginManifest = (pkg: Record<string, unknown>): PluginManifes
   const repositoryUrl = extractRepositoryUrl(pkg)
 
   return {
-    name: "busirocket-agents",
+    name: "rocket-agents",
     version,
     description:
       "BRP workflow skills (plan, implement, fix, refactor, test, review, debug, docs) plus a code-quality audit skill, with a cross-stack rules index loaded on demand.",

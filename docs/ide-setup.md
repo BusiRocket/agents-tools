@@ -6,8 +6,8 @@
 - pnpm (`npm install -g pnpm`)
 - The BRP repo cloned and installed:
   ```bash
-  git clone https://github.com/BusiRocket/agents-tools.git
-  cd agents-tools
+  git clone https://github.com/BusiRocket/rocket-agents.git
+  cd rocket-agents
   pnpm install
   pnpm build
   ```
@@ -96,15 +96,15 @@ established remote terminal workflow.
 Load the project as a plugin using `--plugin-dir`:
 
 ```bash
-claude --plugin-dir /path/to/agents-tools
+claude --plugin-dir /path/to/rocket-agents
 ```
 
-Skills are available as `/busirocket-agents-tools:<skill-name>`:
+Skills are available as `/rocket-agents:<skill-name>`:
 
 ```
-/busirocket-agents-tools:brp-plan
-/busirocket-agents-tools:brp-fix
-/busirocket-agents-tools:brp-review
+/rocket-agents:brp-plan
+/rocket-agents:brp-fix
+/rocket-agents:brp-review
 ```
 
 ### As Global Rules
@@ -129,7 +129,7 @@ automatically when the project is open.
 
 ### Global-Level
 
-Run `pnpm rules:link`; the managed rules are linked at `~/.cursor/rules/busirocket`. Cursor reads
+Run `pnpm rules:link`; the managed rules are linked at `~/.cursor/rules/rocket-agents`. Cursor reads
 skills directly from `~/.agents/skills`, so no `~/.cursor/skills` duplicate is created. Machine MCP
 configuration is stored in `~/.cursor/mcp.json` and verified with:
 

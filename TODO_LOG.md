@@ -6,6 +6,14 @@
 
 ### 2026-08
 
+- [x] 2026-08-19 - **Repository identity:** Completed the coordinated Rocket Agents migration.
+  - Result: the control plane and library use `BusiRocket/rocket-agents` and
+    `BusiRocket/rocket-agents-library`; both machines use matching `~/p` checkout paths, while
+    `~/.agents` remains a compatibility link for client discovery. Package and plugin names, managed
+    rule links, documentation, and the daily convergence job use the canonical names.
+  - Evidence: `pnpm run check:all`; `pnpm run machine:diff -- --json`; remote and local Git status;
+    `~/p/dotfiles/bin/sync-conversations macmini dry`.
+
 - [x] 2026-08-19 - **Platform identity:** The repository family is named Rocket Agents and each
       state type has one owner.
   - Result: BRP remains the workflow engine; `agents-tools` is the public control plane, `~/.agents`

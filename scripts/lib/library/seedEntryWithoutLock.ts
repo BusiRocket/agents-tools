@@ -2,7 +2,7 @@ import type { CurationEntry } from "./types/CurationEntry"
 
 export const seedEntryWithoutLock = (name: string, ours: string[]): CurationEntry => {
   if (ours.includes(name)) {
-    return { state: "adopted", source: "agents-tools", reason: "authored here" }
+    return { state: "adopted", source: "rocket-agents", reason: "authored here" }
   }
 
   return {

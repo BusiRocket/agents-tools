@@ -7,9 +7,9 @@ control-plane repository.
 
 | Component        | Source of truth                         | Responsibility                                                                 |
 | ---------------- | --------------------------------------- | ------------------------------------------------------------------------------ |
-| Control plane    | `~/p/agents-tools`                      | Policy, adapters, diagnostics, machine convergence, and conversation transport |
+| Control plane    | `~/p/rocket-agents`                     | Policy, adapters, diagnostics, machine convergence, and conversation transport |
 | Machine instance | `~/p/dotfiles`                          | Host bootstrap, packages, services, and private machine manifests              |
-| Skill library    | `~/.agents`                             | Curated skill sources and provenance shared across clients                     |
+| Skill library    | `~/p/rocket-agents-library`             | Curated skill sources and provenance shared across clients                     |
 | Knowledge vault  | `~/p/brain`                             | Human-authored knowledge and operational source material                       |
 | Memory runtime   | `~/p/mempalace` plus machine-local data | Search and indexing derived from knowledge and conversations                   |
 
@@ -147,7 +147,7 @@ When rules conflict, the higher-priority level wins.
 ### Claude Code
 
 The `.claude-plugin/plugin.json` manifest registers the project as a Claude Code plugin. Skills in
-`skills/` are auto-discovered and namespaced as `/busirocket-agents-tools:<skill-name>`.
+`skills/` are auto-discovered and namespaced as `/rocket-agents:<skill-name>`.
 
 ### Cursor
 

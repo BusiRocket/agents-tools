@@ -1,6 +1,6 @@
 export const renderCodexDefaultRules = () =>
   [
-    "# Managed by busirocket-agents-tools.",
+    "# Managed by Rocket Agents.",
     "#",
     "# Codex parses this file as Starlark exec-policy, not Markdown.",
     "# Keep human-readable agent guidance in AGENTS.md.",

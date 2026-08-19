@@ -1,5 +1,5 @@
 {
-  "name": "busirocket-agents-tools",
+  "name": "rocket-agents",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -97,7 +97,7 @@
   "packageManager": "pnpm@11.15.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/BusiRocket/agents-tools.git"
+    "url": "https://github.com/BusiRocket/rocket-agents.git"
   },
   "license": "MIT"
 }

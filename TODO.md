@@ -170,10 +170,6 @@
       cache prune would break.
 - [ ] `serena@claude-plugins-official` is installed but missing from `enabledPlugins`, so its state
       is defaulted rather than declared. Declare it.
-- [ ] Execute the coordinated Rocket Agents repository rename described in
-      `docs/adr/0001-rocket-agents-repository-family.md`: `agents-tools` to `rocket-agents` and
-      `claude-skills` to `rocket-agents-library`. Update remotes, clone paths, package metadata,
-      plugin namespaces, documentation, and scheduled jobs in one compatibility-window change.
 
 ## Supply chain and secrets
 

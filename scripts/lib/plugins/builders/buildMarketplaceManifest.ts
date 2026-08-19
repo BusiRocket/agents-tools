@@ -2,9 +2,9 @@ import type { MarketplaceManifest } from "../types/MarketplaceManifest"
 import type { PluginManifest } from "../types/PluginManifest"
 
 export const buildMarketplaceManifest = (plugin: PluginManifest): MarketplaceManifest => ({
-  name: "busirocket",
+  name: "rocket-agents",
   description:
-    "BusiRocket plugin marketplace. Host of busirocket-agents: a BRP workflow skill pack for planning, implementing, refactoring, testing, reviewing, debugging, and documenting code across TypeScript and Next.js projects.",
+    "Rocket Agents plugin marketplace. Host of the BRP workflow skill pack for planning, implementing, refactoring, testing, reviewing, debugging, and documenting code across TypeScript and Next.js projects.",
   owner: { name: "BusiRocket", url: "https://github.com/BusiRocket" },
   plugins: [
     {

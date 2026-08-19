@@ -27,8 +27,8 @@ BRP consolidates rules, skills, and an orchestration protocol into a single proj
 
 ```bash
 # Clone and run full setup (install, build, check, link rules + skills to IDEs)
-git clone https://github.com/BusiRocket/agents-tools.git
-cd agents-tools
+git clone https://github.com/BusiRocket/rocket-agents.git
+cd rocket-agents
 pnpm run sync
 ```
 
@@ -462,7 +462,7 @@ Bundles all rules and skills as a single Cursor plugin named **BusiRocket Agents
 
 Location: `dist/plugins/claude/.claude-plugin/plugin.json`
 
-Use with: `claude --plugin-dir /path/to/agents-tools`
+Use with: `claude --plugin-dir /path/to/rocket-agents`
 
 ## Roadmap
 

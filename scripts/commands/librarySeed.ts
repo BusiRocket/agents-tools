@@ -39,7 +39,7 @@ export const main = async () => {
   )
 
   const rulesRoot = flagValue(process.argv, "--rules") ?? join(process.cwd(), "src/rules")
-  const rules = seedRuleEntries(await listRulePaths(rulesRoot), "agents-tools")
+  const rules = seedRuleEntries(await listRulePaths(rulesRoot), "rocket-agents")
   const seeded = { ...skills, entries: { ...skills.entries, ...rules } }
   const current = await readCurationManifest(libraryDir)
   const merged = current.ok

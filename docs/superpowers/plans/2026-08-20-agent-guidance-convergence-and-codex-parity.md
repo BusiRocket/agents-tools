@@ -45,55 +45,73 @@
 
 ## Implementation Changes
 
-1. Milestone 1 - Guidance contracts and pure validation:
-   - Add one-purpose guidance types for policy, source snapshots, reconciliation results, decisions,
-     documentation evidence, and run reports.
-   - Parse and validate the private policy without allowing literal secrets or arbitrary target
-     paths.
-   - Validate official documentation origins, input hashes, output byte limits, required invariants,
-     and unresolved Claude imports in Codex output.
-   - Add deterministic unit tests for valid and rejected results.
-   - Verify with the focused guidance test command added to `package.json`.
-2. Milestone 2 - Agent execution and transactional apply:
-   - Collect canonical, overlay, live target, and hand-maintained Claude rule sources.
-   - Build a reconciliation prompt that describes target capabilities and requires current official
-     documentation evidence.
-   - Run a configurable non-interactive agent command with a strict output schema and bounded
-     output.
-   - Create local snapshots, atomically apply canonical and live files, and restore the complete run
-     on partial failure.
-   - Add `guidance:sync`, `guidance:doctor`, and `guidance:rollback` commands and temporary-home
-     integration tests with a fake agent.
-3. Milestone 3 - Codex connector parity:
-   - Add `mempalace-mcp --read-only` as a required Codex MCP server.
-   - Add MemPalace as a required Codex connector definition.
-   - Generalize connector profile selection and inspection so default and explicit Codex probes run.
-   - Parse redacted `codex mcp list` output and distinguish missing, disabled, and enabled servers.
-   - Add deterministic tests for Codex profile selection, parsing, and doctor output.
-4. Milestone 4 - Private canonical state and scheduled execution:
-   - Add `agent-guidance/shared.md`, both overlays, and `policy.json` to `dotfiles`.
-   - Seed the canonical documents by reconciling the live Claude and Codex guidance, not by choosing
-     one file as authoritative.
-   - Update `bin/sync-rocket-agents` to run guidance reconciliation on every convergence after the
-     current control-plane build and before machine apply.
-   - Keep the scheduled command non-interactive, locked, bounded, and failure-visible.
-   - Update `dotfiles` checks for required guidance files and safe command wiring.
-5. Milestone 5 - Documentation and full repository verification:
-   - Update `docs/ide-setup.md`, README command inventory, and relevant machine documentation.
-   - Run focused tests, `pnpm run check`, and `dotfiles/scripts/check`.
-   - Run `machine:diff` before any live mutation and inspect the exact planned changes.
-6. Milestone 6 - Authorized live convergence and derived-index recovery:
-   - Run the new guidance sync and machine apply paths on the current host.
-   - Stop MemPalace's writer, rebuild from SQLite with archive preservation, verify repair status
-     and semantic search, and restart the daemon.
-   - Rebuild the Rocket Agents CodeGraph index with the installed engine and verify status.
-   - Run the connector doctor for Codex and direct MCP tool discovery checks.
-7. Milestone 7 - Fresh-session behavioral verification and publication:
-   - Start new non-interactive Claude and Codex sessions with probes that can only pass if the new
-     global guidance loaded.
-   - Verify Codex calls CodeGraph for indexed code and MemPalace for prior-project recall.
-   - Review all changes findings-first, fix blocking findings, rerun affected gates, commit intended
-     paths, push both repositories, and compare local and remote SHAs.
+### Task 1: Guidance contracts and pure validation
+
+- Milestone 1 intent:
+- Add one-purpose guidance types for policy, source snapshots, reconciliation results, decisions,
+  documentation evidence, and run reports.
+- Parse and validate the private policy without allowing literal secrets or arbitrary target paths.
+- Validate official documentation origins, input hashes, output byte limits, required invariants,
+  and unresolved Claude imports in Codex output.
+- Add deterministic unit tests for valid and rejected results.
+- Verify with the focused guidance test command added to `package.json`.
+
+### Task 2: Agent execution and transactional apply
+
+- Milestone 2 intent:
+- Collect canonical, overlay, live target, and hand-maintained Claude rule sources.
+- Build a reconciliation prompt that describes target capabilities and requires current official
+  documentation evidence.
+- Run a configurable non-interactive agent command with a strict output schema and bounded output.
+- Create local snapshots, atomically apply canonical and live files, and restore the complete run on
+  partial failure.
+- Add `guidance:sync`, `guidance:doctor`, and `guidance:rollback` commands and temporary-home
+  integration tests with a fake agent.
+
+### Task 3: Codex connector parity
+
+- Milestone 3 intent:
+- Add `mempalace-mcp --read-only` as a required Codex MCP server.
+- Add MemPalace as a required Codex connector definition.
+- Generalize connector profile selection and inspection so default and explicit Codex probes run.
+- Parse redacted `codex mcp list` output and distinguish missing, disabled, and enabled servers.
+- Add deterministic tests for Codex profile selection, parsing, and doctor output.
+
+### Task 4: Private canonical state and scheduled execution
+
+- Milestone 4 intent:
+- Add `agent-guidance/shared.md`, both overlays, and `policy.json` to `dotfiles`.
+- Seed the canonical documents by reconciling the live Claude and Codex guidance, not by choosing
+  one file as authoritative.
+- Update `bin/sync-rocket-agents` to run guidance reconciliation on every convergence after the
+  current control-plane build and before machine apply.
+- Keep the scheduled command non-interactive, locked, bounded, and failure-visible.
+- Update `dotfiles` checks for required guidance files and safe command wiring.
+
+### Task 5: Documentation and full repository verification
+
+- Milestone 5 intent:
+- Update `docs/ide-setup.md`, README command inventory, and relevant machine documentation.
+- Run focused tests, `pnpm run check`, and `dotfiles/scripts/check`.
+- Run `machine:diff` before any live mutation and inspect the exact planned changes.
+
+### Task 6: Authorized live convergence and derived-index recovery
+
+- Milestone 6 intent:
+- Run the new guidance sync and machine apply paths on the current host.
+- Stop MemPalace's writer, rebuild from SQLite with archive preservation, verify repair status and
+  semantic search, and restart the daemon.
+- Rebuild the Rocket Agents CodeGraph index with the installed engine and verify status.
+- Run the connector doctor for Codex and direct MCP tool discovery checks.
+
+### Task 7: Fresh-session behavioral verification and publication
+
+- Milestone 7 intent:
+- Start new non-interactive Claude and Codex sessions with probes that can only pass if the new
+  global guidance loaded.
+- Verify Codex calls CodeGraph for indexed code and MemPalace for prior-project recall.
+- Review all changes findings-first, fix blocking findings, rerun affected gates, commit intended
+  paths, push both repositories, and compare local and remote SHAs.
 
 ## Interfaces and Contracts
 

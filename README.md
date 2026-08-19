@@ -67,6 +67,29 @@ active or provisioned client exits with status 1; an invalid platform manifest e
 Both human and JSON output are redacted before printing. `unsupported` is a capability status, not a
 lifecycle: the client is present but has no compatible adapter for that feature.
 
+### Conversation transport
+
+Inventory local conversation sources without changing provider state:
+
+```bash
+pnpm run conversations:doctor -- --json
+```
+
+Export a SHA-256-verified, secret-redacted canonical JSONL archive and verify an import as a
+dry-run:
+
+```bash
+pnpm run conversations:export -- --source pi --output /tmp/rocket-agents-pi.jsonl
+pnpm run conversations:import -- --input /tmp/rocket-agents-pi.jsonl --archive /tmp/rocket-agents-archive.jsonl
+pnpm run conversations:render -- --input /tmp/rocket-agents-archive.jsonl --output-dir /tmp/rocket-agents-corpus
+```
+
+Imports require `--apply` to write. Supported sources and the division between transport and
+MemPalace search are documented in
+[`docs/research/conversation-capability-map.md`](docs/research/conversation-capability-map.md); the
+operational safety contract is in
+[`docs/runbooks/conversation-transport.md`](docs/runbooks/conversation-transport.md).
+
 Audit expected external connectors separately by Claude profile:
 
 ```bash

@@ -1,9 +1,10 @@
 import js from "@eslint/js"
 import prettier from "eslint-config-prettier"
+import { createTypeScriptImportResolver } from "eslint-import-resolver-typescript"
+import { importX } from "eslint-plugin-import-x"
 import globals from "globals"
 import tseslint from "typescript-eslint"
 
-import importPlugin from "eslint-plugin-import"
 import unusedImports from "eslint-plugin-unused-imports"
 import unicorn from "eslint-plugin-unicorn"
 import sonarjs from "eslint-plugin-sonarjs"
@@ -78,17 +79,18 @@ export default tseslint.config(
   {
     files: ["**/*.{js,jsx,ts,tsx}"],
     plugins: {
-      import: importPlugin,
+      "import-x": importX,
       "unused-imports": unusedImports,
       unicorn,
       sonarjs,
       boundaries,
     },
     settings: {
-      "import/resolver": {
-        typescript: true,
-      },
+      "import-x/resolver-next": [createTypeScriptImportResolver()],
       "boundaries/elements": [
+        { type: "conversation-bin", pattern: "scripts/bin/run-conversations-*" },
+        { type: "conversation-command", pattern: "scripts/commands/conversations*" },
+        { type: "conversation-lib", pattern: "scripts/lib/conversations/*" },
         { type: "scripts", pattern: "scripts/*" },
         { type: "lib", pattern: "scripts/lib/*" },
       ],
@@ -97,11 +99,11 @@ export default tseslint.config(
       /**
        * Import hygiene
        */
-      "import/first": "error",
-      "import/newline-after-import": "error",
-      "import/no-duplicates": "error",
-      "import/no-cycle": ["error", { maxDepth: 1 }],
-      "import/no-self-import": "error",
+      "import-x/first": "error",
+      "import-x/newline-after-import": "error",
+      "import-x/no-duplicates": "error",
+      "import-x/no-cycle": ["error", { maxDepth: 1 }],
+      "import-x/no-self-import": "error",
 
       /**
        * Unused imports/vars (hard fail)
@@ -143,6 +145,20 @@ export default tseslint.config(
         {
           default: "allow",
           policies: [
+            {
+              from: { element: { type: "conversation-bin" } },
+              allow: { to: [{ element: { type: "conversation-command" } }] },
+            },
+            {
+              from: { element: { type: "conversation-command" } },
+              allow: {
+                to: [{ element: { type: "conversation-lib" } }, { element: { type: "lib" } }],
+              },
+            },
+            {
+              from: { element: { type: "conversation-lib" } },
+              allow: { to: [{ element: { type: "conversation-lib" } }] },
+            },
             {
               from: { element: { type: "scripts" } },
               allow: {

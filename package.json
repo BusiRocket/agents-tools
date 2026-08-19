@@ -6,7 +6,7 @@
   "description": "Agent workflow engine + rules/skills orchestrator for high-quality code across IDEs",
   "scripts": {
     "build": "pnpm run clean:dist && pnpm run rules:compile && pnpm run skills:compile && pnpm run plugins:compile",
-    "check:all": "pnpm run type-check && pnpm run format && pnpm run lint:fix && pnpm run rules:check && pnpm run rules:test && pnpm run skills:validate && pnpm run skills:test && pnpm run agents:test && pnpm run connectors:test && pnpm run codex:test && pnpm run machine:test && pnpm run library:test && pnpm run link:test && pnpm run hooks:test && pnpm run skills:lint && pnpm run hygiene:test",
+    "check:all": "pnpm run type-check && pnpm run format && pnpm run lint:fix && pnpm run rules:check && pnpm run rules:test && pnpm run skills:validate && pnpm run skills:test && pnpm run agents:test && pnpm run connectors:test && pnpm run codex:test && pnpm run conversations:test && pnpm run machine:test && pnpm run library:test && pnpm run link:test && pnpm run hooks:test && pnpm run skills:lint && pnpm run hygiene:test",
     "check:ci": "pnpm run check:all",
     "check": "pnpm run check:all",
     "format:check": "prettier --check .",
@@ -55,6 +55,11 @@
     "codex:repair": "tsx scripts/bin/run-codex-state-repair.ts",
     "codex:archive": "tsx scripts/bin/run-codex-session-archive.ts",
     "codex:restore": "tsx scripts/bin/run-codex-session-restore.ts",
+    "conversations:doctor": "tsx scripts/bin/run-conversations-doctor.ts",
+    "conversations:export": "tsx scripts/bin/run-conversations-export.ts",
+    "conversations:import": "tsx scripts/bin/run-conversations-import.ts",
+    "conversations:render": "tsx scripts/bin/run-conversations-render.ts",
+    "conversations:test": "tsx --test \"scripts/lib/conversations/**/*_TEST.ts\"",
     "codex:test": "tsx --test \"scripts/lib/codex-state/**/*_TEST.ts\"",
     "library:seed": "tsx scripts/bin/run-library-seed.ts",
     "library:observe": "tsx scripts/bin/run-library-observe.ts",
@@ -73,13 +78,14 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/node": "^26.1.1",
+    "@typescript/native": "npm:typescript@^7.0.2",
     "eslint": "^10.7.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-import-resolver-typescript": "^4.4.5",
     "eslint-plugin-boundaries": "^7.0.2",
     "eslint-plugin-check-file": "^3.3.2",
     "eslint-plugin-code-policy": "^0.5.0",
-    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-import-x": "^4.17.1",
     "eslint-plugin-sonarjs": "^4.2.0",
     "eslint-plugin-unicorn": "^72.0.0",
     "eslint-plugin-unused-imports": "^4.4.1",
@@ -88,11 +94,10 @@
     "ts-morph": "^28.0.0",
     "tsx": "^4.23.1",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
-    "@typescript/native": "npm:typescript@^7.0.2",
     "typescript-eslint": "^8.64.0"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=22.13.0"
   },
   "packageManager": "pnpm@11.15.0",
   "repository": {

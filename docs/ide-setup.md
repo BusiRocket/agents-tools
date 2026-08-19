@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- Node.js 18+
+- Node.js 22.13+
 - pnpm (`npm install -g pnpm`)
 - The BRP repo cloned and installed:
   ```bash

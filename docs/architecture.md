@@ -126,6 +126,22 @@ flowchart LR
     M --> N[REVIEW]
 ```
 
+## Conversation data flow
+
+```mermaid
+flowchart LR
+    A[Local provider files] --> B[Read-only source adapters]
+    B --> C[Normalized and redacted records]
+    C --> D[SHA-256-verified JSONL archive]
+    D --> E[Verified dry-run import]
+    E --> F[Canonical archive]
+    F --> G[MemPalace indexing and retrieval]
+```
+
+Provider credentials and databases never cross the adapter boundary. Rocket Agents owns capture,
+schema validation, and transport. MemPalace owns derived indexes, topics, and search. `dotfiles`
+owns only private host aliases, scheduling, and invocation.
+
 ## Precedence Model
 
 ```

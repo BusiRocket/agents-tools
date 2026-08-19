@@ -408,3 +408,16 @@
   - Evidence: `git show origin/main:<path> | diff -` clean for the three files; stash
     `pre-sync-20260817 superseded local edits` holds the discarded diff; `pnpm install` reported the
     lockfile unchanged; `pnpm run build` and `pnpm run check` both green after the pull.
+
+- [x] 2026-08-19 — **Conversations:** Added a security-filtered, provider-neutral conversation
+      transport covering the combined Historious and ai-data-extraction source catalog.
+  - Result: 13 providers have owned adapters across JSON, JSONL, read-only SQLite, and OpenCode
+    desktop Tauri stores. Export/import/render use private SQLite staging and LF-exact streaming,
+    manifests carry SHA-256 integrity, mutations are dry-run by default, and MemPalace remains the
+    derived search owner. The strict baseline now enforces Node 22.13, pnpm release-age/exotic-build
+    controls, clean ESLint 10 peers through `eslint-plugin-import-x`, and patched transitive
+    `brace-expansion` lines.
+  - Evidence: the all-source export processed 13,777 artifacts into 11,877 conversations (1.62 GB,
+    36,628 redactions, zero skips) in 1m47s; full-size import and render dry-runs each validated all
+    11,877 records without creating destinations; the Pi apply/render/MemPalace dry-run path passed;
+    `pnpm peers check`, `pnpm audit --audit-level high`, and `pnpm run check` all exit 0.

@@ -16,7 +16,7 @@ void test("sync snapshots and atomically applies canonical and live documents, t
     const path = join(root, "fake-agent.mjs")
     await writeFile(
       path,
-      `process.stdin.resume(); process.stdin.on("end", () => process.stdout.write(${JSON.stringify(JSON.stringify(result))}))`,
+      `const result=${JSON.stringify(result)}; process.stdin.resume(); process.stdin.on("end", () => { result.documentation.forEach((item) => { item.retrievedAt = new Date().toISOString() }); process.stdout.write(JSON.stringify(result)) })`,
     )
     return path
   }

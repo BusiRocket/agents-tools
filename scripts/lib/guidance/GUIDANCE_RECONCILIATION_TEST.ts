@@ -3,6 +3,8 @@ import test from "node:test"
 import { createHash } from "node:crypto"
 import { parseGuidancePolicy } from "./parseGuidancePolicy"
 import { validateReconciliationResult } from "./validators/validateReconciliationResult"
+import { validateClaudeTargetSyntax } from "./validators/validateClaudeTargetSyntax"
+import { validateCodexTargetSyntax } from "./validators/validateCodexTargetSyntax"
 
 void test("policy parsing accepts only the constrained policy contract", () => {
   const policy = {
@@ -85,10 +87,19 @@ void test("reconciliation result accepts matching hashes, documentation, and inv
     warnings: [],
     unresolvedLimitations: [],
   }
-  assert.deepEqual(validateReconciliationResult(result, policy, result.inputHashes), {
-    ok: true,
-    result,
-  })
+  assert.deepEqual(
+    validateReconciliationResult(
+      result,
+      policy,
+      result.inputHashes,
+      new Date(0),
+      new Date("2100-01-01T00:00:00.000Z"),
+    ),
+    {
+      ok: true,
+      result,
+    },
+  )
 })
 
 void test("reconciliation result fails closed for stale input hashes", () => {
@@ -128,9 +139,15 @@ void test("reconciliation result fails closed for stale input hashes", () => {
     warnings: [],
     unresolvedLimitations: [],
   }
-  const rejected = validateReconciliationResult(result, policy, {
-    "canonical/shared.md": digest("changed"),
-  })
+  const rejected = validateReconciliationResult(
+    result,
+    policy,
+    {
+      "canonical/shared.md": digest("changed"),
+    },
+    new Date(0),
+    new Date("2100-01-01T00:00:00.000Z"),
+  )
   assert.equal(rejected.ok, false)
   assert.match(rejected.errors.join("\n"), /input hashes/u)
 })
@@ -167,7 +184,13 @@ void test("reconciliation result rejects missing official documentation evidence
     warnings: [],
     unresolvedLimitations: [],
   }
-  const rejected = validateReconciliationResult(result, policy, result.inputHashes)
+  const rejected = validateReconciliationResult(
+    result,
+    policy,
+    result.inputHashes,
+    new Date(0),
+    new Date("2100-01-01T00:00:00.000Z"),
+  )
   assert.equal(rejected.ok, false)
   assert.match(rejected.errors.join("\n"), /Codex documentation/u)
 })
@@ -209,7 +232,13 @@ void test("reconciliation result rejects unresolved Claude imports in Codex outp
     warnings: [],
     unresolvedLimitations: [],
   }
-  const rejected = validateReconciliationResult(result, policy, result.inputHashes)
+  const rejected = validateReconciliationResult(
+    result,
+    policy,
+    result.inputHashes,
+    new Date(0),
+    new Date("2100-01-01T00:00:00.000Z"),
+  )
   assert.equal(rejected.ok, false)
   assert.match(rejected.errors.join("\n"), /Claude import/u)
 })
@@ -259,9 +288,32 @@ void test("reconciliation result rejects secret and captured-conversation materi
     shared: "Never expose credentials.\n",
     claudeDocument: '{"type":"session_meta","payload":{}}',
   }
-  assert.equal(validateReconciliationResult(secret, policy, secret.inputHashes).ok, false)
   assert.equal(
-    validateReconciliationResult(conversation, policy, conversation.inputHashes).ok,
+    validateReconciliationResult(
+      secret,
+      policy,
+      secret.inputHashes,
+      new Date(0),
+      new Date("2100-01-01T00:00:00.000Z"),
+    ).ok,
     false,
   )
+  assert.equal(
+    validateReconciliationResult(
+      conversation,
+      policy,
+      conversation.inputHashes,
+      new Date(0),
+      new Date("2100-01-01T00:00:00.000Z"),
+    ).ok,
+    false,
+  )
+})
+
+void test("target syntax validators handle documented Claude imports and every Codex import form", () => {
+  assert.deepEqual(validateClaudeTargetSyntax("@rules/navigation.md\nordinary @mention prose"), [])
+  assert.notDeepEqual(validateClaudeTargetSyntax("text\0"), [])
+  for (const value of ["@rules.md", "@rules/navigation.md", "  @rules.md", "see @rules.md now"])
+    assert.notDeepEqual(validateCodexTargetSyntax(value), [])
+  assert.deepEqual(validateCodexTargetSyntax("ordinary @mention prose"), [])
 })

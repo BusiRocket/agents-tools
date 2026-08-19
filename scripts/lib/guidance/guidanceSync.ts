@@ -38,7 +38,7 @@ export const guidanceSync = async (options: GuidanceSyncOptions): Promise<Guidan
     if (!parsedPolicy.ok)
       return { ok: false, runId, snapshotDir, errors: parsedPolicy.errors, warnings: [] }
     const sources = await collectGuidanceSources(options)
-    const runStartedAt = new Date(Date.now() - 1_000)
+    const runStartedAt = new Date()
     const rawResult = await runReconciliationAgent(
       parsedPolicy.policy,
       buildReconciliationPrompt(parsedPolicy.policy, sources),

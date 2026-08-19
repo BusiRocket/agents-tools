@@ -39,6 +39,19 @@ git diff --check
 exit 0
 ```
 
+## Fix round 3
+
+- Evidence validation now requires explicit start and end boundaries from the sync run; the test fake emits retrieval timestamps only after the agent begins.
+- Added direct Claude and Codex target-syntax fixtures, including root, relative, indented, inline import forms and ordinary `@` prose.
+
+```text
+pnpm run guidance:test
+11 passed, 0 failed
+
+pnpm run type-check
+exit 0
+```
+
 Focused coverage includes valid/rejected policy and result contracts, stale input hashes, missing documentation evidence, unresolved Claude imports in Codex output, secret/conversation rejection, successful apply and explicit rollback, invalid agent output with no writes, and rollback after a forced late transactional failure.
 
 ## Self-review

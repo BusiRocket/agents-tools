@@ -11,8 +11,8 @@ export const validateReconciliationResult = (
   raw: unknown,
   policy: GuidancePolicy,
   expectedInputHashes: Record<string, string>,
-  runStartedAt = new Date(0),
-  runEndedAt = new Date("2100-01-01T00:00:00.000Z"),
+  runStartedAt: Date,
+  runEndedAt: Date,
 ): { ok: true; result: ReconciliationResult } | { ok: false; errors: string[] } => {
   const schemaErrors = validateReconciliationSchema(raw)
   if (schemaErrors.length > 0) return { ok: false, errors: schemaErrors }

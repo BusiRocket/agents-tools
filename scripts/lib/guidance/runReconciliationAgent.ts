@@ -2,6 +2,7 @@ import { spawn } from "node:child_process"
 import { mkdtemp, rm } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
+import { createSandboxCommand } from "./createSandboxCommand"
 import type { GuidancePolicy } from "./types/GuidancePolicy"
 
 export const runReconciliationAgent = async (
@@ -21,8 +22,13 @@ export const runReconciliationAgent = async (
           reject(new Error("agent command must be an absolute executable path"))
           return
         }
-        const profile = `(version 1) (allow default) (deny file-write*) (allow file-write* (subpath "${scratchDir}"))`
-        const child = spawn("/usr/bin/sandbox-exec", ["-p", profile, command, ...args], {
+        const sandbox = createSandboxCommand({
+          platform: process.platform,
+          scratchDir,
+          command,
+          args,
+        })
+        const child = spawn(sandbox.executable, sandbox.args, {
           cwd: "/",
           env: {
             PATH: "/usr/bin:/bin:/usr/sbin:/sbin",

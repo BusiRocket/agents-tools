@@ -1,6 +1,9 @@
 import { containsSensitiveGuidanceContent } from "../containsSensitiveGuidanceContent"
 import { isAllowedDocumentationUrl } from "../isAllowedDocumentationUrl"
 import { parseReconciliationResult } from "../parseReconciliationResult"
+import { validateReconciliationSchema } from "./validateReconciliationSchema"
+import { validateClaudeTargetSyntax } from "./validateClaudeTargetSyntax"
+import { validateCodexTargetSyntax } from "./validateCodexTargetSyntax"
 import type { GuidancePolicy } from "../types/GuidancePolicy"
 import type { ReconciliationResult } from "../types/ReconciliationResult"
 
@@ -9,12 +12,19 @@ export const validateReconciliationResult = (
   policy: GuidancePolicy,
   expectedInputHashes: Record<string, string>,
   runStartedAt = new Date(0),
+  runEndedAt = new Date("2100-01-01T00:00:00.000Z"),
 ): { ok: true; result: ReconciliationResult } | { ok: false; errors: string[] } => {
+  const schemaErrors = validateReconciliationSchema(raw)
+  if (schemaErrors.length > 0) return { ok: false, errors: schemaErrors }
   const parsed = parseReconciliationResult(raw)
   if (!parsed.ok) return parsed
   const evidenceIsCurrent = (retrievedAt: string): boolean => {
     const timestamp = Date.parse(retrievedAt)
-    return Number.isFinite(timestamp) && timestamp >= runStartedAt.getTime() - 60_000
+    return (
+      Number.isFinite(timestamp) &&
+      timestamp >= runStartedAt.getTime() &&
+      timestamp <= runEndedAt.getTime()
+    )
   }
   const result = parsed.result
   const errors: string[] = []
@@ -51,8 +61,8 @@ export const validateReconciliationResult = (
   ]
   if (containsSensitiveGuidanceContent(JSON.stringify(result)))
     errors.push("result contains secret or captured conversation material")
-  if (/@(?:[~./]|[A-Za-z0-9_-]+\.md|[A-Za-z0-9_-]+\/)/u.test(result.codexDocument))
-    errors.push("Codex document contains an unresolved Claude import")
+  errors.push(...validateClaudeTargetSyntax(result.claudeDocument))
+  errors.push(...validateCodexTargetSyntax(result.codexDocument))
   for (const invariant of policy.requiredInvariants) {
     if (!result.claudeDocument.includes(invariant) || !result.codexDocument.includes(invariant))
       errors.push(`required invariant is missing from a rendered document: ${invariant}`)

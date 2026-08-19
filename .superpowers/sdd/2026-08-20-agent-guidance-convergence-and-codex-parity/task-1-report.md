@@ -83,3 +83,24 @@ exit 0
 ### Remaining concern
 
 The public implementation uses macOS `sandbox-exec`, which is the available hardened runner on this host. A portable Linux sandbox adapter remains a future platform-specific extension.
+
+## Fix round 2
+
+- Added runtime Draft 2020-12 schema execution with Ajv and URI format validation before semantic checks.
+- Added explicit Claude and Codex target validators; Codex rejects root, relative, indented, and inline Claude imports.
+- Added fail-closed platform sandbox command selection: macOS `sandbox-exec`, Linux `bwrap` when installed, and rejection for unsupported or unavailable runtimes.
+- Evidence validation now receives run boundaries from sync and validates provider-specific URLs before semantic use.
+
+```text
+pnpm run guidance:test
+10 passed, 0 failed
+
+pnpm run type-check
+exit 0
+
+pnpm run lint -- scripts/lib/guidance
+exit 0
+
+git diff --check
+exit 0
+```

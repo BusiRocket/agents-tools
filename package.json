@@ -83,6 +83,8 @@
     "@eslint/js": "^10.0.1",
     "@types/node": "^26.1.1",
     "@typescript/native": "npm:typescript@^7.0.2",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
     "eslint": "^10.7.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-import-resolver-typescript": "^4.4.5",

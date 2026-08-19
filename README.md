@@ -88,7 +88,9 @@ Imports require `--apply` to write. Supported sources and the division between t
 MemPalace search are documented in
 [`docs/research/conversation-capability-map.md`](docs/research/conversation-capability-map.md); the
 operational safety contract is in
-[`docs/runbooks/conversation-transport.md`](docs/runbooks/conversation-transport.md).
+[`docs/runbooks/conversation-transport.md`](docs/runbooks/conversation-transport.md), and the
+cross-repository no-duplication contract is in
+[`docs/architecture/conversation-ownership.md`](docs/architecture/conversation-ownership.md).
 
 Audit expected external connectors separately by Claude profile:
 

@@ -73,4 +73,6 @@ mempalace mine /tmp/rocket-agents-corpus --mode convos --wing rocket-agents-conv
 
 Copy the canonical export with the existing authenticated SSH/rsync channel, run a dry import on the
 receiver, and then apply it. Do not copy provider databases, cookies, tokens, or MemPalace storage.
-Host aliases and scheduling remain private configuration in `dotfiles`.
+Host aliases and scheduling remain private configuration in `dotfiles`. The complete ownership and
+prohibited-duplication rules are documented in
+[`../architecture/conversation-ownership.md`](../architecture/conversation-ownership.md).

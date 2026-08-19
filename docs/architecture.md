@@ -1,5 +1,23 @@
 # Architecture Overview
 
+## Rocket Agents ecosystem
+
+Rocket Agents is the complete agent environment. BRP is the workflow engine implemented by this
+control-plane repository.
+
+| Component        | Source of truth                         | Responsibility                                                                 |
+| ---------------- | --------------------------------------- | ------------------------------------------------------------------------------ |
+| Control plane    | `~/p/agents-tools`                      | Policy, adapters, diagnostics, machine convergence, and conversation transport |
+| Machine instance | `~/p/dotfiles`                          | Host bootstrap, packages, services, and private machine manifests              |
+| Skill library    | `~/.agents`                             | Curated skill sources and provenance shared across clients                     |
+| Knowledge vault  | `~/p/brain`                             | Human-authored knowledge and operational source material                       |
+| Memory runtime   | `~/p/mempalace` plus machine-local data | Search and indexing derived from knowledge and conversations                   |
+
+Credentials and client databases are intentionally outside this graph. They are authenticated or
+rebuilt on each machine instead of being synchronized. The repository naming decision and legacy
+`ai-state` disposition are recorded in
+[`adr/0001-rocket-agents-repository-family.md`](adr/0001-rocket-agents-repository-family.md).
+
 ## High-Level Components
 
 ```

@@ -1,8 +1,12 @@
-# busirocket-agents-tools (BRP)
+# Rocket Agents control plane (BRP)
 
 Agent workflow engine + rules/skills orchestrator that enforces planning, testing, and review to
 consistently produce high-quality code across IDEs, with global skills as the primary reusable BRP
 surface.
+
+Rocket Agents is the umbrella for the cross-machine agent environment. BRP is its workflow engine.
+The repository-family names and ownership boundaries are defined in
+[`docs/adr/0001-rocket-agents-repository-family.md`](docs/adr/0001-rocket-agents-repository-family.md).
 
 ## What It Is
 
@@ -23,8 +27,8 @@ BRP consolidates rules, skills, and an orchestration protocol into a single proj
 
 ```bash
 # Clone and run full setup (install, build, check, link rules + skills to IDEs)
-git clone https://github.com/BusiRocket/busirocket-agents-tools.git
-cd busirocket-agents-tools
+git clone https://github.com/BusiRocket/agents-tools.git
+cd agents-tools
 pnpm run sync
 ```
 
@@ -130,7 +134,7 @@ Every task follows 6 steps:
 ## Project Structure
 
 ```
-busirocket-agents-tools/
+agents-tools/
 ├── src/                         # Source (canonical content)
 │   ├── rules/                   # Canonical rule definitions (.mdc) — core, react, nextjs, rust,
 │   │                            # typescript, php, python, go, bash, styling, deploy,
@@ -458,7 +462,7 @@ Bundles all rules and skills as a single Cursor plugin named **BusiRocket Agents
 
 Location: `dist/plugins/claude/.claude-plugin/plugin.json`
 
-Use with: `claude --plugin-dir /path/to/busirocket-agents-tools`
+Use with: `claude --plugin-dir /path/to/agents-tools`
 
 ## Roadmap
 

@@ -6,6 +6,24 @@
 
 ### 2026-08
 
+- [x] 2026-08-19 - **Platform identity:** The repository family is named Rocket Agents and each
+      state type has one owner.
+  - Result: BRP remains the workflow engine; `agents-tools` is the public control plane, `~/.agents`
+    is the curated library, `dotfiles` owns host bootstrap, `brain` owns human knowledge, and
+    MemPalace owns derived search/index runtime. The redundant `ai-state` transport is preserved as
+    history but retired from active automation. Repository renames are staged as one coordinated
+    compatibility migration.
+  - Evidence: `docs/adr/0001-rocket-agents-repository-family.md`; `git remote get-url origin`;
+    `pnpm run machine:diff -- --json`; `~/p/dotfiles/bin/sync-conversations macmini dry`.
+
+- [-] 2026-08-19 - **Machine provisioning:** Restore a private `~/p/dotfiles/machine/mcp.json`
+  instance.
+  - Resolution: superseded by the tracked, data-free `machine/` instance in this repository.
+    `machine:diff` now resolves it by default and reports MCP, security, and capabilities converged
+    on both machines.
+  - Evidence: `pnpm run machine:diff -- --json` locally and over `ssh macmini` both return
+    `ok: true` with zero changes.
+
 - [x] 2026-08-18 - **Rules:** `text-hygiene` gave contradictory guidance and produced a false
       report.
   - Problem, hit live in the nubenode repo: the rule said both "prefer ASCII punctuation in

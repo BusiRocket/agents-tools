@@ -6,8 +6,8 @@
 - pnpm (`npm install -g pnpm`)
 - The BRP repo cloned and installed:
   ```bash
-  git clone https://github.com/BusiRocket/busirocket-agents-tools.git
-  cd busirocket-agents-tools
+  git clone https://github.com/BusiRocket/agents-tools.git
+  cd agents-tools
   pnpm install
   pnpm build
   ```
@@ -96,7 +96,7 @@ established remote terminal workflow.
 Load the project as a plugin using `--plugin-dir`:
 
 ```bash
-claude --plugin-dir /path/to/busirocket-agents-tools
+claude --plugin-dir /path/to/agents-tools
 ```
 
 Skills are available as `/busirocket-agents-tools:<skill-name>`:

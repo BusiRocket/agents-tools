@@ -36,19 +36,19 @@
       section 1.
 - [ ] Evaluate a conversation-only "grill" gate skill for business/marketing decisions (offer,
       positioning, pricing), modeled on Pocock's grill-me as used by practitioners on non-code
-      ideas: questions in rounds (dependent questions wait), ~46 questions / 4 rounds as an
-      ordinary session, ends when nothing is left to ask, and the pushback rule ("a session with
-      no pushback is a session you didn't need"). Source:
-      `~/p/brain/topics/claude-skills-ecosystem.md` (2026-08-19 section).
+      ideas: questions in rounds (dependent questions wait), ~46 questions / 4 rounds as an ordinary
+      session, ends when nothing is left to ask, and the pushback rule ("a session with no pushback
+      is a session you didn't need"). Source: `~/p/brain/topics/claude-skills-ecosystem.md`
+      (2026-08-19 section).
 - [ ] Measure invoked token cost of each BRP skill and record it in the skill docs, with Pocock's
-      `/grilling` at 345 tokens invoked as the reference for a gate-shaped skill. Anything an
-      order of magnitude above that needs a reason. Source:
-      `~/p/brain/topics/claude-skills-ecosystem.md` (2026-08-19 section).
+      `/grilling` at 345 tokens invoked as the reference for a gate-shaped skill. Anything an order
+      of magnitude above that needs a reason. Source: `~/p/brain/topics/claude-skills-ecosystem.md`
+      (2026-08-19 section).
 - [ ] Candidate BRP rule/hook: require a screen-recording video attached to any PR that changes UI
       state (steipete's one-line AGENTS.md rule at openclaw; GitHub accepts programmatic video
       upload — worked example openclaw/openclaw#124013). Fits next to the existing
-      evidence-before-claims posture. Source: `~/p/brain/topics/claude-code-practice.md`
-      (2026-08-19 X sweep section).
+      evidence-before-claims posture. Source: `~/p/brain/topics/claude-code-practice.md` (2026-08-19
+      X sweep section).
 - [ ] Adopt into the `brp` test lane: pre-agreed seams gate, red-before-green + vertical slicing,
       the three test anti-patterns (implementation-coupled, tautological, side-channel), and the
       boundaries-only mocking policy. Full spec: `docs/mattpocock-skills-diff-2026-08.md` section 2.
@@ -139,9 +139,12 @@
 > private `BusiRocket/dotfiles` repo, which already owns brew, shell, symlinks, launchd and secrets.
 > Measured inventories behind these items: `~/p/dotfiles/docs/machine-inventory/`.
 
-- [ ] Restore or clone the private machine instance at `~/p/dotfiles/machine/mcp.json`.
-      `pnpm machine:diff -- --json` currently fails with `no mcp.json`, so the shipped MCP engine
-      cannot audit or reproduce the live Claude/Codex configuration on this machine.
+- [!] Complete account-local authentication on `macmini`. Managed configuration is converged, but
+  `agents:doctor` still reports Cursor MCP failed; Claude needs Cloudflare in personal and Favish
+  plus OpenSEO in personal. ZeroHedge is optional and absent in both Claude profiles. Authentication
+  requires the user's browser/account session and must not be copied from another machine. Follow
+  `docs/runbooks/claude-connector-authentication.md`, then verify with
+  `pnpm run connectors:doctor -- --json` and `pnpm run agents:doctor -- --json` on the mini.
 - [ ] Plugin manifest: marketplaces plus plugins pinned by version, and the enabled/disabled state,
       which is the part no current tooling records (18 enabled, 18 disabled today). Reinstalling all
       36 and leaving them on does not reproduce the machine.
@@ -167,6 +170,10 @@
       cache prune would break.
 - [ ] `serena@claude-plugins-official` is installed but missing from `enabledPlugins`, so its state
       is defaulted rather than declared. Declare it.
+- [ ] Execute the coordinated Rocket Agents repository rename described in
+      `docs/adr/0001-rocket-agents-repository-family.md`: `agents-tools` to `rocket-agents` and
+      `claude-skills` to `rocket-agents-library`. Update remotes, clone paths, package metadata,
+      plugin namespaces, documentation, and scheduled jobs in one compatibility-window change.
 
 ## Supply chain and secrets
 

@@ -14,8 +14,9 @@ export const collectGuidanceSources = async (options: {
     if (path === "") return ""
     try {
       return await readFile(path, "utf8")
-    } catch {
-      return ""
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code === "ENOENT") return ""
+      throw error
     }
   }
   const add = async (key: string, path: string) => {
@@ -39,8 +40,8 @@ export const collectGuidanceSources = async (options: {
       if (entry.isFile() && entry.name.endsWith(".md"))
         await add(`claude-rules/${entry.name}`, join(rulesDir, entry.name))
     }
-  } catch {
-    /* An absent rules directory is a valid source state. */
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error
   }
   const hashes = Object.fromEntries(
     Object.entries(values).map(([key, value]) => [key, sha256Text(value)]),

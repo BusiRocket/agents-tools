@@ -58,12 +58,12 @@ void test("sync snapshots and atomically applies canonical and live documents, t
       {
         provider: "claude",
         url: "https://docs.anthropic.com/en/docs/claude-code",
-        retrievedAt: "2026-08-20T10:00:00.000Z",
+        retrievedAt: new Date().toISOString(),
       },
       {
         provider: "codex",
         url: "https://developers.openai.com/codex",
-        retrievedAt: "2026-08-20T10:00:00.000Z",
+        retrievedAt: new Date().toISOString(),
       },
     ],
     decisions: [{ action: "promoted", source: "claude", rationale: "Sync both clients." }],
@@ -76,7 +76,10 @@ void test("sync snapshots and atomically applies canonical and live documents, t
     JSON.stringify({
       version: 1,
       requiredInvariants: ["Never expose credentials."],
-      officialDocumentationOrigins: ["https://docs.anthropic.com", "https://developers.openai.com"],
+      officialDocumentationOrigins: {
+        claude: ["https://docs.anthropic.com"],
+        codex: ["https://developers.openai.com"],
+      },
       maxOutputBytes: 20_000,
       agentCommand: [process.execPath, fakeAgent],
       timeoutMs: 5_000,
@@ -131,7 +134,10 @@ void test("sync leaves all files untouched when agent output fails validation", 
     JSON.stringify({
       version: 1,
       requiredInvariants: ["Invariant"],
-      officialDocumentationOrigins: ["https://docs.anthropic.com", "https://developers.openai.com"],
+      officialDocumentationOrigins: {
+        claude: ["https://docs.anthropic.com"],
+        codex: ["https://developers.openai.com"],
+      },
       maxOutputBytes: 20_000,
       agentCommand: [process.execPath, fakeAgent],
       timeoutMs: 5_000,

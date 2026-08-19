@@ -8,11 +8,10 @@ void test("policy parsing accepts only the constrained policy contract", () => {
   const policy = {
     version: 1 as const,
     requiredInvariants: ["Never expose credentials.", "Use official documentation."],
-    officialDocumentationOrigins: [
-      "https://docs.anthropic.com",
-      "https://developers.openai.com",
-      "https://github.com",
-    ],
+    officialDocumentationOrigins: {
+      claude: ["https://docs.anthropic.com"],
+      codex: ["https://developers.openai.com", "https://github.com"],
+    },
     maxOutputBytes: 20_000,
     agentCommand: ["fake-agent"],
     timeoutMs: 5_000,
@@ -27,7 +26,10 @@ void test("policy parsing rejects literal credentials", () => {
   const policy = {
     version: 1 as const,
     requiredInvariants: ["Never expose credentials."],
-    officialDocumentationOrigins: ["https://docs.anthropic.com"],
+    officialDocumentationOrigins: {
+      claude: ["https://docs.anthropic.com"],
+      codex: ["https://developers.openai.com"],
+    },
     maxOutputBytes: 20_000,
     agentCommand: ["fake-agent"],
     timeoutMs: 5_000,
@@ -45,7 +47,10 @@ void test("reconciliation result accepts matching hashes, documentation, and inv
   const policy = {
     version: 1 as const,
     requiredInvariants: ["Never expose credentials.", "Use official documentation."],
-    officialDocumentationOrigins: ["https://docs.anthropic.com", "https://developers.openai.com"],
+    officialDocumentationOrigins: {
+      claude: ["https://docs.anthropic.com"],
+      codex: ["https://developers.openai.com"],
+    },
     maxOutputBytes: 20_000,
     agentCommand: ["fake-agent"],
     timeoutMs: 5_000,
@@ -91,7 +96,10 @@ void test("reconciliation result fails closed for stale input hashes", () => {
   const policy = {
     version: 1 as const,
     requiredInvariants: ["Never expose credentials."],
-    officialDocumentationOrigins: ["https://docs.anthropic.com", "https://developers.openai.com"],
+    officialDocumentationOrigins: {
+      claude: ["https://docs.anthropic.com"],
+      codex: ["https://developers.openai.com"],
+    },
     maxOutputBytes: 20_000,
     agentCommand: ["fake-agent"],
     timeoutMs: 5_000,
@@ -132,7 +140,10 @@ void test("reconciliation result rejects missing official documentation evidence
   const policy = {
     version: 1 as const,
     requiredInvariants: ["Never expose credentials."],
-    officialDocumentationOrigins: ["https://docs.anthropic.com", "https://developers.openai.com"],
+    officialDocumentationOrigins: {
+      claude: ["https://docs.anthropic.com"],
+      codex: ["https://developers.openai.com"],
+    },
     maxOutputBytes: 20_000,
     agentCommand: ["fake-agent"],
     timeoutMs: 5_000,
@@ -166,7 +177,10 @@ void test("reconciliation result rejects unresolved Claude imports in Codex outp
   const policy = {
     version: 1 as const,
     requiredInvariants: ["Never expose credentials."],
-    officialDocumentationOrigins: ["https://docs.anthropic.com", "https://developers.openai.com"],
+    officialDocumentationOrigins: {
+      claude: ["https://docs.anthropic.com"],
+      codex: ["https://developers.openai.com"],
+    },
     maxOutputBytes: 20_000,
     agentCommand: ["fake-agent"],
     timeoutMs: 5_000,
@@ -205,7 +219,10 @@ void test("reconciliation result rejects secret and captured-conversation materi
   const policy = {
     version: 1 as const,
     requiredInvariants: ["Never expose credentials."],
-    officialDocumentationOrigins: ["https://docs.anthropic.com", "https://developers.openai.com"],
+    officialDocumentationOrigins: {
+      claude: ["https://docs.anthropic.com"],
+      codex: ["https://developers.openai.com"],
+    },
     maxOutputBytes: 20_000,
     agentCommand: ["fake-agent"],
     timeoutMs: 5_000,

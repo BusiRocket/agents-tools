@@ -36,11 +36,16 @@ export const parseGuidancePolicy = (
   )
     errors.push("requiredInvariants must be a non-empty string array")
   if (
-    !Array.isArray(origins) ||
-    origins.length === 0 ||
-    !origins.every((item) => typeof item === "string" && isHttpsOrigin(item))
+    !isRecord(origins) ||
+    !["claude", "codex"].every(
+      (provider) =>
+        Array.isArray(origins[provider]) &&
+        origins[provider].length > 0 &&
+        origins[provider].every((item) => typeof item === "string" && isHttpsOrigin(item)),
+    ) ||
+    Object.keys(origins).some((provider) => provider !== "claude" && provider !== "codex")
   )
-    errors.push("officialDocumentationOrigins must be HTTPS origins")
+    errors.push("officialDocumentationOrigins must provide Claude and Codex HTTPS origins")
   if (
     typeof raw.maxOutputBytes !== "number" ||
     !Number.isSafeInteger(raw.maxOutputBytes) ||

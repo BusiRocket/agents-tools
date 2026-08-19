@@ -53,3 +53,33 @@ Focused coverage includes valid/rejected policy and result contracts, stale inpu
 
 - No private canonical policy or real external reconciler was available in this public repository, so real-provider documentation retrieval and a real-agent invocation were intentionally not executed. The wrapper will fail closed if either does not meet the validated contract.
 - The private scheduler and canonical guidance content remain owned by `dotfiles` and are outside this task's permitted scope.
+
+## Fix round 1
+
+### Completed hardening
+
+- The configured reconciler now requires an absolute executable and runs through the macOS sandbox with a sanitized environment, root working directory, no usable home directory, and file writes denied outside a newly created private temporary runtime directory.
+- The engine recollects all sources after the agent exits and rejects any content drift before snapshots or writes.
+- Snapshot files, manifest, completion marker, and run directories are fsynced. Apply rollback failures are surfaced rather than suppressed, and restore validates snapshot hashes and trusted target bindings.
+- Documentation origins are provider-specific. Evidence is independently URL-checked against the correct provider allowlist and must be contemporaneous with the run window.
+- Nested result objects reject extra fields, the sensitive-content scan covers the complete validated result, source collection tolerates only `ENOENT`, accepted state now persists rendered-output hashes, and Codex import detection covers root, relative, inline, and indented import forms.
+
+### Verification
+
+```text
+pnpm run guidance:test
+10 passed, 0 failed
+
+pnpm run type-check
+exit 0
+
+pnpm run lint -- scripts/lib/guidance scripts/commands/guidanceSync.ts scripts/commands/guidanceDoctor.ts scripts/commands/guidanceRollback.ts scripts/bin/run-guidance-sync.ts scripts/bin/run-guidance-doctor.ts scripts/bin/run-guidance-rollback.ts
+exit 0
+
+git diff --check
+exit 0
+```
+
+### Remaining concern
+
+The public implementation uses macOS `sandbox-exec`, which is the available hardened runner on this host. A portable Linux sandbox adapter remains a future platform-specific extension.

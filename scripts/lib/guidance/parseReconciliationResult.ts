@@ -23,12 +23,14 @@ export const parseReconciliationResult = (
     Object.values(value).every((item) => typeof item === "string" && /^[a-f0-9]{64}$/u.test(item))
   const isEvidence = (value: unknown): boolean =>
     isRecord(value) &&
+    Object.keys(value).every((key) => ["provider", "url", "retrievedAt"].includes(key)) &&
     (value.provider === "claude" || value.provider === "codex") &&
     typeof value.url === "string" &&
     typeof value.retrievedAt === "string" &&
     !Number.isNaN(Date.parse(value.retrievedAt))
   const isDecision = (value: unknown): boolean =>
     isRecord(value) &&
+    Object.keys(value).every((key) => ["action", "source", "rationale"].includes(key)) &&
     ["promoted", "preserved", "translated", "removed"].includes(String(value.action)) &&
     ["shared", "claude", "codex", "rule"].includes(String(value.source)) &&
     typeof value.rationale === "string" &&

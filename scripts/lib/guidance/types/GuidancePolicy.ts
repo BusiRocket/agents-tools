@@ -1,7 +1,7 @@
 export interface GuidancePolicy {
   version: 1
   requiredInvariants: string[]
-  officialDocumentationOrigins: string[]
+  officialDocumentationOrigins: { claude: string[]; codex: string[] }
   maxOutputBytes: number
   agentCommand: string[]
   timeoutMs: number

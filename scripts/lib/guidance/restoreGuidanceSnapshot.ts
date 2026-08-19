@@ -35,5 +35,7 @@ export const restoreGuidanceSnapshot = async (
     if (sha256Text(content) !== value.sha256) throw new Error("guidance snapshot hash mismatch")
     await writeGuidanceAtomically(value.target, content)
     await chmod(value.target, value.mode)
+    if (sha256Text(await readFile(value.target, "utf8")) !== value.sha256)
+      throw new Error("guidance restore target hash mismatch")
   }
 }

@@ -1,8 +1,9 @@
-import { chmod, mkdir, writeFile } from "node:fs/promises"
+import { chmod, mkdir, open, writeFile } from "node:fs/promises"
 import { join } from "node:path"
 import { createGuidanceSnapshot } from "./createGuidanceSnapshot"
 import { guidanceTargets } from "./guidanceTargets"
 import { restoreGuidanceSnapshot } from "./restoreGuidanceSnapshot"
+import { sha256Text } from "./sha256Text"
 import { writeGuidanceAtomically } from "./writeGuidanceAtomically"
 import type { ReconciliationResult } from "./types/ReconciliationResult"
 
@@ -24,17 +25,36 @@ export const applyGuidanceResult = async (options: {
     [targets["live/codex/AGENTS.md"], options.result.codexDocument],
     [
       targets["state/accepted.json"],
-      `${JSON.stringify({ runId: options.runId, acceptedAt: new Date().toISOString(), inputHashes: options.result.inputHashes }, null, 2)}\n`,
+      `${JSON.stringify({ runId: options.runId, acceptedAt: new Date().toISOString(), inputHashes: options.result.inputHashes, outputHashes: { shared: sha256Text(options.result.shared), claudeOverlay: sha256Text(options.result.claudeOverlay), codexOverlay: sha256Text(options.result.codexOverlay), claudeDocument: sha256Text(options.result.claudeDocument), codexDocument: sha256Text(options.result.codexDocument) } }, null, 2)}\n`,
     ],
   ]
   try {
     for (const [target, content] of writes) await writeGuidanceAtomically(target, content)
     await mkdir(snapshotDir, { recursive: true, mode: 0o700 })
     await writeFile(join(snapshotDir, "complete"), "", { mode: 0o600, flag: "wx" })
+    const completeHandle = await open(join(snapshotDir, "complete"), "r")
+    try {
+      await completeHandle.sync()
+    } finally {
+      await completeHandle.close()
+    }
     await chmod(join(snapshotDir, "complete"), 0o400)
+    const runDirectoryHandle = await open(snapshotDir, "r")
+    try {
+      await runDirectoryHandle.sync()
+    } finally {
+      await runDirectoryHandle.close()
+    }
     return snapshotDir
   } catch (error) {
-    await restoreGuidanceSnapshot(snapshotDir, targets).catch(() => undefined)
+    try {
+      await restoreGuidanceSnapshot(snapshotDir, targets)
+    } catch (rollbackError) {
+      throw new Error(
+        `guidance apply failed and rollback failed: ${rollbackError instanceof Error ? rollbackError.message : "unknown rollback error"}`,
+        { cause: rollbackError },
+      )
+    }
     throw error
   }
 }

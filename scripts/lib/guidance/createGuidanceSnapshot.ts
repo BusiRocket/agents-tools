@@ -1,11 +1,19 @@
-import { chmod, lstat, mkdir, readFile, writeFile } from "node:fs/promises"
-import { join } from "node:path"
+import { chmod, lstat, mkdir, open, readFile, writeFile } from "node:fs/promises"
+import { dirname, join } from "node:path"
 import { sha256Text } from "./sha256Text"
 
 export const createGuidanceSnapshot = async (options: {
   snapshotDir: string
   targets: Record<string, string>
 }): Promise<void> => {
+  const syncPath = async (path: string): Promise<void> => {
+    const handle = await open(path, "r")
+    try {
+      await handle.sync()
+    } finally {
+      await handle.close()
+    }
+  }
   await mkdir(join(options.snapshotDir, "files"), { recursive: true, mode: 0o700 })
   const entries: {
     key: string
@@ -26,6 +34,7 @@ export const createGuidanceSnapshot = async (options: {
         mode: 0o600,
         flag: "wx",
       })
+      await syncPath(join(options.snapshotDir, "files", storage))
       await chmod(join(options.snapshotDir, "files", storage), 0o400)
       entries.push({
         key,
@@ -46,5 +55,9 @@ export const createGuidanceSnapshot = async (options: {
     `${JSON.stringify({ version: 1, entries }, null, 2)}\n`,
     { mode: 0o600, flag: "wx" },
   )
+  await syncPath(join(options.snapshotDir, "manifest.json"))
+  await syncPath(join(options.snapshotDir, "files"))
+  await syncPath(options.snapshotDir)
+  await syncPath(dirname(options.snapshotDir))
   await chmod(join(options.snapshotDir, "manifest.json"), 0o400)
 }

@@ -1,9 +1,10 @@
 import type { DocumentationEvidence } from "./DocumentationEvidence"
 import type { GuidanceDecision } from "./GuidanceDecision"
+import type { GuidanceInputHash } from "./GuidanceInputHash"
 
 export interface ReconciliationResult {
   version: 1
-  inputHashes: Record<string, string>
+  inputHashes: GuidanceInputHash[]
   shared: string
   claudeOverlay: string
   codexOverlay: string

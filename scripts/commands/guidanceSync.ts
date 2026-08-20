@@ -1,23 +1,23 @@
 import { homedir } from "node:os"
 import { join, resolve } from "node:path"
+import { readAliasedGuidanceFlag } from "../lib/guidance/cli/readAliasedGuidanceFlag"
+import { readGuidanceFlag } from "../lib/guidance/cli/readGuidanceFlag"
 import { guidanceSync } from "../lib/guidance/guidanceSync"
 
 export const main = async (): Promise<void> => {
-  const argumentValue = (name: string): string | undefined => {
-    const index = process.argv.indexOf(name)
-    return index === -1 ? undefined : process.argv[index + 1]
-  }
-  const home = argumentValue("--home") ?? homedir()
+  const home = readGuidanceFlag(process.argv, "--home") ?? homedir()
   const canonicalDir =
-    argumentValue("--canonical-dir") ?? join(home, ".config", "rocket-agents", "agent-guidance")
+    readAliasedGuidanceFlag(process.argv, "--config", "--canonical-dir") ??
+    join(home, ".config", "rocket-agents", "agent-guidance")
   const stateDir =
-    argumentValue("--state-dir") ??
+    readGuidanceFlag(process.argv, "--state-dir") ??
     join(home, ".local", "state", "rocket-agents", "guidance", "default")
-  const rulesInventory = argumentValue("--rules-inventory")
+  const rulesInventory = readGuidanceFlag(process.argv, "--rules-inventory")
   const report = await guidanceSync({
     home: resolve(home),
     canonicalDir: resolve(canonicalDir),
     stateDir: resolve(stateDir),
+    dryRun: process.argv.includes("--dry-run"),
     ...(rulesInventory === undefined ? {} : { rulesInventoryPath: resolve(rulesInventory) }),
   })
   console.log(JSON.stringify(report, null, 2))

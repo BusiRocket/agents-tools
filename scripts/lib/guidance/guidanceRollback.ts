@@ -16,6 +16,7 @@ export const guidanceRollback = async (options: {
   if (!runs.includes(runId))
     return {
       ok: false,
+      applied: false,
       runId,
       snapshotDir,
       errors: ["no complete guidance run is available for rollback"],
@@ -23,10 +24,11 @@ export const guidanceRollback = async (options: {
     }
   try {
     await restoreGuidanceSnapshot(snapshotDir, guidanceTargets(options))
-    return { ok: true, runId, snapshotDir, errors: [], warnings: [] }
+    return { ok: true, applied: true, runId, snapshotDir, errors: [], warnings: [] }
   } catch (error) {
     return {
       ok: false,
+      applied: false,
       runId,
       snapshotDir,
       errors: [error instanceof Error ? error.message : "guidance rollback failed"],

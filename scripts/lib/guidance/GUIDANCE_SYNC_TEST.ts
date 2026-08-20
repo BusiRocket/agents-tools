@@ -6,6 +6,7 @@ import test from "node:test"
 import { applyGuidanceResult } from "./applyGuidanceResult"
 import { guidanceRollback } from "./guidanceRollback"
 import { guidanceSync } from "./guidanceSync"
+import { toGuidanceInputHashes } from "./toGuidanceInputHashes"
 
 void test("sync snapshots and atomically applies canonical and live documents, then rollback restores all", async () => {
   const hash = async (value: string) => {
@@ -48,7 +49,7 @@ void test("sync snapshots and atomically applies canonical and live documents, t
   }
   const result = {
     version: 1,
-    inputHashes,
+    inputHashes: toGuidanceInputHashes(inputHashes),
     shared: "Never expose credentials.\n",
     claudeOverlay: "Claude overlay\n",
     codexOverlay: "Codex overlay\n",
@@ -93,8 +94,13 @@ void test("sync snapshots and atomically applies canonical and live documents, t
     rulesInventoryPath: join(root, "missing-rules-inventory.md"),
   })
   assert.equal(report.ok, true)
+  assert.equal(report.applied, true)
   assert.equal(await readFile(join(home, ".codex", "AGENTS.md"), "utf8"), result.codexDocument)
   assert.equal(await readFile(join(canonical, "shared.md"), "utf8"), result.shared)
+  const accepted = JSON.parse(await readFile(join(root, "state", "accepted.json"), "utf8")) as {
+    inputHashes: unknown
+  }
+  assert.deepEqual(accepted.inputHashes, toGuidanceInputHashes(inputHashes))
   assert.equal((await stat(join(home, ".codex", "AGENTS.md"))).mode & 0o777, 0o600)
   await access(join(report.snapshotDir, "complete"))
 
@@ -153,6 +159,116 @@ void test("sync leaves all files untouched when agent output fails validation", 
   assert.equal(await readFile(join(home, ".codex", "AGENTS.md"), "utf8"), "old codex\n")
   assert.equal(await readFile(join(canonical, "shared.md"), "utf8"), "old\n")
   await assert.rejects(access(join(root, "state", "runs")))
+})
+
+void test("dry-run validates through the source recheck without writing files or snapshots", async () => {
+  const { createHash } = await import("node:crypto")
+  const hash = (value: string) => createHash("sha256").update(value).digest("hex")
+  const root = await mkdtemp(join(tmpdir(), "guidance-dry-run-"))
+  const home = join(root, "home")
+  const canonical = join(root, "canonical")
+  const state = join(root, "state")
+  await Promise.all([
+    mkdir(join(home, ".claude"), { recursive: true }),
+    mkdir(join(home, ".codex"), { recursive: true }),
+    mkdir(canonical),
+    mkdir(state),
+  ])
+  const contents = {
+    shared: "old shared\n",
+    claudeOverlay: "old claude overlay\n",
+    codexOverlay: "old codex overlay\n",
+    claudeDocument: "old claude\n",
+    codexDocument: "old codex\n",
+    accepted: "old accepted state\n",
+  }
+  await Promise.all([
+    writeFile(join(canonical, "shared.md"), contents.shared),
+    writeFile(join(canonical, "claude-overlay.md"), contents.claudeOverlay),
+    writeFile(join(canonical, "codex-overlay.md"), contents.codexOverlay),
+    writeFile(join(home, ".claude", "CLAUDE.md"), contents.claudeDocument),
+    writeFile(join(home, ".codex", "AGENTS.md"), contents.codexDocument),
+    writeFile(join(state, "accepted.json"), contents.accepted),
+  ])
+  const expectedHashes = {
+    "canonical/shared.md": hash(contents.shared),
+    "canonical/claude-overlay.md": hash(contents.claudeOverlay),
+    "canonical/codex-overlay.md": hash(contents.codexOverlay),
+    "live/claude/CLAUDE.md": hash(contents.claudeDocument),
+    "live/codex/AGENTS.md": hash(contents.codexDocument),
+    "state/accepted.json": hash(contents.accepted),
+    "generated/rules-inventory": hash(""),
+  }
+  const result = {
+    version: 1,
+    inputHashes: toGuidanceInputHashes(expectedHashes),
+    shared: "Never expose credentials.\n",
+    claudeOverlay: "New Claude overlay.\n",
+    codexOverlay: "New Codex overlay.\n",
+    claudeDocument: "Never expose credentials.\n",
+    codexDocument: "Never expose credentials.\n",
+    documentation: [
+      {
+        provider: "claude",
+        url: "https://docs.anthropic.com/en/docs/claude-code",
+        retrievedAt: new Date().toISOString(),
+      },
+      {
+        provider: "codex",
+        url: "https://developers.openai.com/codex",
+        retrievedAt: new Date().toISOString(),
+      },
+    ],
+    decisions: [],
+    warnings: [],
+    unresolvedLimitations: [],
+  }
+  const fakeAgent = join(root, "fake-agent.mjs")
+  await writeFile(
+    fakeAgent,
+    `const result=${JSON.stringify(result)}; process.stdin.resume(); process.stdin.on("end", () => { result.documentation.forEach((item) => { item.retrievedAt = new Date().toISOString() }); process.stdout.write(JSON.stringify(result)) })`,
+  )
+  await writeFile(
+    join(canonical, "policy.json"),
+    JSON.stringify({
+      version: 1,
+      requiredInvariants: ["Never expose credentials."],
+      officialDocumentationOrigins: {
+        claude: ["https://docs.anthropic.com"],
+        codex: ["https://developers.openai.com"],
+      },
+      maxOutputBytes: 20_000,
+      agentCommand: [process.execPath, fakeAgent],
+      timeoutMs: 5_000,
+    }),
+  )
+  const protectedPaths = [
+    join(canonical, "shared.md"),
+    join(canonical, "claude-overlay.md"),
+    join(canonical, "codex-overlay.md"),
+    join(canonical, "policy.json"),
+    join(home, ".claude", "CLAUDE.md"),
+    join(home, ".codex", "AGENTS.md"),
+    join(state, "accepted.json"),
+  ]
+  const before = await Promise.all(protectedPaths.map(async (path) => await readFile(path)))
+
+  const report = await guidanceSync({
+    home,
+    canonicalDir: canonical,
+    stateDir: state,
+    dryRun: true,
+    rulesInventoryPath: join(root, "missing-rules-inventory.md"),
+  })
+
+  assert.equal(report.ok, true)
+  assert.equal(report.applied, false)
+  assert.match(report.warnings.join("\n"), /no guidance files or snapshots were written/u)
+  for (const [index, path] of protectedPaths.entries())
+    assert.deepEqual(await readFile(path), before[index], `${path} must remain byte-identical`)
+  await assert.rejects(access(report.snapshotDir), { code: "ENOENT" })
+  await assert.rejects(access(join(state, "runs")), { code: "ENOENT" })
+  await assert.rejects(access(join(state, "lock")), { code: "ENOENT" })
 })
 
 void test(
@@ -219,7 +335,7 @@ void test("a failed finalization restores every file from the run snapshot", asy
   ])
   const result = {
     version: 1 as const,
-    inputHashes: {},
+    inputHashes: [],
     shared: "new shared\n",
     claudeOverlay: "new claude overlay\n",
     codexOverlay: "new codex overlay\n",

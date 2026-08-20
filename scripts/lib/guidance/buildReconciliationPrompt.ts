@@ -1,4 +1,5 @@
 import outputSchema from "../../schemas/guidance-reconciliation.schema.json"
+import { toGuidanceInputHashes } from "./toGuidanceInputHashes"
 import type { GuidancePolicy } from "./types/GuidancePolicy"
 import type { GuidanceSources } from "./types/GuidanceSources"
 
@@ -17,6 +18,6 @@ export const buildReconciliationPrompt = (
     requiredInvariants: policy.requiredInvariants,
     officialDocumentationOrigins: policy.officialDocumentationOrigins,
     outputSchema,
-    inputHashes: sources.hashes,
+    inputHashes: toGuidanceInputHashes(sources.hashes),
     sources: sources.values,
   })

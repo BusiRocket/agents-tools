@@ -19,8 +19,17 @@
   "properties": {
     "version": { "const": 1 },
     "inputHashes": {
-      "type": "object",
-      "additionalProperties": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "sha256"],
+        "properties": {
+          "path": { "type": "string", "minLength": 1 },
+          "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+        }
+      }
     },
     "shared": { "type": "string", "minLength": 1 },
     "claudeOverlay": { "type": "string", "minLength": 1 },

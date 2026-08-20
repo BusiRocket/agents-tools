@@ -1,6 +1,7 @@
 import { containsSensitiveGuidanceContent } from "../containsSensitiveGuidanceContent"
 import { isAllowedDocumentationUrl } from "../isAllowedDocumentationUrl"
 import { parseReconciliationResult } from "../parseReconciliationResult"
+import { toGuidanceInputHashes } from "../toGuidanceInputHashes"
 import { validateReconciliationSchema } from "./validateReconciliationSchema"
 import { validateClaudeTargetSyntax } from "./validateClaudeTargetSyntax"
 import { validateCodexTargetSyntax } from "./validateCodexTargetSyntax"
@@ -28,11 +29,8 @@ export const validateReconciliationResult = (
   }
   const result = parsed.result
   const errors: string[] = []
-  if (
-    JSON.stringify(Object.keys(result.inputHashes).sort()) !==
-      JSON.stringify(Object.keys(expectedInputHashes).sort()) ||
-    Object.entries(expectedInputHashes).some(([key, value]) => result.inputHashes[key] !== value)
-  )
+  const expectedHashes = toGuidanceInputHashes(expectedInputHashes)
+  if (JSON.stringify(result.inputHashes) !== JSON.stringify(expectedHashes))
     errors.push("input hashes do not match current sources")
   if (
     !result.documentation.some(

@@ -61,7 +61,7 @@ void test("reconciliation result accepts matching hashes, documentation, and inv
   }
   const result = {
     version: 1,
-    inputHashes: { "canonical/shared.md": digest("shared") },
+    inputHashes: [{ path: "canonical/shared.md", sha256: digest("shared") }],
     shared: "Never expose credentials.\nUse official documentation.\n",
     claudeOverlay: "Claude-specific guidance.\n",
     codexOverlay: "Codex-specific guidance.\n",
@@ -93,7 +93,7 @@ void test("reconciliation result accepts matching hashes, documentation, and inv
     validateReconciliationResult(
       result,
       policy,
-      result.inputHashes,
+      { "canonical/shared.md": digest("shared") },
       new Date(0),
       new Date("2100-01-01T00:00:00.000Z"),
     ),
@@ -119,7 +119,7 @@ void test("reconciliation result fails closed for stale input hashes", () => {
   }
   const result = {
     version: 1,
-    inputHashes: { "canonical/shared.md": digest("shared") },
+    inputHashes: [{ path: "canonical/shared.md", sha256: digest("shared") }],
     shared: "Never expose credentials.\n",
     claudeOverlay: "Claude.\n",
     codexOverlay: "Codex.\n",
@@ -169,7 +169,7 @@ void test("reconciliation result rejects missing official documentation evidence
   }
   const result = {
     version: 1,
-    inputHashes: { "canonical/shared.md": digest("shared") },
+    inputHashes: [{ path: "canonical/shared.md", sha256: digest("shared") }],
     shared: "Never expose credentials.\n",
     claudeOverlay: "Claude.\n",
     codexOverlay: "Codex.\n",
@@ -189,7 +189,7 @@ void test("reconciliation result rejects missing official documentation evidence
   const rejected = validateReconciliationResult(
     result,
     policy,
-    result.inputHashes,
+    { "canonical/shared.md": digest("shared") },
     new Date(0),
     new Date("2100-01-01T00:00:00.000Z"),
   )
@@ -212,7 +212,7 @@ void test("reconciliation result rejects unresolved Claude imports in Codex outp
   }
   const result = {
     version: 1,
-    inputHashes: { "canonical/shared.md": digest("shared") },
+    inputHashes: [{ path: "canonical/shared.md", sha256: digest("shared") }],
     shared: "Never expose credentials.\n",
     claudeOverlay: "Claude.\n",
     codexOverlay: "Codex.\n",
@@ -237,7 +237,7 @@ void test("reconciliation result rejects unresolved Claude imports in Codex outp
   const rejected = validateReconciliationResult(
     result,
     policy,
-    result.inputHashes,
+    { "canonical/shared.md": digest("shared") },
     new Date(0),
     new Date("2100-01-01T00:00:00.000Z"),
   )
@@ -260,7 +260,7 @@ void test("reconciliation result rejects secret and captured-conversation materi
   }
   const base = {
     version: 1,
-    inputHashes: { "canonical/shared.md": digest("shared") },
+    inputHashes: [{ path: "canonical/shared.md", sha256: digest("shared") }],
     claudeOverlay: "Claude.\n",
     codexOverlay: "Codex.\n",
     codexDocument: "Never expose credentials.\n",
@@ -294,7 +294,7 @@ void test("reconciliation result rejects secret and captured-conversation materi
     validateReconciliationResult(
       secret,
       policy,
-      secret.inputHashes,
+      { "canonical/shared.md": digest("shared") },
       new Date(0),
       new Date("2100-01-01T00:00:00.000Z"),
     ).ok,
@@ -304,7 +304,7 @@ void test("reconciliation result rejects secret and captured-conversation materi
     validateReconciliationResult(
       conversation,
       policy,
-      conversation.inputHashes,
+      { "canonical/shared.md": digest("shared") },
       new Date(0),
       new Date("2100-01-01T00:00:00.000Z"),
     ).ok,
@@ -336,7 +336,7 @@ void test("documentation evidence must be retrieved within the exact run window"
   }
   const result = {
     version: 1,
-    inputHashes: { "canonical/shared.md": "a".repeat(64) },
+    inputHashes: [{ path: "canonical/shared.md", sha256: "a".repeat(64) }],
     shared: "Never expose credentials.\n",
     claudeOverlay: "Claude.\n",
     codexOverlay: "Codex.\n",
@@ -362,7 +362,7 @@ void test("documentation evidence must be retrieved within the exact run window"
     validateReconciliationResult(
       result,
       policy,
-      result.inputHashes,
+      { "canonical/shared.md": "a".repeat(64) },
       runStartedAt,
       runEndedAt,
     ).ok,
@@ -379,7 +379,7 @@ void test("documentation evidence must be retrieved within the exact run window"
         documentation: result.documentation.map((item) => ({ ...item, retrievedAt })),
       },
       policy,
-      result.inputHashes,
+      { "canonical/shared.md": "a".repeat(64) },
       runStartedAt,
       runEndedAt,
     )
@@ -391,7 +391,7 @@ void test("documentation evidence must be retrieved within the exact run window"
 void test("runtime schema rejects invalid evidence URIs and nested extra properties", () => {
   const result = {
     version: 1,
-    inputHashes: { "canonical/shared.md": "a".repeat(64) },
+    inputHashes: [{ path: "canonical/shared.md", sha256: "a".repeat(64) }],
     shared: "shared",
     claudeOverlay: "claude",
     codexOverlay: "codex",

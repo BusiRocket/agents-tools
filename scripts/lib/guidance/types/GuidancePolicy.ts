@@ -4,5 +4,6 @@ export interface GuidancePolicy {
   officialDocumentationOrigins: { claude: string[]; codex: string[] }
   maxOutputBytes: number
   agentCommand: string[]
+  agentReadAllowlist?: string[]
   timeoutMs: number
 }

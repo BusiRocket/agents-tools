@@ -22,6 +22,7 @@ void test("the agent prompt requires live evidence and verbatim invariants", () 
   )
 
   assert.match(prompt, /Use live web search/u)
+  assert.match(prompt, /query text literally includes/u)
   assert.match(prompt, /current UTC time/u)
   assert.match(prompt, /requiredInvariants string verbatim/u)
   assert.match(prompt, /semantic union/u)

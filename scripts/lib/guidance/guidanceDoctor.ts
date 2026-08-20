@@ -1,6 +1,10 @@
-import { access, readFile } from "node:fs/promises"
+import { readFile } from "node:fs/promises"
 import { join } from "node:path"
+import { collectAcceptedGuidanceFindings } from "./collectAcceptedGuidanceFindings"
+import { collectGuidanceDocumentFindings } from "./collectGuidanceDocumentFindings"
 import { parseGuidancePolicy } from "./parseGuidancePolicy"
+import { readGuidanceDocuments } from "./readGuidanceDocuments"
+import type { GuidancePolicy } from "./types/GuidancePolicy"
 
 export const guidanceDoctor = async (options: {
   home: string
@@ -8,28 +12,19 @@ export const guidanceDoctor = async (options: {
   stateDir: string
 }): Promise<{ ok: boolean; findings: string[] }> => {
   const findings: string[] = []
+  let policy: GuidancePolicy | undefined
   try {
-    const policy = parseGuidancePolicy(
+    const parsedPolicy = parseGuidancePolicy(
       JSON.parse(await readFile(join(options.canonicalDir, "policy.json"), "utf8")) as unknown,
     )
-    if (!policy.ok) findings.push(...policy.errors)
+    if (parsedPolicy.ok) policy = parsedPolicy.policy
+    else findings.push(...parsedPolicy.errors)
   } catch {
     findings.push("policy.json is missing or invalid JSON")
   }
-  for (const path of [
-    join(options.home, ".claude", "CLAUDE.md"),
-    join(options.home, ".codex", "AGENTS.md"),
-  ]) {
-    try {
-      await access(path)
-    } catch {
-      findings.push(`missing live guidance: ${path.replace(options.home, "~")}`)
-    }
-  }
-  try {
-    await access(join(options.stateDir, "accepted.json"))
-  } catch {
-    findings.push("no accepted guidance run")
-  }
+  const documents = await readGuidanceDocuments(options)
+  findings.push(...documents.findings)
+  findings.push(...(await collectAcceptedGuidanceFindings(options.stateDir, documents.contents)))
+  findings.push(...collectGuidanceDocumentFindings(documents.contents, policy))
   return { ok: findings.length === 0, findings }
 }

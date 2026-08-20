@@ -11,6 +11,7 @@ export const buildReconciliationPrompt = (
     task: "Reconcile public agent guidance without filesystem writes.",
     constraints: [
       "Use live web search to retrieve at least one current official Claude Code page and one current official Codex page on every run. Use only URLs under the supplied officialDocumentationOrigins.",
+      'Make separate web searches whose query text literally includes "Claude" or "Anthropic" for Claude documentation and "Codex" or "OpenAI" for Codex documentation, so each provider search is independently auditable.',
       "Immediately before the final response, obtain the current UTC time and use that full ISO-8601 timestamp for every documentation retrievedAt value.",
       "Return only JSON conforming to the supplied output schema.",
       "Do not emit credentials, conversation captures, or paths outside the guidance surface.",

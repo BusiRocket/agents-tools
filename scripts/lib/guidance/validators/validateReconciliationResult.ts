@@ -62,6 +62,8 @@ export const validateReconciliationResult = (
   errors.push(...validateClaudeTargetSyntax(result.claudeDocument))
   errors.push(...validateCodexTargetSyntax(result.codexDocument))
   for (const invariant of policy.requiredInvariants) {
+    if (!result.shared.includes(invariant))
+      errors.push(`required invariant is missing from canonical shared guidance: ${invariant}`)
     if (!result.claudeDocument.includes(invariant) || !result.codexDocument.includes(invariant))
       errors.push(`required invariant is missing from a rendered document: ${invariant}`)
   }

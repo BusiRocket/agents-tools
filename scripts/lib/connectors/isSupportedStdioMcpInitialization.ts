@@ -14,6 +14,7 @@ export const isSupportedStdioMcpInitialization = (response: unknown): boolean =>
   if (
     candidate.protocolVersion !== "2025-11-25" &&
     candidate.protocolVersion !== "2025-06-18" &&
+    candidate.protocolVersion !== "2025-03-26" &&
     candidate.protocolVersion !== "2024-11-05"
   ) {
     return false

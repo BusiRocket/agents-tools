@@ -3,18 +3,32 @@ import { existsSync } from "node:fs"
 export const createSandboxCommand = (options: {
   platform: NodeJS.Platform
   scratchDir: string
+  readDenyRoot?: string
+  readAllowPaths?: string[]
   command: string
   args: string[]
   pathExists?: (path: string) => boolean
 }): { executable: string; args: string[] } => {
   if (options.platform === "darwin") {
-    const profile = `(version 1) (allow default) (deny file-write*) (allow file-write* (subpath "${options.scratchDir}"))`
+    const denyRead =
+      options.readDenyRoot === undefined
+        ? ""
+        : ` (deny file-read-data (subpath "${options.readDenyRoot.replaceAll('"', '\\"')}"))`
+    const allowedReadPaths = [options.command, ...(options.readAllowPaths ?? [])]
+      .map(
+        (path) =>
+          ` (allow file-read-data (literal "${path.replaceAll('"', '\\"')}") (subpath "${path.replaceAll('"', '\\"')}"))`,
+      )
+      .join("")
+    const profile = `(version 1) (allow default) (deny file-write*) (allow file-write* (subpath "${options.scratchDir}"))${denyRead}${allowedReadPaths}`
     return {
       executable: "/usr/bin/sandbox-exec",
       args: ["-p", profile, options.command, ...options.args],
     }
   }
   if (options.platform === "linux") {
+    if (options.readDenyRoot !== undefined)
+      throw new Error("required Linux home read isolation is unavailable")
     if (!(options.pathExists ?? existsSync)("/usr/bin/bwrap"))
       throw new Error("required Linux sandbox runtime bwrap is unavailable")
     return {

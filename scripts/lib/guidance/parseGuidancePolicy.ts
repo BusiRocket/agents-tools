@@ -12,6 +12,7 @@ export const parseGuidancePolicy = (
     "officialDocumentationOrigins",
     "maxOutputBytes",
     "agentCommand",
+    "agentReadAllowlist",
     "timeoutMs",
   ])
   const isHttpsOrigin = (value: string): boolean => {
@@ -28,6 +29,7 @@ export const parseGuidancePolicy = (
   const invariants = raw.requiredInvariants
   const origins = raw.officialDocumentationOrigins
   const command = raw.agentCommand
+  const readAllowlist = raw.agentReadAllowlist
   if (raw.version !== 1) errors.push("version must be 1")
   if (
     !Array.isArray(invariants) ||
@@ -59,6 +61,15 @@ export const parseGuidancePolicy = (
     !command.every((item) => typeof item === "string" && item !== "" && !/[\r\n\0]/u.test(item))
   )
     errors.push("agentCommand must be a non-empty argument array")
+  if (
+    readAllowlist !== undefined &&
+    (!Array.isArray(readAllowlist) ||
+      readAllowlist.length === 0 ||
+      !readAllowlist.every(
+        (item) => typeof item === "string" && item.startsWith("/") && !/[\r\n\0"]/u.test(item),
+      ))
+  )
+    errors.push("agentReadAllowlist must contain safe absolute paths")
   if (
     typeof raw.timeoutMs !== "number" ||
     !Number.isSafeInteger(raw.timeoutMs) ||

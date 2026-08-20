@@ -1,8 +1,10 @@
-import { mkdir, readFile, rm, writeFile } from "node:fs/promises"
+import { mkdir, readFile, realpath } from "node:fs/promises"
 import { join } from "node:path"
 import { applyGuidanceResult } from "./applyGuidanceResult"
+import { acquireGuidanceLock } from "./acquireGuidanceLock"
 import { buildReconciliationPrompt } from "./buildReconciliationPrompt"
 import { collectGuidanceSources } from "./collectGuidanceSources"
+import { containsSensitiveGuidanceContent } from "./containsSensitiveGuidanceContent"
 import { createGuidanceRunId } from "./createGuidanceRunId"
 import { parseGuidancePolicy } from "./parseGuidancePolicy"
 import { removeCreatedGuidanceStateDir } from "./removeCreatedGuidanceStateDir"
@@ -17,13 +19,38 @@ export const guidanceSync = async (options: GuidanceSyncOptions): Promise<Guidan
   const lockPath = join(options.stateDir, "lock")
   const snapshotDir = join(options.stateDir, "runs", runId)
   let removeEmptyStateDir = false
+  let parsedPolicy: ReturnType<typeof parseGuidancePolicy>
+  try {
+    parsedPolicy = parseGuidancePolicy(
+      JSON.parse(await readFile(join(options.canonicalDir, "policy.json"), "utf8")) as unknown,
+    )
+  } catch {
+    return {
+      ok: false,
+      applied: false,
+      runId,
+      snapshotDir,
+      errors: ["policy.json is missing or invalid JSON"],
+      warnings: [],
+    }
+  }
+  if (!parsedPolicy.ok)
+    return {
+      ok: false,
+      applied: false,
+      runId,
+      snapshotDir,
+      errors: parsedPolicy.errors,
+      warnings: [],
+    }
+  let releaseLock: (() => Promise<void>) | undefined
   try {
     removeEmptyStateDir = await shouldRemoveGuidanceStateDir(
       options.stateDir,
       options.dryRun === true,
     )
     await mkdir(options.stateDir, { recursive: true, mode: 0o700 })
-    await writeFile(lockPath, runId, { encoding: "utf8", flag: "wx", mode: 0o600 })
+    releaseLock = await acquireGuidanceLock(lockPath, runId, parsedPolicy.policy.timeoutMs + 30_000)
   } catch (error) {
     await removeCreatedGuidanceStateDir(options.stateDir, removeEmptyStateDir)
     return {
@@ -31,33 +58,26 @@ export const guidanceSync = async (options: GuidanceSyncOptions): Promise<Guidan
       applied: false,
       runId,
       snapshotDir,
-      errors: [
-        (error as NodeJS.ErrnoException).code === "EEXIST"
-          ? "a guidance reconciliation run is already active"
-          : "could not acquire guidance lock",
-      ],
+      errors: [error instanceof Error ? error.message : "could not acquire guidance lock"],
       warnings: [],
     }
   }
   try {
-    const rawPolicy = JSON.parse(
-      await readFile(join(options.canonicalDir, "policy.json"), "utf8"),
-    ) as unknown
-    const parsedPolicy = parseGuidancePolicy(rawPolicy)
-    if (!parsedPolicy.ok)
+    const sources = await collectGuidanceSources(options)
+    if (containsSensitiveGuidanceContent(JSON.stringify(sources.values)))
       return {
         ok: false,
         applied: false,
         runId,
         snapshotDir,
-        errors: parsedPolicy.errors,
+        errors: ["guidance sources contain credential or captured conversation material"],
         warnings: [],
       }
-    const sources = await collectGuidanceSources(options)
     const runStartedAt = new Date()
     const rawResult = await runReconciliationAgent(
       parsedPolicy.policy,
       buildReconciliationPrompt(parsedPolicy.policy, sources),
+      await realpath(options.home),
     )
     const validated = validateReconciliationResult(
       rawResult,
@@ -129,7 +149,7 @@ export const guidanceSync = async (options: GuidanceSyncOptions): Promise<Guidan
       warnings: [],
     }
   } finally {
-    await rm(lockPath, { force: true }).catch(() => undefined)
+    await releaseLock()
     await removeCreatedGuidanceStateDir(options.stateDir, removeEmptyStateDir)
   }
 }

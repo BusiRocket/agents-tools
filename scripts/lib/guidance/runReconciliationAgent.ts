@@ -3,11 +3,13 @@ import { mkdtemp, realpath, rm } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 import { createSandboxCommand } from "./createSandboxCommand"
+import { readSafeAgentDiagnostic } from "./readSafeAgentDiagnostic"
 import type { GuidancePolicy } from "./types/GuidancePolicy"
 
 export const runReconciliationAgent = async (
   policy: GuidancePolicy,
   prompt: string,
+  readDenyRoot?: string,
 ): Promise<unknown> =>
   await (async () => {
     const scratchDir = await realpath(await mkdtemp(join(tmpdir(), "guidance-agent-")))
@@ -25,6 +27,10 @@ export const runReconciliationAgent = async (
         const sandbox = createSandboxCommand({
           platform: process.platform,
           scratchDir,
+          ...(readDenyRoot === undefined ? {} : { readDenyRoot }),
+          ...(policy.agentReadAllowlist === undefined
+            ? {}
+            : { readAllowPaths: policy.agentReadAllowlist }),
           command,
           args,
         })
@@ -42,6 +48,7 @@ export const runReconciliationAgent = async (
           shell: false,
         })
         const chunks: Buffer[] = []
+        const errorChunks: Buffer[] = []
         let bytes = 0
         let errorBytes = 0
         const timer = setTimeout(() => child.kill("SIGKILL"), policy.timeoutMs)
@@ -53,6 +60,7 @@ export const runReconciliationAgent = async (
         child.stderr.on("data", (chunk: Buffer) => {
           errorBytes += chunk.length
           if (errorBytes > policy.maxOutputBytes) child.kill("SIGKILL")
+          else errorChunks.push(chunk)
         })
         child.on("error", reject)
         child.on("close", (code) => {
@@ -66,9 +74,11 @@ export const runReconciliationAgent = async (
             return
           }
           if (code !== 0) {
+            const diagnostic = readSafeAgentDiagnostic(Buffer.concat(errorChunks))
+            const diagnosticSuffix = diagnostic === undefined ? "" : `; ${diagnostic}`
             reject(
               new Error(
-                `agent exited with code ${String(code)}; stderr bytes: ${String(errorBytes)}`,
+                `agent exited with code ${String(code)}; stderr bytes: ${String(errorBytes)}${diagnosticSuffix}`,
               ),
             )
             return

@@ -30,6 +30,36 @@ void test("policy parsing accepts only the constrained policy contract", () => {
   assert.match(excessiveTimeout.errors.join("\n"), /between 1000 and 300000/u)
 })
 
+void test("the macOS sandbox denies home reads except explicit agent bootstrap paths", () => {
+  const sandbox = createSandboxCommand({
+    platform: "darwin",
+    scratchDir: "/private/var/folders/example/guidance",
+    readDenyRoot: "/Users/example",
+    readAllowPaths: ["/Users/example/.codex/auth.json"],
+    command: "/Users/example/bin/reconcile",
+    args: [],
+  })
+  const profile = sandbox.args[1] ?? ""
+  assert.match(profile, /deny file-read-data \(subpath "\/Users\/example"\)/u)
+  assert.match(profile, /literal "\/Users\/example\/\.codex\/auth\.json"/u)
+  assert.match(profile, /literal "\/Users\/example\/bin\/reconcile"/u)
+})
+
+void test("Linux reconciliation fails closed when home read isolation is required", () => {
+  assert.throws(
+    () =>
+      createSandboxCommand({
+        platform: "linux",
+        scratchDir: "/var/empty/guidance",
+        readDenyRoot: "/home/example",
+        command: "/usr/bin/true",
+        args: [],
+        pathExists: () => true,
+      }),
+    /read isolation is unavailable/u,
+  )
+})
+
 void test("policy parsing rejects literal credentials", () => {
   const policy = {
     version: 1 as const,
@@ -156,6 +186,53 @@ void test("reconciliation result fails closed for stale input hashes", () => {
   )
   assert.equal(rejected.ok, false)
   assert.match(rejected.errors.join("\n"), /input hashes/u)
+})
+
+void test("reconciliation result rejects an invariant omitted from canonical shared guidance", () => {
+  const digest = (value: string) => createHash("sha256").update(value).digest("hex")
+  const policy = {
+    version: 1 as const,
+    requiredInvariants: ["Never expose credentials."],
+    officialDocumentationOrigins: {
+      claude: ["https://docs.anthropic.com"],
+      codex: ["https://developers.openai.com"],
+    },
+    maxOutputBytes: 20_000,
+    agentCommand: ["fake-agent"],
+    timeoutMs: 5_000,
+  }
+  const rejected = validateReconciliationResult(
+    {
+      version: 1,
+      inputHashes: [{ path: "canonical/shared.md", sha256: digest("shared") }],
+      shared: "Provider-neutral guidance without the invariant.\n",
+      claudeOverlay: "Claude.\n",
+      codexOverlay: "Codex.\n",
+      claudeDocument: "Never expose credentials.\n",
+      codexDocument: "Never expose credentials.\n",
+      documentation: [
+        {
+          provider: "claude",
+          url: "https://docs.anthropic.com/en/docs/claude-code",
+          retrievedAt: "2026-08-20T10:00:00.000Z",
+        },
+        {
+          provider: "codex",
+          url: "https://developers.openai.com/codex",
+          retrievedAt: "2026-08-20T10:00:00.000Z",
+        },
+      ],
+      decisions: [],
+      warnings: [],
+      unresolvedLimitations: [],
+    },
+    policy,
+    { "canonical/shared.md": digest("shared") },
+    new Date(0),
+    new Date("2100-01-01T00:00:00.000Z"),
+  )
+  assert.equal(rejected.ok, false)
+  assert.match(rejected.errors.join("\n"), /canonical shared guidance/u)
 })
 
 void test("reconciliation result rejects missing official documentation evidence", () => {

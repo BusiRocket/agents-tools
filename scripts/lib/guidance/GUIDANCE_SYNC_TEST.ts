@@ -161,6 +161,46 @@ void test("sync leaves all files untouched when agent output fails validation", 
   await assert.rejects(access(join(root, "state", "runs")))
 })
 
+void test("sync rejects credential material in collected sources before agent execution", async () => {
+  const root = await mkdtemp(join(tmpdir(), "guidance-sensitive-source-"))
+  const home = join(root, "home")
+  const canonical = join(root, "canonical")
+  await Promise.all([
+    mkdir(join(home, ".claude"), { recursive: true }),
+    mkdir(join(home, ".codex"), { recursive: true }),
+    mkdir(canonical),
+  ])
+  await Promise.all([
+    writeFile(join(canonical, "shared.md"), '{"access_token":"credential-material"}\n'),
+    writeFile(join(canonical, "claude-overlay.md"), "Claude.\n"),
+    writeFile(join(canonical, "codex-overlay.md"), "Codex.\n"),
+    writeFile(join(home, ".claude", "CLAUDE.md"), "Claude.\n"),
+    writeFile(join(home, ".codex", "AGENTS.md"), "Codex.\n"),
+    writeFile(
+      join(canonical, "policy.json"),
+      JSON.stringify({
+        version: 1,
+        requiredInvariants: ["Invariant"],
+        officialDocumentationOrigins: {
+          claude: ["https://docs.anthropic.com"],
+          codex: ["https://developers.openai.com"],
+        },
+        maxOutputBytes: 20_000,
+        agentCommand: ["/usr/bin/false"],
+        timeoutMs: 5_000,
+      }),
+    ),
+  ])
+  const report = await guidanceSync({
+    home,
+    canonicalDir: canonical,
+    stateDir: join(root, "state"),
+    rulesInventoryPath: join(root, "missing-rules-inventory.md"),
+  })
+  assert.equal(report.ok, false)
+  assert.match(report.errors.join("\n"), /sources contain credential/u)
+})
+
 void test("dry-run validates through the source recheck without writing files or snapshots", async () => {
   const { createHash } = await import("node:crypto")
   const hash = (value: string) => createHash("sha256").update(value).digest("hex")
@@ -311,6 +351,49 @@ void test(
     assert.equal(report.ok, false)
     assert.match(report.errors.join("\n"), /agent exited with code 1/u)
     await assert.rejects(access(outsideTarget), { code: "ENOENT" })
+  },
+)
+
+void test(
+  "sync prevents the agent from reading credential material under the real home",
+  { skip: process.platform !== "darwin" },
+  async () => {
+    const root = await mkdtemp(join(tmpdir(), "guidance-read-sandbox-"))
+    const home = join(root, "home")
+    const canonical = join(root, "canonical")
+    const credential = join(home, ".codex", "auth.json")
+    await Promise.all([mkdir(join(home, ".codex"), { recursive: true }), mkdir(canonical)])
+    await writeFile(credential, JSON.stringify({ access_token: "must-not-be-readable" }))
+    const fakeAgent = join(root, "read-adversarial-agent.mjs")
+    await writeFile(
+      fakeAgent,
+      `import { readFileSync } from "node:fs"; process.stdout.write(readFileSync(process.argv[2], "utf8"))`,
+    )
+    await writeFile(
+      join(canonical, "policy.json"),
+      JSON.stringify({
+        version: 1,
+        requiredInvariants: ["Invariant"],
+        officialDocumentationOrigins: {
+          claude: ["https://docs.anthropic.com"],
+          codex: ["https://developers.openai.com"],
+        },
+        maxOutputBytes: 20_000,
+        agentCommand: [process.execPath, fakeAgent, credential],
+        timeoutMs: 5_000,
+      }),
+    )
+
+    const report = await guidanceSync({
+      home,
+      canonicalDir: canonical,
+      stateDir: join(root, "state"),
+      rulesInventoryPath: join(root, "missing-rules-inventory.md"),
+    })
+
+    assert.equal(report.ok, false)
+    assert.match(report.errors.join("\n"), /agent exited with code 1/u)
+    assert.equal(JSON.stringify(report).includes("must-not-be-readable"), false)
   },
 )
 

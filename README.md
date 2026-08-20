@@ -67,6 +67,35 @@ active or provisioned client exits with status 1; an invalid platform manifest e
 Both human and JSON output are redacted before printing. `unsupported` is a capability status, not a
 lifecycle: the client is present but has no compatible adapter for that feature.
 
+### Guidance reconciliation
+
+Global Claude and Codex guidance is reconciled from a private canonical directory: `shared.md`
+contains provider-neutral policy, while `claude-overlay.md` and `codex-overlay.md` contain only
+documented provider-specific behavior. The content, credentials, and local snapshots are never
+stored in this public repository. Claude's instructions and path-scoped rules are documented in the
+[Claude Code memory guide](https://code.claude.com/docs/en/memory).
+
+Run the public contracts against the private configuration directory:
+
+```bash
+pnpm run guidance:sync -- --config /absolute/path/to/agent-guidance --dry-run --json
+pnpm run guidance:doctor -- --config /absolute/path/to/agent-guidance
+pnpm run guidance:rollback -- --run <run-id>
+```
+
+`guidance:sync` gathers the canonical documents, the two live guidance files, user-authored Claude
+rules, the generated rule inventory, and accepted-run hashes. It invokes the configured reconciler
+in an OS sandbox with an empty home and a scratch-only write area; the engine validates a strict
+JSON result, current official Claude and Codex documentation evidence, input hashes, invariants,
+target syntax, size limits, and secret/captured-conversation exclusions before any write. The schema
+boundary follows the same closed-object principle as
+[OpenAI strict structured outputs](https://developers.openai.com/api/docs/guides/structured-outputs).
+
+`--dry-run` performs that validation but writes neither guidance nor snapshots. A successful apply
+creates a complete, checksummed pre-apply snapshot; a partial apply restores it. `guidance:rollback`
+is a live mutation that restores one complete accepted run (the latest when `--run` is omitted), so
+inspect the run and obtain authorization before invoking it.
+
 ### Conversation transport
 
 Inventory local conversation sources without changing provider state:
@@ -98,12 +127,23 @@ Audit expected external connectors separately by Claude profile:
 pnpm run connectors:doctor -- --json
 pnpm run connectors:doctor -- --profile personal --json
 pnpm run connectors:doctor -- --profile favish --json
+pnpm run connectors:doctor -- --profile codex --json
 ```
 
 The connector report contains names and safe status categories only. Required authentication or a
 required connector failure exits with status 1. Optional external outages stay visible as degraded
 without failing otherwise healthy local MCP infrastructure. See
 `docs/runbooks/claude-connector-authentication.md` and `docs/runbooks/zerohedge-connector.md`.
+
+The Codex profile requires CodeGraph and a Codex-only MemPalace server, registered as
+`mempalace-mcp --read-only`. Registration is checked with `codex mcp list`; required stdio servers
+must also complete MCP `initialize`, `notifications/initialized`, and `tools/list`, so a registered
+server that cannot start is not healthy. This follows the
+[MCP lifecycle specification](https://modelcontextprotocol.io/specification/2025-11-25/basic/lifecycle).
+Use MemPalace for read-only project-memory retrieval and `codegraph_explore` for indexed code
+exploration; use native file/search tools for configuration or content outside the index. See the
+[Codex MCP guide](https://developers.openai.com/codex/mcp) and
+[Claude Code MCP guide](https://code.claude.com/docs/en/mcp) for client configuration semantics.
 
 For Codex and other skill-capable IDEs, the main BRP workflow surface is the global skills pipeline.
 `AGENTS.md` remains useful as lightweight global guidance and routing, but it is not the primary
@@ -338,6 +378,10 @@ Task > Project > Stack > Global
 | `pnpm run check:ci`             | CI alias of check:all                                                    |
 | `pnpm run machine:diff`         | Inspect MCP, security, and capability drift without writing              |
 | `pnpm run machine:apply`        | Snapshot and converge managed machine configuration                      |
+| `pnpm run machine:rollback`     | Restore a machine snapshot                                               |
+| `pnpm run guidance:sync`        | Reconcile private canonical and live guidance; `--dry-run` never writes  |
+| `pnpm run guidance:doctor`      | Check canonical policy, live guidance, and accepted-run state            |
+| `pnpm run guidance:rollback`    | Restore one complete accepted guidance snapshot                          |
 | `pnpm run agents:doctor`        | Inspect client lifecycle and managed capabilities                        |
 | `pnpm run connectors:doctor`    | Inspect expected external connectors by profile                          |
 | `pnpm run connectors:test`      | Test secret-free connector parsing and boundary probes                   |

@@ -35,6 +35,47 @@ pnpm run machine:diff -- --json
 Every apply snapshots files, directories, and symbolic links first. Restore the newest snapshot with
 `pnpm run machine:rollback -- --json`, or select one with `--to <run-id>`.
 
+## Guidance Reconciliation
+
+Private `dotfiles/agent-guidance` is the source of global client guidance: `shared.md` holds the
+provider-neutral policy, while `claude-overlay.md` and `codex-overlay.md` isolate documented client
+differences. Do not copy that content, credentials, or machine-local state into this repository.
+Claude loads `CLAUDE.md` and supports modular, path-scoped `.claude/rules/`; see the
+[Claude Code memory and rules documentation](https://code.claude.com/docs/en/memory).
+
+Inspect or validate a private configuration directory with the public commands:
+
+```bash
+pnpm run guidance:sync -- --config /absolute/path/to/agent-guidance --dry-run --json
+pnpm run guidance:doctor -- --config /absolute/path/to/agent-guidance
+```
+
+The sync engine collects canonical sources, live `~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md`,
+top-level user-authored Claude rules, generated rule inventory, and accepted hashes. Its reconciler
+runs in an OS sandbox with an empty home and may write only to a temporary scratch directory. Before
+applying, Rocket Agents requires a strict JSON result with matching input hashes, current official
+Claude and Codex documentation evidence, required invariants, target syntax, size limits, and
+secret/captured-conversation checks. This is a validation boundary, not permission for the agent to
+edit live files directly; the strict-result model is consistent with
+[OpenAI structured outputs](https://developers.openai.com/api/docs/guides/structured-outputs).
+
+`--dry-run` validates without creating snapshots or writing guidance. An authorized non-dry run
+creates an atomic pre-apply snapshot with hashes and restores it if the apply cannot complete. Check
+state with `guidance:doctor`; to restore a complete accepted run, use the mutating command below
+only after inspection and authorization:
+
+```bash
+pnpm run guidance:rollback -- --run <run-id>
+```
+
+If `--run` is omitted, rollback uses the latest complete run. It never assembles individual files
+from different snapshots.
+
+The private scheduled `sync-rocket-agents` convergence order is: pull control-plane and library,
+install dependencies, build, reconcile guidance, apply the machine manifest, then link rules,
+skills, and hooks. Guidance reconciliation therefore runs before machine convergence on every
+scheduled pass.
+
 ## Cross-Platform Health Check
 
 Run the read-only doctor after setup or when an agent reports missing MCP servers, skills, rules,
@@ -67,15 +108,29 @@ credentials. Inspect it through the profile-aware doctor:
 
 ```bash
 pnpm run connectors:doctor -- --json
+pnpm run connectors:doctor -- --profile codex --json
 ```
 
-Context7, Serena, and CodeGraph are required machine-managed MCP servers. Cloudflare is required in
-both Claude profiles, OpenSEO is required only in the personal profile, and ZeroHedge is an optional
+Context7, Serena, and CodeGraph are required machine-managed MCP servers. The Codex profile also
+requires the Codex-only `mempalace-mcp --read-only` stdio server. Cloudflare is required in both
+Claude profiles, OpenSEO is required only in the personal profile, and ZeroHedge is an optional
 hosted connector. Consequently:
 
 - a missing required connector, required OAuth flow, or required disabled connector exits with 1;
 - an optional HTTP 503 remains visible as degraded and includes its responding boundary;
 - reports never serialize response bodies, request headers, tokens, cookies, or account IDs.
+
+For Codex, the doctor first checks registration with `codex mcp list`, then starts each required
+stdio connector and requires a successful MCP `initialize` negotiation followed by
+`notifications/initialized` and `tools/list`. A configuration entry alone is therefore degraded or
+failed until startup and tool enumeration succeed, as required by the
+[MCP lifecycle specification](https://modelcontextprotocol.io/specification/2025-11-25/basic/lifecycle).
+
+Use CodeGraph's current `codegraph_explore` surface for indexed source exploration; use native file
+and text search for configuration, generated files, or content outside the index. MemPalace is
+required only for Codex and is read-only, so it supplies project-memory retrieval rather than
+indexing or durable writes. See the [Codex MCP guide](https://developers.openai.com/codex/mcp) and
+[Claude Code MCP guide](https://code.claude.com/docs/en/mcp) for their respective MCP clients.
 
 Use `docs/runbooks/claude-connector-authentication.md` for profile-safe OAuth and
 `docs/runbooks/zerohedge-connector.md` for the direct boundary probe. `agents:doctor` reuses the
@@ -116,7 +171,8 @@ pnpm rules:link
 ```
 
 This symlinks `.claude/rules/` to your home directory. The lean global `~/.claude/CLAUDE.md` remains
-hand-maintained.
+the rendered live target of private guidance reconciliation; `shared.md` and the Claude overlay are
+its canonical sources. Do not use the generated rule tree as a substitute for that global guidance.
 
 ---
 
@@ -151,9 +207,10 @@ pnpm rules:link
 ```
 
 This copies Codex `default.rules` into your Codex config. The global `~/.codex/AGENTS.md` remains
-hand-maintained; `default.rules` is Codex exec-policy Starlark and must not contain Markdown prose.
-In this project, `AGENTS.md` is not the primary delivery mechanism for reusable BRP workflows;
-global skills are.
+the rendered live target of private guidance reconciliation; `shared.md` and the Codex overlay are
+its canonical sources. `default.rules` is Codex exec-policy Starlark and must not contain Markdown
+prose. In this project, `AGENTS.md` is not the primary delivery mechanism for reusable BRP
+workflows; global skills are.
 
 ### Existing Claude Code Projects
 

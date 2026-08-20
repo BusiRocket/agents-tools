@@ -12,6 +12,7 @@ export interface McpServer {
   headers?: Record<string, McpValue>
   startup_timeout_sec?: number
   required?: boolean
+  default_tools_approval_mode?: "auto" | "prompt" | "writes" | "approve"
   disabled?: boolean
   target_overrides?: Partial<Record<McpTarget, McpOverride>>
 }

@@ -80,12 +80,14 @@ void test("a startup timeout is emitted in the server table", () => {
         command: "serena",
         startup_timeout_sec: 15,
         required: true,
+        default_tools_approval_mode: "writes",
       },
     },
   }
   const { toml } = renderCodexServers(manifest, {})
   assert.match(toml, /startup_timeout_sec = 15/)
   assert.match(toml, /required = true/)
+  assert.match(toml, /default_tools_approval_mode = "writes"/)
 })
 
 void test("env values are emitted in their own sub-table", () => {

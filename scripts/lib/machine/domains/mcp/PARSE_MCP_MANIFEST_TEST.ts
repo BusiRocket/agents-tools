@@ -95,3 +95,17 @@ void test("a non-boolean required flag is rejected", () => {
   })
   assert.equal(result.ok, false)
 })
+
+void test("an unknown Codex tool approval mode is rejected", () => {
+  const result = parseMcpManifest({
+    servers: {
+      mempalace: {
+        targets: ["codex"],
+        transport: "stdio",
+        command: "mempalace-mcp",
+        default_tools_approval_mode: "always",
+      },
+    },
+  })
+  assert.equal(result.ok, false)
+})

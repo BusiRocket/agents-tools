@@ -32,7 +32,8 @@
       "transport": "stdio",
       "command": "mempalace-mcp",
       "args": ["--read-only"],
-      "required": true
+      "required": true,
+      "default_tools_approval_mode": "writes"
     }
   }
 }

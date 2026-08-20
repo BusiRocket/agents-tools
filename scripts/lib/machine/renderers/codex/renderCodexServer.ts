@@ -26,6 +26,11 @@ export const renderCodexServer = (
   if (server.required !== undefined) {
     lines.push(`required = ${String(server.required)}`)
   }
+  if (server.default_tools_approval_mode !== undefined) {
+    lines.push(
+      `default_tools_approval_mode = ${escapeTomlString(server.default_tools_approval_mode)}`,
+    )
+  }
 
   const environmentEntries = Object.entries(environment).map(
     ([key, value]) => `${key} = ${escapeTomlString(value)}`,

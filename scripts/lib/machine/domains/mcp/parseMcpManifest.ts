@@ -3,6 +3,7 @@ import { collectTargetErrors } from "./collectTargetErrors"
 import { collectTransportErrors } from "./collectTransportErrors"
 import { collectStartupTimeoutErrors } from "./collectStartupTimeoutErrors"
 import { collectRequiredErrors } from "./collectRequiredErrors"
+import { collectToolApprovalModeErrors } from "./collectToolApprovalModeErrors"
 import type { McpManifest } from "./types/McpManifest"
 import type { ParseResult } from "./types/ParseResult"
 
@@ -29,6 +30,7 @@ export const parseMcpManifest = (raw: unknown): ParseResult => {
     collectTransportErrors(name, server, errors)
     collectStartupTimeoutErrors(name, server.startup_timeout_sec, errors)
     collectRequiredErrors(name, server.required, errors)
+    collectToolApprovalModeErrors(name, server.default_tools_approval_mode, errors)
 
     for (const finding of findCredentialLiterals(server)) {
       errors.push(`${name}: ${finding}`)

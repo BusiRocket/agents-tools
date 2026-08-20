@@ -4,6 +4,7 @@ import { inspectProfileConnectors } from "../lib/connectors/inspectProfileConnec
 import { loadConnectorManifest } from "../lib/connectors/loadConnectorManifest"
 import { runConnectorDoctor } from "../lib/connectors/runConnectorDoctor"
 import { flagValue } from "../lib/machine/cli/flagValue"
+import { loadMcpManifest } from "../lib/machine/cli/loadMcpManifest"
 import { resolveInstanceDir } from "../lib/machine/instance/resolveInstanceDir"
 
 export const main = async () => {
@@ -14,11 +15,14 @@ export const main = async () => {
     root: ROOT,
   })
   const parsed = await loadConnectorManifest(instanceDir)
+  const parsedMcp = await loadMcpManifest(instanceDir)
   const requested = flagValue(process.argv, "--profile")
   const result = await runConnectorDoctor({
     parsed,
+    parsedMcp,
     requestedProfile: requested,
     home: homedir(),
+    env: process.env,
     inspect: inspectProfileConnectors,
   })
   console.log(JSON.stringify(result.output, null, 2))

@@ -34,8 +34,22 @@ void test("the explicit Codex doctor dispatches once and returns required failur
     const profiles: ConnectorProfile[] = []
     const result = await runConnectorDoctor({
       parsed: { ok: true, manifest: { version: 1, connectors: definitions } },
+      parsedMcp: {
+        ok: true,
+        manifest: {
+          servers: {
+            mempalace: {
+              targets: ["codex"],
+              transport: "stdio",
+              command: "mempalace-mcp",
+              args: ["--read-only"],
+            },
+          },
+        },
+      },
       requestedProfile: "codex",
       home: "/test-home",
+      env: {},
       inspect: (profile, inspectedDefinitions) => {
         profiles.push(profile)
         return Promise.resolve(

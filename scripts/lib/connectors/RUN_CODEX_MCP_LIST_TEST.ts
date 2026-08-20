@@ -10,7 +10,7 @@ void test("a non-zero Codex list process rejects without exposing stderr", async
     stdout: new PassThrough(),
     stderr: new PassThrough(),
   })
-  const running = runCodexMcpList((() => child) as unknown as typeof spawn)
+  const running = runCodexMcpList("codex", (() => child) as unknown as typeof spawn)
   child.stderr.write("secret-value")
   child.emit("close", 1)
   await assert.rejects(running, /Codex MCP list failed/)

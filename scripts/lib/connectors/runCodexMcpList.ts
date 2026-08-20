@@ -1,8 +1,11 @@
 import { spawn } from "node:child_process"
 
-export const runCodexMcpList = (spawnCodex: typeof spawn = spawn): Promise<string> =>
+export const runCodexMcpList = (
+  executable = "codex",
+  spawnCodex: typeof spawn = spawn,
+): Promise<string> =>
   new Promise((resolve, reject) => {
-    const child = spawnCodex("codex", ["mcp", "list", "--json"], { shell: false })
+    const child = spawnCodex(executable, ["mcp", "list", "--json"], { shell: false })
     let output = ""
     child.stdout.on("data", (chunk: Buffer) => {
       output = `${output}${chunk.toString()}`.slice(-65_536)

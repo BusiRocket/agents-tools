@@ -1,6 +1,7 @@
 import { homedir } from "node:os"
 import { ROOT } from "../constants/ROOT"
 import { inspectProfileConnectors } from "../lib/connectors/inspectProfileConnectors"
+import { createManagedAgentCliEnvironment } from "../lib/connectors/createManagedAgentCliEnvironment"
 import { loadConnectorManifest } from "../lib/connectors/loadConnectorManifest"
 import { runConnectorDoctor } from "../lib/connectors/runConnectorDoctor"
 import { flagValue } from "../lib/machine/cli/flagValue"
@@ -8,6 +9,9 @@ import { loadMcpManifest } from "../lib/machine/cli/loadMcpManifest"
 import { resolveInstanceDir } from "../lib/machine/instance/resolveInstanceDir"
 
 export const main = async () => {
+  const home = homedir()
+  const env = createManagedAgentCliEnvironment(home, process.env)
+  process.env.PATH = env.PATH
   const instance = flagValue(process.argv, "--instance")
   const instanceDir = resolveInstanceDir({
     ...(instance === undefined ? {} : { flag: instance }),
@@ -21,8 +25,8 @@ export const main = async () => {
     parsed,
     parsedMcp,
     requestedProfile: requested,
-    home: homedir(),
-    env: process.env,
+    home,
+    env,
     inspect: inspectProfileConnectors,
   })
   console.log(JSON.stringify(result.output, null, 2))

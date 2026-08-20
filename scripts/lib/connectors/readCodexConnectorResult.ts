@@ -25,5 +25,9 @@ export const readCodexConnectorResult = (
   if (enabled === true) {
     return { ...base, status: "healthy", summary: "server enabled" }
   }
-  return { ...base, status: "degraded", summary: "connector enabled status is unrecognized" }
+  return {
+    ...base,
+    status: definition.criticality === "required" ? "failed" : "degraded",
+    summary: "connector enabled status is unrecognized",
+  }
 }

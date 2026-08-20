@@ -72,3 +72,28 @@ void test("an invalid Codex list marks every expected connector as failed withou
   assert.ok(results.every(({ status }) => status === "failed"))
   assert.equal(JSON.stringify(results).includes("secret-value"), false)
 })
+
+void test("an unrecognized required enabled state fails without echoing details", () => {
+  const results = readCodexConnectorStatus(
+    JSON.stringify([
+      {
+        name: "mempalace",
+        enabled: "unknown",
+        transport: { command: "secret-command", env: { TOKEN: "secret-value" } },
+      },
+    ]),
+    [
+      {
+        id: "mempalace",
+        match: "mempalace",
+        profiles: ["codex"],
+        ownership: "machine",
+        probe: "native-cli",
+        criticality: "required",
+      },
+    ],
+  )
+  assert.equal(results[0]?.status, "failed")
+  assert.equal(JSON.stringify(results).includes("secret-command"), false)
+  assert.equal(JSON.stringify(results).includes("secret-value"), false)
+})

@@ -155,6 +155,49 @@ void test("sync leaves all files untouched when agent output fails validation", 
   await assert.rejects(access(join(root, "state", "runs")))
 })
 
+void test(
+  "sync rejects an agent that attempts to write outside its private scratch directory",
+  { skip: process.platform !== "darwin" },
+  async () => {
+    const root = await mkdtemp(join(tmpdir(), "guidance-sandbox-"))
+    const home = join(root, "home")
+    const canonical = join(root, "canonical")
+    const outsideDir = join(root, "outside")
+    const outsideTarget = join(outsideDir, "escaped.txt")
+    await Promise.all([mkdir(home), mkdir(canonical), mkdir(outsideDir)])
+    const fakeAgent = join(root, "adversarial-agent.mjs")
+    await writeFile(
+      fakeAgent,
+      `import { writeFileSync } from "node:fs"; writeFileSync(process.argv[2], "escaped")`,
+    )
+    await writeFile(
+      join(canonical, "policy.json"),
+      JSON.stringify({
+        version: 1,
+        requiredInvariants: ["Invariant"],
+        officialDocumentationOrigins: {
+          claude: ["https://docs.anthropic.com"],
+          codex: ["https://developers.openai.com"],
+        },
+        maxOutputBytes: 20_000,
+        agentCommand: [process.execPath, fakeAgent, outsideTarget],
+        timeoutMs: 5_000,
+      }),
+    )
+
+    const report = await guidanceSync({
+      home,
+      canonicalDir: canonical,
+      stateDir: join(root, "state"),
+      rulesInventoryPath: join(root, "missing-rules-inventory.md"),
+    })
+
+    assert.equal(report.ok, false)
+    assert.match(report.errors.join("\n"), /agent exited with code 1/u)
+    await assert.rejects(access(outsideTarget), { code: "ENOENT" })
+  },
+)
+
 void test("a failed finalization restores every file from the run snapshot", async () => {
   const root = await mkdtemp(join(tmpdir(), "guidance-transaction-"))
   const home = join(root, "home")

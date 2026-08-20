@@ -1,8 +1,10 @@
 import assert from "node:assert/strict"
 import test from "node:test"
 import { createHash } from "node:crypto"
+import { createSandboxCommand } from "./createSandboxCommand"
 import { parseGuidancePolicy } from "./parseGuidancePolicy"
 import { validateReconciliationResult } from "./validators/validateReconciliationResult"
+import { validateReconciliationSchema } from "./validators/validateReconciliationSchema"
 import { validateClaudeTargetSyntax } from "./validators/validateClaudeTargetSyntax"
 import { validateCodexTargetSyntax } from "./validators/validateCodexTargetSyntax"
 
@@ -316,4 +318,129 @@ void test("target syntax validators handle documented Claude imports and every C
   for (const value of ["@rules.md", "@rules/navigation.md", "  @rules.md", "see @rules.md now"])
     assert.notDeepEqual(validateCodexTargetSyntax(value), [])
   assert.deepEqual(validateCodexTargetSyntax("ordinary @mention prose"), [])
+})
+
+void test("documentation evidence must be retrieved within the exact run window", () => {
+  const runStartedAt = new Date("2026-08-20T10:00:00.000Z")
+  const runEndedAt = new Date("2026-08-20T10:10:00.000Z")
+  const policy = {
+    version: 1 as const,
+    requiredInvariants: ["Never expose credentials."],
+    officialDocumentationOrigins: {
+      claude: ["https://docs.anthropic.com"],
+      codex: ["https://developers.openai.com"],
+    },
+    maxOutputBytes: 20_000,
+    agentCommand: ["fake-agent"],
+    timeoutMs: 5_000,
+  }
+  const result = {
+    version: 1,
+    inputHashes: { "canonical/shared.md": "a".repeat(64) },
+    shared: "Never expose credentials.\n",
+    claudeOverlay: "Claude.\n",
+    codexOverlay: "Codex.\n",
+    claudeDocument: "Never expose credentials.\n",
+    codexDocument: "Never expose credentials.\n",
+    documentation: [
+      {
+        provider: "claude" as const,
+        url: "https://docs.anthropic.com/en/docs/claude-code",
+        retrievedAt: runStartedAt.toISOString(),
+      },
+      {
+        provider: "codex" as const,
+        url: "https://developers.openai.com/codex",
+        retrievedAt: runEndedAt.toISOString(),
+      },
+    ],
+    decisions: [],
+    warnings: [],
+    unresolvedLimitations: [],
+  }
+  assert.equal(
+    validateReconciliationResult(
+      result,
+      policy,
+      result.inputHashes,
+      runStartedAt,
+      runEndedAt,
+    ).ok,
+    true,
+  )
+  for (const [name, retrievedAt] of [
+    ["before start", "2026-08-20T09:59:59.999Z"],
+    ["after end", "2026-08-20T10:10:00.001Z"],
+    ["future", "9999-12-31T23:59:59.999Z"],
+  ] as const) {
+    const rejected = validateReconciliationResult(
+      {
+        ...result,
+        documentation: result.documentation.map((item) => ({ ...item, retrievedAt })),
+      },
+      policy,
+      result.inputHashes,
+      runStartedAt,
+      runEndedAt,
+    )
+    assert.equal(rejected.ok, false, `${name} evidence must be rejected`)
+    assert.match(rejected.errors.join("\n"), /missing current official/u)
+  }
+})
+
+void test("runtime schema rejects invalid evidence URIs and nested extra properties", () => {
+  const result = {
+    version: 1,
+    inputHashes: { "canonical/shared.md": "a".repeat(64) },
+    shared: "shared",
+    claudeOverlay: "claude",
+    codexOverlay: "codex",
+    claudeDocument: "claude",
+    codexDocument: "codex",
+    documentation: [
+      {
+        provider: "claude",
+        url: "https://docs.anthropic.com/en/docs/claude-code",
+        retrievedAt: "2026-08-20T10:00:00.000Z",
+      },
+    ],
+    decisions: [],
+    warnings: [],
+    unresolvedLimitations: [],
+  }
+  assert.match(
+    validateReconciliationSchema({
+      ...result,
+      documentation: [{ ...result.documentation[0], url: "not a URI" }],
+    }).join("\n"),
+    /format "uri"/u,
+  )
+  assert.match(
+    validateReconciliationSchema({
+      ...result,
+      documentation: [{ ...result.documentation[0], unexpected: true }],
+    }).join("\n"),
+    /additional properties/u,
+  )
+})
+
+void test("sandbox command selection fails closed without a supported runtime", () => {
+  const options = {
+    scratchDir: "/sandbox/scratch",
+    command: "/usr/bin/true",
+    args: [] as string[],
+  }
+  assert.throws(
+    () =>
+      createSandboxCommand({
+        ...options,
+        platform: "linux",
+        pathExists: () => false,
+      }),
+    /required Linux sandbox runtime bwrap is unavailable/u,
+  )
+  assert.throws(
+    () => createSandboxCommand({ ...options, platform: "win32" }),
+    /unsupported sandbox platform: win32/u,
+  )
 })

@@ -5,6 +5,7 @@ export const createSandboxCommand = (options: {
   scratchDir: string
   command: string
   args: string[]
+  pathExists?: (path: string) => boolean
 }): { executable: string; args: string[] } => {
   if (options.platform === "darwin") {
     const profile = `(version 1) (allow default) (deny file-write*) (allow file-write* (subpath "${options.scratchDir}"))`
@@ -14,7 +15,7 @@ export const createSandboxCommand = (options: {
     }
   }
   if (options.platform === "linux") {
-    if (!existsSync("/usr/bin/bwrap"))
+    if (!(options.pathExists ?? existsSync)("/usr/bin/bwrap"))
       throw new Error("required Linux sandbox runtime bwrap is unavailable")
     return {
       executable: "/usr/bin/bwrap",

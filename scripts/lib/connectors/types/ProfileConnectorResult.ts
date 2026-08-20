@@ -1,8 +1,9 @@
 import type { ConnectorStatus } from "./ConnectorStatus"
+import type { ConnectorProfile } from "./ConnectorProfile"
 
 export interface ProfileConnectorResult {
   id: string
-  profile: "claude-personal" | "claude-favish" | "codex"
+  profile: ConnectorProfile
   status: ConnectorStatus
   criticality: "required" | "optional"
   boundary: "client" | "hosted-connector" | "access-gateway"

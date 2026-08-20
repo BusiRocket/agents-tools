@@ -17,6 +17,10 @@ void test("a second apply changes nothing", async () => {
   const first = await apply({ manifest, paths, owned: EMPTY_OWNED, env: TEST_ENV })
   const afterFirst = await readFile(paths["claude-personal"], "utf8")
   const afterFirstCodex = await readFile(paths.codex, "utf8")
+  assert.match(
+    afterFirstCodex,
+    /\[mcp_servers\.mempalace\]\ncommand = "mempalace-mcp"\nargs = \["--read-only"\]\nrequired = true/,
+  )
 
   const second = await apply({ manifest, paths, owned: first.owned, env: TEST_ENV })
 

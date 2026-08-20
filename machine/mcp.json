@@ -26,6 +26,13 @@
       "transport": "stdio",
       "command": "codegraph",
       "args": ["serve", "--mcp"]
+    },
+    "mempalace": {
+      "targets": ["codex"],
+      "transport": "stdio",
+      "command": "mempalace-mcp",
+      "args": ["--read-only"],
+      "required": true
     }
   }
 }

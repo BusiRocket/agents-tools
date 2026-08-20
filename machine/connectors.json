@@ -26,6 +26,14 @@
       "criticality": "required"
     },
     {
+      "id": "mempalace",
+      "match": "mempalace",
+      "profiles": ["codex"],
+      "ownership": "machine",
+      "probe": "native-cli",
+      "criticality": "required"
+    },
+    {
       "id": "cloudflare",
       "match": "plugin:cloudflare:",
       "profiles": ["claude-personal", "claude-favish"],

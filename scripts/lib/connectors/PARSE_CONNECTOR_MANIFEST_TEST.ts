@@ -10,6 +10,17 @@ void test("the tracked connector manifest is valid and profile explicit", async 
   assert.deepEqual(parsed.manifest.connectors.find(({ id }) => id === "openseo")?.profiles, [
     "claude-personal",
   ])
+  assert.deepEqual(
+    parsed.manifest.connectors.find(({ id }) => id === "mempalace"),
+    {
+      id: "mempalace",
+      match: "mempalace",
+      profiles: ["codex"],
+      ownership: "machine",
+      probe: "native-cli",
+      criticality: "required",
+    },
+  )
 })
 
 void test("credential fields, literals, and token query parameters are rejected", () => {

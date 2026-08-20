@@ -36,12 +36,14 @@ void test("startup timeouts and header sub-tables are normalized", () => {
       url: '"https://mcp.context7.com/mcp"',
       startup_timeout_sec: "15",
       required: "true",
+      default_tools_approval_mode: '"writes"',
       "env_http_headers.CONTEXT7_API_KEY": '"CONTEXT7_API_KEY"',
     }),
     {
       url: "https://mcp.context7.com/mcp",
       startup_timeout_sec: 15,
       required: true,
+      default_tools_approval_mode: "writes",
       env_http_headers: { CONTEXT7_API_KEY: "CONTEXT7_API_KEY" },
     },
   )

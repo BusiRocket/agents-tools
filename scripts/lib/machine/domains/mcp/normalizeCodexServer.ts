@@ -26,6 +26,10 @@ export const normalizeCodexServer = (record: Record<string, string>): Normalized
     normalized.required = record.required === "true"
   }
 
+  if (record.default_tools_approval_mode !== undefined) {
+    normalized.default_tools_approval_mode = unquoteTomlString(record.default_tools_approval_mode)
+  }
+
   const httpHeaders = normalizeCodexSubTable(record, "http_headers")
   if (httpHeaders !== undefined) {
     normalized.http_headers = httpHeaders

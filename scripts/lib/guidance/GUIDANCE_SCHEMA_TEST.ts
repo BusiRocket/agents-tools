@@ -10,6 +10,9 @@ void test("the reconciliation output schema is strict at every object boundary",
     }
     if (typeof value !== "object" || value === null) return
     const schemaNode = value as Record<string, unknown>
+    if ("const" in schemaNode || "enum" in schemaNode) {
+      assert.equal(typeof schemaNode.type, "string", `${path} must declare an explicit type`)
+    }
     if (schemaNode.type === "object") {
       assert.equal(schemaNode.additionalProperties, false, `${path} must reject extra properties`)
       assert.equal(typeof schemaNode.properties, "object", `${path} must declare properties`)

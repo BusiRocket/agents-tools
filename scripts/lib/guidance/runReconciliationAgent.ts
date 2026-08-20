@@ -1,5 +1,5 @@
 import { spawn } from "node:child_process"
-import { mkdtemp, rm } from "node:fs/promises"
+import { mkdtemp, realpath, rm } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 import { createSandboxCommand } from "./createSandboxCommand"
@@ -10,7 +10,7 @@ export const runReconciliationAgent = async (
   prompt: string,
 ): Promise<unknown> =>
   await (async () => {
-    const scratchDir = await mkdtemp(join(tmpdir(), "guidance-agent-"))
+    const scratchDir = await realpath(await mkdtemp(join(tmpdir(), "guidance-agent-")))
     try {
       return await new Promise((resolve, reject) => {
         const [command, ...args] = policy.agentCommand

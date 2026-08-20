@@ -24,6 +24,10 @@ void test("policy parsing accepts only the constrained policy contract", () => {
   const rejected = parseGuidancePolicy({ ...policy, claudeTarget: "unsafe-target" })
   assert.equal(rejected.ok, false)
   assert.match(rejected.errors.join("\n"), /unknown property/u)
+  assert.equal(parseGuidancePolicy({ ...policy, timeoutMs: 300_000 }).ok, true)
+  const excessiveTimeout = parseGuidancePolicy({ ...policy, timeoutMs: 300_001 })
+  assert.equal(excessiveTimeout.ok, false)
+  assert.match(excessiveTimeout.errors.join("\n"), /between 1000 and 300000/u)
 })
 
 void test("policy parsing rejects literal credentials", () => {
@@ -413,7 +417,7 @@ void test("runtime schema rejects invalid evidence URIs and nested extra propert
       ...result,
       documentation: [{ ...result.documentation[0], url: "not a URI" }],
     }).join("\n"),
-    /format "uri"/u,
+    /pattern/u,
   )
   assert.match(
     validateReconciliationSchema({

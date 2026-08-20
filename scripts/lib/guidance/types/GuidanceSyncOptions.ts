@@ -3,5 +3,6 @@ export interface GuidanceSyncOptions {
   canonicalDir: string
   stateDir: string
   dryRun?: boolean
+  acceptPublished?: boolean
   rulesInventoryPath?: string
 }

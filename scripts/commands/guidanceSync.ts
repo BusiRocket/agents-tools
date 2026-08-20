@@ -18,6 +18,7 @@ export const main = async (): Promise<void> => {
     canonicalDir: resolve(canonicalDir),
     stateDir: resolve(stateDir),
     dryRun: process.argv.includes("--dry-run"),
+    acceptPublished: process.argv.includes("--accept-published"),
     ...(rulesInventory === undefined ? {} : { rulesInventoryPath: resolve(rulesInventory) }),
   })
   console.log(JSON.stringify(report, null, 2))

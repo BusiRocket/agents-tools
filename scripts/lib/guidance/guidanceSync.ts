@@ -1,6 +1,7 @@
 import { mkdir, readFile, realpath } from "node:fs/promises"
 import { join } from "node:path"
 import { applyGuidanceResult } from "./applyGuidanceResult"
+import { applyGuidanceFastPath } from "./applyGuidanceFastPath"
 import { acquireGuidanceLock } from "./acquireGuidanceLock"
 import { buildReconciliationPrompt } from "./buildReconciliationPrompt"
 import { collectGuidanceSources } from "./collectGuidanceSources"
@@ -8,6 +9,7 @@ import { containsSensitiveGuidanceContent } from "./containsSensitiveGuidanceCon
 import { createGuidanceRunId } from "./createGuidanceRunId"
 import { parseGuidancePolicy } from "./parseGuidancePolicy"
 import { removeCreatedGuidanceStateDir } from "./removeCreatedGuidanceStateDir"
+import { resolveGuidanceFastPath } from "./resolveGuidanceFastPath"
 import { runReconciliationAgent } from "./runReconciliationAgent"
 import { shouldRemoveGuidanceStateDir } from "./shouldRemoveGuidanceStateDir"
 import { validateReconciliationResult } from "./validators/validateReconciliationResult"
@@ -73,6 +75,18 @@ export const guidanceSync = async (options: GuidanceSyncOptions): Promise<Guidan
         errors: ["guidance sources contain credential or captured conversation material"],
         warnings: [],
       }
+    const fastPath = resolveGuidanceFastPath({
+      sources,
+      policy: parsedPolicy.policy,
+      acceptPublished: options.acceptPublished === true,
+    })
+    const fastPathReport = await applyGuidanceFastPath({
+      fastPath,
+      sync: options,
+      runId,
+      snapshotDir,
+    })
+    if (fastPathReport !== undefined) return fastPathReport
     const runStartedAt = new Date()
     const rawResult = await runReconciliationAgent(
       parsedPolicy.policy,

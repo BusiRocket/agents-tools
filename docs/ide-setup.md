@@ -129,7 +129,8 @@ failed until startup and tool enumeration succeed, as required by the
 Use CodeGraph's current `codegraph_explore` surface for indexed source exploration; use native file
 and text search for configuration, generated files, or content outside the index. MemPalace is
 required only for Codex and is read-only, so it supplies project-memory retrieval rather than
-indexing or durable writes. See the [Codex MCP guide](https://developers.openai.com/codex/mcp) and
+indexing or durable writes. See the
+[Codex MCP guide](https://learn.chatgpt.com/docs/extend/mcp?surface=cli) and
 [Claude Code MCP guide](https://code.claude.com/docs/en/mcp) for their respective MCP clients.
 
 Use `docs/runbooks/claude-connector-authentication.md` for profile-safe OAuth and

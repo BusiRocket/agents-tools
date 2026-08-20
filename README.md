@@ -142,7 +142,7 @@ server that cannot start is not healthy. This follows the
 [MCP lifecycle specification](https://modelcontextprotocol.io/specification/2025-11-25/basic/lifecycle).
 Use MemPalace for read-only project-memory retrieval and `codegraph_explore` for indexed code
 exploration; use native file/search tools for configuration or content outside the index. See the
-[Codex MCP guide](https://developers.openai.com/codex/mcp) and
+[Codex MCP guide](https://learn.chatgpt.com/docs/extend/mcp?surface=cli) and
 [Claude Code MCP guide](https://code.claude.com/docs/en/mcp) for client configuration semantics.
 
 For Codex and other skill-capable IDEs, the main BRP workflow surface is the global skills pipeline.

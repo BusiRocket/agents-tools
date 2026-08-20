@@ -45,9 +45,11 @@ export const probeStdioMcp = (
       buffer = lines.pop() ?? ""
       for (const line of lines) {
         try {
-          const response = JSON.parse(line) as { id?: string; result?: unknown }
-          if (response.id === "connector-doctor-initialize" && response.result !== undefined) {
-            if (!isSupportedStdioMcpInitialization(response.result)) {
+          const response = JSON.parse(line) as unknown
+          if (typeof response !== "object" || response === null || Array.isArray(response)) continue
+          const envelope = response as Record<string, unknown>
+          if (envelope.id === "connector-doctor-initialize") {
+            if (!isSupportedStdioMcpInitialization(response)) {
               finish("failed", "MCP initialization negotiation is unsupported")
               continue
             }
@@ -64,10 +66,12 @@ export const probeStdioMcp = (
             )
           }
           if (
-            response.id === "connector-doctor-tools-list" &&
-            typeof response.result === "object" &&
-            response.result !== null &&
-            Array.isArray((response.result as Record<string, unknown>).tools)
+            envelope.jsonrpc === "2.0" &&
+            envelope.id === "connector-doctor-tools-list" &&
+            typeof envelope.result === "object" &&
+            envelope.result !== null &&
+            !Array.isArray(envelope.result) &&
+            Array.isArray((envelope.result as Record<string, unknown>).tools)
           ) {
             finish("healthy", "MCP initialize and tools/list succeeded")
           }

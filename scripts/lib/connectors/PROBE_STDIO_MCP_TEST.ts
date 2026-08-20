@@ -33,11 +33,37 @@ void test("the stdio probe rejects unsupported initialization negotiation", asyn
     'const rl = require("node:readline").createInterface({ input: process.stdin })',
     'rl.on("line", (line) => {',
     "  const request = JSON.parse(line)",
-    '  process.stdout.write(JSON.stringify({ jsonrpc: "2.0", id: request.id, result: { protocolVersion: "unsupported", capabilities: {} } }) + "\\n")',
+    '  const result = { protocolVersion: "unsupported", capabilities: { tools: {} }, serverInfo: { name: "test-server", version: "1.0.0" } }',
+    '  process.stdout.write(JSON.stringify({ jsonrpc: "2.0", id: request.id, result }) + "\\n")',
     "})",
   ].join("\n")
 
   const result = await probeStdioMcp(process.execPath, ["-e", server])
   assert.equal(result.status, "failed")
   assert.equal(result.summary, "MCP initialization negotiation is unsupported")
+})
+
+void test("the stdio probe rejects malformed JSON-RPC and serverInfo initialization responses", async () => {
+  const malformedJsonRpcServer = [
+    'const rl = require("node:readline").createInterface({ input: process.stdin })',
+    'rl.on("line", (line) => {',
+    "  const request = JSON.parse(line)",
+    '  const result = { protocolVersion: "2025-11-25", capabilities: { tools: {} }, serverInfo: { name: "test-server", version: "1.0.0" } }',
+    '  process.stdout.write(JSON.stringify({ jsonrpc: "1.0", id: request.id, result }) + "\\n")',
+    "})",
+  ].join("\n")
+  const malformedServerInfoServer = [
+    'const rl = require("node:readline").createInterface({ input: process.stdin })',
+    'rl.on("line", (line) => {',
+    "  const request = JSON.parse(line)",
+    '  const result = { protocolVersion: "2025-11-25", capabilities: { tools: {} }, serverInfo: { name: "", version: 1 } }',
+    '  process.stdout.write(JSON.stringify({ jsonrpc: "2.0", id: request.id, result }) + "\\n")',
+    "})",
+  ].join("\n")
+
+  for (const server of [malformedJsonRpcServer, malformedServerInfoServer]) {
+    const result = await probeStdioMcp(process.execPath, ["-e", server])
+    assert.equal(result.status, "failed")
+    assert.equal(result.summary, "MCP initialization negotiation is unsupported")
+  }
 })

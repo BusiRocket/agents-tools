@@ -1,4 +1,5 @@
 import { spawn } from "node:child_process"
+import { isSupportedStdioMcpInitialization } from "./isSupportedStdioMcpInitialization"
 import type { StdioMcpProbeResult } from "./types/StdioMcpProbeResult"
 
 export const probeStdioMcp = (
@@ -44,8 +45,15 @@ export const probeStdioMcp = (
       buffer = lines.pop() ?? ""
       for (const line of lines) {
         try {
-          const response = JSON.parse(line) as { id?: string; result?: { tools?: unknown } }
+          const response = JSON.parse(line) as { id?: string; result?: unknown }
           if (response.id === "connector-doctor-initialize" && response.result !== undefined) {
+            if (!isSupportedStdioMcpInitialization(response.result)) {
+              finish("failed", "MCP initialization negotiation is unsupported")
+              continue
+            }
+            child.stdin.write(
+              `${JSON.stringify({ jsonrpc: "2.0", method: "notifications/initialized" })}\n`,
+            )
             child.stdin.write(
               `${JSON.stringify({
                 jsonrpc: "2.0",
@@ -57,7 +65,9 @@ export const probeStdioMcp = (
           }
           if (
             response.id === "connector-doctor-tools-list" &&
-            Array.isArray(response.result?.tools)
+            typeof response.result === "object" &&
+            response.result !== null &&
+            Array.isArray((response.result as Record<string, unknown>).tools)
           ) {
             finish("healthy", "MCP initialize and tools/list succeeded")
           }
@@ -72,7 +82,7 @@ export const probeStdioMcp = (
         id: "connector-doctor-initialize",
         method: "initialize",
         params: {
-          protocolVersion: "2025-06-18",
+          protocolVersion: "2025-11-25",
           capabilities: {},
           clientInfo: { name: "rocket-agents-connector-doctor", version: "1.0.0" },
         },

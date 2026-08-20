@@ -5,14 +5,39 @@ import { probeStdioMcp } from "./probeStdioMcp"
 void test("the stdio probe requires both initialize and tools/list responses", async () => {
   const server = [
     'const rl = require("node:readline").createInterface({ input: process.stdin })',
+    "let initialized = false",
     'rl.on("line", (line) => {',
     "  const request = JSON.parse(line)",
-    '  const result = request.method === "initialize" ? { protocolVersion: "2025-06-18" } : { tools: [] }',
-    '  process.stdout.write(JSON.stringify({ jsonrpc: "2.0", id: request.id, result }) + "\\n")',
+    '  if (request.method === "initialize") {',
+    '    if (request.params.protocolVersion !== "2025-11-25") process.exit(1)',
+    '    const result = { protocolVersion: "2025-11-25", capabilities: { tools: {} }, serverInfo: { name: "strict-test-server", version: "1.0.0" } }',
+    '    process.stdout.write(JSON.stringify({ jsonrpc: "2.0", id: request.id, result }) + "\\n")',
+    '  } else if (request.method === "notifications/initialized") {',
+    "    initialized = true",
+    '  } else if (request.method === "tools/list") {',
+    "    if (!initialized) process.exit(1)",
+    '    process.stdout.write(JSON.stringify({ jsonrpc: "2.0", id: request.id, result: { tools: [] } }) + "\\n")',
+    "  } else {",
+    "    process.exit(1)",
+    "  }",
     "})",
   ].join("\n")
 
   const result = await probeStdioMcp(process.execPath, ["-e", server])
   assert.equal(result.status, "healthy")
   assert.equal(result.summary, "MCP initialize and tools/list succeeded")
+})
+
+void test("the stdio probe rejects unsupported initialization negotiation", async () => {
+  const server = [
+    'const rl = require("node:readline").createInterface({ input: process.stdin })',
+    'rl.on("line", (line) => {',
+    "  const request = JSON.parse(line)",
+    '  process.stdout.write(JSON.stringify({ jsonrpc: "2.0", id: request.id, result: { protocolVersion: "unsupported", capabilities: {} } }) + "\\n")',
+    "})",
+  ].join("\n")
+
+  const result = await probeStdioMcp(process.execPath, ["-e", server])
+  assert.equal(result.status, "failed")
+  assert.equal(result.summary, "MCP initialization negotiation is unsupported")
 })

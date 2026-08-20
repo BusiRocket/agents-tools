@@ -5,5 +5,6 @@ export interface GuidancePolicy {
   maxOutputBytes: number
   agentCommand: string[]
   agentReadAllowlist?: string[]
+  agentBootstrapFiles?: string[]
   timeoutMs: number
 }

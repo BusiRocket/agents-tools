@@ -363,7 +363,9 @@ void test(
     const canonical = join(root, "canonical")
     const credential = join(home, ".codex", "auth.json")
     await Promise.all([mkdir(join(home, ".codex"), { recursive: true }), mkdir(canonical)])
-    await writeFile(credential, JSON.stringify({ access_token: "must-not-be-readable" }))
+    await writeFile(credential, JSON.stringify({ access_token: "must-not-be-readable" }), {
+      mode: 0o600,
+    })
     const fakeAgent = join(root, "read-adversarial-agent.mjs")
     await writeFile(
       fakeAgent,
@@ -380,6 +382,8 @@ void test(
         },
         maxOutputBytes: 20_000,
         agentCommand: [process.execPath, fakeAgent, credential],
+        agentReadAllowlist: [process.execPath, fakeAgent],
+        agentBootstrapFiles: [credential],
         timeoutMs: 5_000,
       }),
     )

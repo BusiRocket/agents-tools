@@ -1,4 +1,5 @@
 import { existsSync } from "node:fs"
+import { pathContainsPath } from "./pathContainsPath"
 
 export const createSandboxCommand = (options: {
   platform: NodeJS.Platform
@@ -10,10 +11,16 @@ export const createSandboxCommand = (options: {
   pathExists?: (path: string) => boolean
 }): { executable: string; args: string[] } => {
   if (options.platform === "darwin") {
+    const readDenyRoot = options.readDenyRoot
+    if (
+      readDenyRoot !== undefined &&
+      options.readAllowPaths?.some((path) => pathContainsPath(path, readDenyRoot)) === true
+    )
+      throw new Error("agent read allowlist cannot contain the denied home root")
     const denyRead =
-      options.readDenyRoot === undefined
+      readDenyRoot === undefined
         ? ""
-        : ` (deny file-read-data (subpath "${options.readDenyRoot.replaceAll('"', '\\"')}"))`
+        : ` (deny file-read-data (subpath "${readDenyRoot.replaceAll('"', '\\"')}"))`
     const allowedReadPaths = [options.command, ...(options.readAllowPaths ?? [])]
       .map(
         (path) =>

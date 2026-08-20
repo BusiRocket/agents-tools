@@ -4,6 +4,7 @@ import { tmpdir } from "node:os"
 import { join } from "node:path"
 import { createSandboxCommand } from "./createSandboxCommand"
 import { readSafeAgentDiagnostic } from "./readSafeAgentDiagnostic"
+import { stageAgentBootstrapFiles } from "./stageAgentBootstrapFiles"
 import type { GuidancePolicy } from "./types/GuidancePolicy"
 
 export const runReconciliationAgent = async (
@@ -14,6 +15,10 @@ export const runReconciliationAgent = async (
   await (async () => {
     const scratchDir = await realpath(await mkdtemp(join(tmpdir(), "guidance-agent-")))
     try {
+      const bootstrapDir = await stageAgentBootstrapFiles(
+        policy.agentBootstrapFiles ?? [],
+        scratchDir,
+      )
       return await new Promise((resolve, reject) => {
         const [command, ...args] = policy.agentCommand
         if (command === undefined) {
@@ -43,6 +48,7 @@ export const runReconciliationAgent = async (
             LC_ALL: "C",
             NO_COLOR: "1",
             TMPDIR: scratchDir,
+            ...(bootstrapDir === undefined ? {} : { ROCKET_AGENTS_BOOTSTRAP_DIR: bootstrapDir }),
           },
           stdio: ["pipe", "pipe", "pipe"],
           shell: false,

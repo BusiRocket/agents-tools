@@ -1,4 +1,5 @@
 import { containsSensitiveGuidanceContent } from "./containsSensitiveGuidanceContent"
+import { collectGuidancePolicyPathErrors } from "./collectGuidancePolicyPathErrors"
 import { isRecord } from "./isRecord"
 import type { GuidancePolicy } from "./types/GuidancePolicy"
 
@@ -13,6 +14,7 @@ export const parseGuidancePolicy = (
     "maxOutputBytes",
     "agentCommand",
     "agentReadAllowlist",
+    "agentBootstrapFiles",
     "timeoutMs",
   ])
   const isHttpsOrigin = (value: string): boolean => {
@@ -30,6 +32,7 @@ export const parseGuidancePolicy = (
   const origins = raw.officialDocumentationOrigins
   const command = raw.agentCommand
   const readAllowlist = raw.agentReadAllowlist
+  const bootstrapFiles = raw.agentBootstrapFiles
   if (raw.version !== 1) errors.push("version must be 1")
   if (
     !Array.isArray(invariants) ||
@@ -61,15 +64,7 @@ export const parseGuidancePolicy = (
     !command.every((item) => typeof item === "string" && item !== "" && !/[\r\n\0]/u.test(item))
   )
     errors.push("agentCommand must be a non-empty argument array")
-  if (
-    readAllowlist !== undefined &&
-    (!Array.isArray(readAllowlist) ||
-      readAllowlist.length === 0 ||
-      !readAllowlist.every(
-        (item) => typeof item === "string" && item.startsWith("/") && !/[\r\n\0"]/u.test(item),
-      ))
-  )
-    errors.push("agentReadAllowlist must contain safe absolute paths")
+  errors.push(...collectGuidancePolicyPathErrors(readAllowlist, bootstrapFiles))
   if (
     typeof raw.timeoutMs !== "number" ||
     !Number.isSafeInteger(raw.timeoutMs) ||

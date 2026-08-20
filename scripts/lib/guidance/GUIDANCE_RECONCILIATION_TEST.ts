@@ -28,6 +28,13 @@ void test("policy parsing accepts only the constrained policy contract", () => {
   const excessiveTimeout = parseGuidancePolicy({ ...policy, timeoutMs: 300_001 })
   assert.equal(excessiveTimeout.ok, false)
   assert.match(excessiveTimeout.errors.join("\n"), /between 1000 and 300000/u)
+  assert.equal(
+    parseGuidancePolicy({
+      ...policy,
+      agentBootstrapFiles: ["/Users/example/.codex/auth.json"],
+    }).ok,
+    true,
+  )
 })
 
 void test("the macOS sandbox denies home reads except explicit agent bootstrap paths", () => {
@@ -57,6 +64,21 @@ void test("Linux reconciliation fails closed when home read isolation is require
         pathExists: () => true,
       }),
     /read isolation is unavailable/u,
+  )
+})
+
+void test("the sandbox rejects an allowlist path that exposes the home root", () => {
+  assert.throws(
+    () =>
+      createSandboxCommand({
+        platform: "darwin",
+        scratchDir: "/private/var/folders/example/guidance",
+        readDenyRoot: "/Users/example",
+        readAllowPaths: ["/Users"],
+        command: "/Users/example/bin/reconcile",
+        args: [],
+      }),
+    /cannot contain the denied home root/u,
   )
 })
 

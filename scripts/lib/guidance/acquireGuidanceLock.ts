@@ -1,6 +1,6 @@
 import { writeFile } from "node:fs/promises"
 import { createGuidanceLockRelease } from "./createGuidanceLockRelease"
-import { readGuidanceLockActivity } from "./readGuidanceLockActivity"
+import { readGuidanceLockObservation } from "./readGuidanceLockObservation"
 import { reclaimGuidanceLock } from "./reclaimGuidanceLock"
 
 export const acquireGuidanceLock = async (
@@ -9,7 +9,7 @@ export const acquireGuidanceLock = async (
   staleAfterMs: number,
 ): Promise<() => Promise<void>> => {
   const owner = `${JSON.stringify({ pid: process.pid, runId })}\n`
-  for (let attempt = 0; attempt < 3; attempt += 1) {
+  for (let attempt = 0; attempt < 6; attempt += 1) {
     try {
       await writeFile(lockPath, owner, { encoding: "utf8", flag: "wx", mode: 0o600 })
       return createGuidanceLockRelease(lockPath, owner)
@@ -17,11 +17,17 @@ export const acquireGuidanceLock = async (
       if ((error as NodeJS.ErrnoException).code !== "EEXIST")
         throw new Error("could not acquire guidance lock", { cause: error })
     }
-    const ownerIsRunning = await readGuidanceLockActivity(lockPath, staleAfterMs)
-    if (ownerIsRunning === undefined) continue
-    if (ownerIsRunning) throw new Error("a guidance reconciliation run is already active")
-    const stalePath = `${lockPath}.stale.${runId}`
-    await reclaimGuidanceLock(lockPath, stalePath)
+    const observed = await readGuidanceLockObservation(lockPath, staleAfterMs)
+    if (observed === undefined) continue
+    if (observed.active) throw new Error("a guidance reconciliation run is already active")
+    const release = await reclaimGuidanceLock(
+      lockPath,
+      `${lockPath}.recovery`,
+      observed,
+      owner,
+      staleAfterMs,
+    )
+    if (release !== undefined) return release
   }
   throw new Error("could not acquire guidance lock")
 }

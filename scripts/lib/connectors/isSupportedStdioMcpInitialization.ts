@@ -11,7 +11,11 @@ export const isSupportedStdioMcpInitialization = (response: unknown): boolean =>
     return false
   }
   const candidate = envelope.result as Record<string, unknown>
-  if (candidate.protocolVersion !== "2025-11-25" && candidate.protocolVersion !== "2025-06-18") {
+  if (
+    candidate.protocolVersion !== "2025-11-25" &&
+    candidate.protocolVersion !== "2025-06-18" &&
+    candidate.protocolVersion !== "2024-11-05"
+  ) {
     return false
   }
   const capabilities = candidate.capabilities

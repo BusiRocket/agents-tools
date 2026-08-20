@@ -43,6 +43,24 @@ void test("the stdio probe rejects unsupported initialization negotiation", asyn
   assert.equal(result.summary, "MCP initialization negotiation is unsupported")
 })
 
+void test("the stdio probe accepts a server-negotiated earlier MCP version", async () => {
+  const server = [
+    'const rl = require("node:readline").createInterface({ input: process.stdin })',
+    'rl.on("line", (line) => {',
+    "  const request = JSON.parse(line)",
+    '  if (request.method === "initialize") {',
+    '    const result = { protocolVersion: "2024-11-05", capabilities: { tools: {} }, serverInfo: { name: "compatible-server", version: "1.0.0" } }',
+    '    process.stdout.write(JSON.stringify({ jsonrpc: "2.0", id: request.id, result }) + "\\n")',
+    '  } else if (request.method === "tools/list") {',
+    '    process.stdout.write(JSON.stringify({ jsonrpc: "2.0", id: request.id, result: { tools: [] } }) + "\\n")',
+    "  }",
+    "})",
+  ].join("\n")
+
+  const result = await probeStdioMcp(process.execPath, ["-e", server])
+  assert.equal(result.status, "healthy")
+})
+
 void test("the stdio probe rejects malformed JSON-RPC and serverInfo initialization responses", async () => {
   const malformedJsonRpcServer = [
     'const rl = require("node:readline").createInterface({ input: process.stdin })',

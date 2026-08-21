@@ -6,6 +6,23 @@
 
 ### 2026-08
 
+- [x] 2026-08-21 - **Apple Notes prompts converted to library skills:** 17 prompt notes from the
+      Apple Notes "AI" folder unified into 4 hand-authored skills in
+      `rocket-agents-library/skills/`: `jira-ticket-flow` (6 Jira lifecycle notes -> 1 skill with 6
+      workflow references, refined with measured session failures: Original Estimate transition
+      validator, transition-by-name multi-hop, stale template keys, approval gate, solution-first
+      comment contract), `project-hardening` (strict-refactor + Next.js 16 + Astro + Tauri v2
+      hardening notes -> stack-routed references), `launch-readiness` (Next.js launch + AI SaaS
+      audit notes -> gate skill delegating depth to claude-seo/security-review/code-review),
+      `staffbase-widget-review` (Staffbase deltas only). Dropped as superseded: bug-audit note
+      (code-review plugin), SEO architect note (claude-seo), Prompt Contratos (tieneslavibra
+      clause-library + runbooks), Vibra corporate prompt (folded into
+      `~/p/brain/projects/tieneslavibra.md`). All four registered adopted in `curation.json`.
+  - Evidence: skills and curation entries in `~/p/rocket-agents-library`; usage mining from
+    `~/.claude/projects/-Users-cristiandeluxe-p-staffbase-shoutouts/fc850cc9*.jsonl` and 4 Codex
+    rollouts; application dry-tests passed via subagent (S1-S5 Jira scenarios, A1-A4/B1-B4).
+    Pending: `pnpm run library:link` to expose them to the clients.
+
 - [x] 2026-08-19 - **Repository identity:** Completed the coordinated Rocket Agents migration.
   - Result: the control plane and library use `BusiRocket/rocket-agents` and
     `BusiRocket/rocket-agents-library`; both machines use matching `~/p` checkout paths, while

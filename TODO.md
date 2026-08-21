@@ -171,6 +171,13 @@
 - [ ] `serena@claude-plugins-official` is installed but missing from `enabledPlugins`, so its state
       is defaulted rather than declared. Declare it.
 
+- [ ] Guidance drift detected 2026-08-21:
+      `pnpm run guidance:doctor -- --config     ~/p/dotfiles/agent-guidance` fails — the live
+      `~/.codex/AGENTS.md` (edited 2026-08-20 21:59, after the canonical 12:47 render) rewords the
+      mempalace-search invariant, so the required exact sentence is missing. Decide which wording
+      wins (the live rewrite is broader), fold it into `shared.md`, and reconverge with
+      `guidance:sync`.
+
 ## Supply chain and secrets
 
 - [!] Rotate the eight still-live credentials recovered on 2026-08-17 from

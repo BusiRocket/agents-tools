@@ -15,6 +15,10 @@ argument-hint: [target-or-topic]
 - Avoid time-sensitive references ("recently", "in the next release").
 - Include runnable examples wherever possible, and run each example command before publishing it; an
   example that was never executed is a guess, not documentation.
+- Write ADRs only for decisions that pass the ADR bar in `references/adr-format.md`; keep them
+  minimal and file them as `docs/adr/NNNN-slug.md`.
+- Keep domain vocabulary in a `CONTEXT.md` glossary per `references/context-format.md`, and write
+  ADR and glossary entries inline as decisions and terms crystallize, never as a batch afterwards.
 
 ## Workflow
 
@@ -28,3 +32,5 @@ argument-hint: [target-or-topic]
 
 - Return: files written or updated, the examples that were executed with their results, and any
   claim that could not be verified against the code.
+- Load `references/adr-format.md` when recording a design decision, and
+  `references/context-format.md` when defining or challenging domain vocabulary.

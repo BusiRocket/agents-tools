@@ -4,9 +4,10 @@ description:
   Answers from the personal LLM-wiki at ~/p/brain, ingests sources into it, and audits its health
   with the repository's own tooling. Trigger when a task needs durable context that sounds
   previously established (a project's setup, a client, a past decision, infra, a credential), when
-  new material has to be folded into the wiki, or when the wiki's health is in question. Do not use
-  for a repository that merely contains markdown, for code changes to the brain's own tools, or for
-  memory-palace recall, which is a different store.
+  new material has to be folded into the wiki, or when the wiki's health is in question. Triggers
+  (ES) are ingerir, ingestar contenido, guarda en brain, mete en brain. Do not use for a repository
+  that merely contains markdown, for code changes to the brain's own tools, or for memory-palace
+  recall, which is a different store.
 allowed-tools: Read, Grep, Glob, Bash, Write, Edit
 ---
 

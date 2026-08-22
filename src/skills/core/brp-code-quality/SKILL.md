@@ -4,8 +4,9 @@ description:
   Audits and hardens a TypeScript or Next.js repo up to the BusiRocket baseline (strict typing,
   lint, architectural boundaries, agent-ready docs). Trigger when the task is to bootstrap or
   improve repo-wide quality gates or bring a repo up to the baseline, and a `tsconfig.json` or
-  `next.config.*` is present. Do not use for Python, Go, Rust, PHP, or any non-TypeScript project,
-  isolated bug fixes, feature delivery, or behavior-preserving refactors inside a single module.
+  `next.config.*` is present. Triggers (ES) are sé super estricto, mete la baseline busirocket. Do
+  not use for Python, Go, Rust, PHP, or any non-TypeScript project, isolated bug fixes, feature
+  delivery, or behavior-preserving refactors inside a single module.
 allowed-tools: Read, Grep, Glob, Edit, Write, Bash
 paths: tsconfig.json, next.config.*
 ---
@@ -28,9 +29,10 @@ paths: tsconfig.json, next.config.*
 ## Workflow
 
 1. Detect the stack: package manager, TypeScript config, framework, existing lint and CI gates.
-2. Audit strictness flags, lint coverage, boundary enforcement, and runtime safety; audit the
-   agent-ready docs against `references/agent-ready-standard.md` (AGENTS.md presence and accuracy,
-   CLAUDE.md shim, smoke test, deploy facts). Report findings first.
+2. Audit strictness flags, lint coverage, boundary enforcement, and runtime safety, letting git hot
+   spots (the files that keep coming up in `git log`) pull attention first; audit the agent-ready
+   docs against `references/agent-ready-standard.md` (AGENTS.md presence and accuracy, CLAUDE.md
+   shim, smoke test, deploy facts). Report findings first.
 3. Apply the smallest hardening steps, gated by the project's check script after each one.
 4. Write or update AGENTS.md, the CLAUDE.md shim, and the README per the standard, gathering facts
    from the running system rather than stale docs, and running the smoke test before recording it.

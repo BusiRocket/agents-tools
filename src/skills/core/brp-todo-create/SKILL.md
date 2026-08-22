@@ -13,6 +13,8 @@ argument-hint: [repository-or-scope]
 ## Rules
 
 - Discovery and consolidation only. Do not implement the work found during the audit.
+- Complete the audit; do not stop after presenting a coverage plan.
+- Preserve unrelated user changes and useful existing instructions.
 - Review conversations semantically. Keyword search is an index, not proof of coverage.
 - Prefer current repository evidence over stale conversational claims, and read later messages
   before deciding an earlier task's status.
@@ -52,12 +54,14 @@ argument-hint: [repository-or-scope]
    refactors, tests, docs and migrations, unconfirmed decisions, missing access or dependencies,
    superseded approaches, and completed milestones worth keeping as context. Corroborate material
    claims against the tree, tests or Git history. Do not invent work the evidence does not support.
-5. Write `TODO.md` as a scannable backlog grouped only into categories that contain tasks, ordered
-   within each category by critical risk, security, data loss, production impact, user-facing bugs,
-   delivery blockers, then optional value. Move verified `[x]` and `[-]` work to `TODO_LOG.md` with
-   its evidence. Load `references/todo-formats.md` for the state legend, the `TODO.md` header and
-   the log entry shape. Reconcile a documented existing convention deliberately and say what was
-   normalized rather than mixing conventions.
+5. Write `TODO.md` as a scannable backlog grouped only into categories that contain tasks (useful
+   categories include Security, Bugs, UX / UI, Frontend, Backend, Database, Infrastructure,
+   Performance, Integrations, Testing, Documentation, Refactors, Pending Decisions, Blocked Tasks,
+   and Future Ideas), ordered within each category by critical risk, security, data loss, production
+   impact, user-facing bugs, delivery blockers, then optional value. Move verified `[x]` and `[-]`
+   work to `TODO_LOG.md` with its evidence. Load `references/todo-formats.md` for the state legend,
+   the `TODO.md` header and the log entry shape. Reconcile a documented existing convention
+   deliberately and say what was normalized rather than mixing conventions.
 6. Add the compact maintenance rule from `references/maintenance-rule.md` to the canonical
    instruction source, once, in the existing style. Do not duplicate a rule already present or paste
    the audit workflow into an always-loaded file.
@@ -66,6 +70,25 @@ Every entry is concise, actionable, understandable without reopening the convers
 enough to know when it is done, deduplicated, and free of raw transcripts, large logs and secrets.
 Keep useful paths, commands, endpoints and issue or PR references. No per-task tables, synthetic
 identifiers or session diary.
+
+## Final verification
+
+Before finishing:
+
+1. Review the accessible history a second time through `TODO_HISTORY_INDEX.jsonl`, looking for
+   skipped ranges, duplicate records, changed fingerprints, or untracked sources.
+2. Check whether later conversations completed earlier pending work, and reconcile material status
+   claims against the current repository when practical.
+3. Merge duplicates, confirm every task sits in the right category, and confirm uncertain, partial,
+   and blocked work is still open.
+4. Confirm every completed task has real evidence and every blocker names the missing condition.
+5. Confirm no raw output, secret, or excessive historical narration entered `TODO.md` or
+   `TODO_LOG.md`, and that every historical `[x]` or `[-]` item is in `TODO_LOG.md` while active
+   work remains in `TODO.md`.
+6. Confirm the instruction change is concise, non-duplicative, and made in the owning source.
+7. Confirm every `complete` index record was written only after its findings were reconciled, and
+   that partial or inaccessible coverage remains honest.
+8. Review the focused diff and ensure no unrelated file changed.
 
 ## Output
 

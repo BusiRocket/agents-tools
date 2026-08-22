@@ -438,3 +438,148 @@
     36,628 redactions, zero skips) in 1m47s; full-size import and render dry-runs each validated all
     11,877 records without creating destinations; the Pi apply/render/MemPalace dry-run path passed;
     `pnpm peers check`, `pnpm audit --audit-level high`, and `pnpm run check` all exit 0.
+
+- [x] 2026-08-22 — **Skills:** `.venv-validate` recreated in this checkout; the external AgentSkills
+      validator runs again instead of being silently skipped.
+  - Result: the stale venv (shebang pointing at the removed
+    `/Users/cristiandeluxe/p/agents-tools/.venv-validate/bin/python3.14`) was deleted and rebuilt
+    with `pnpm run validate:install` (skills-ref 0.1.1). The shebang now resolves inside this
+    checkout.
+  - Evidence: `.venv-validate/bin/agentskills --help` prints usage; `pnpm run skills:validate` ends
+    with `[validate] agentskills OK (14 skills, method: venv)` and no skip warning.
+
+- [x] 2026-08-22 — **Guidance:** 2026-08-21 mempalace-search wording drift verified resolved; no
+      remaining action.
+  - Result: the reworded invariant was folded into canonical guidance by the 2026-08-21 fixes
+    (`60f528a`, `4a4fa8f`) and the live files reconverged, so the doctor no longer reports the
+    missing exact sentence.
+  - Evidence: `pnpm run guidance:doctor -- --config ~/p/dotfiles/agent-guidance` returns
+    `{"ok": true, "findings": []}` on 2026-08-22.
+
+- [x] 2026-08-22 — **Skills:** Adopted into `brp-docs` the ADR bar and the `CONTEXT.md` glossary
+      format (mattpocock diff section 1).
+  - Result: new `references/adr-format.md` (three-condition ADR bar, `docs/adr/NNNN-slug.md`
+    convention, minimal template, what-qualifies catalogue) and `references/context-format.md`
+    (term/definition/Avoid format, opinionated single-word rule, no implementation details, inline
+    writing, in-session challenge moves); SKILL.md rules and output now route to both.
+  - Evidence: `pnpm run check` exit 0 (includes `skills:validate` with
+    `agentskills OK (14 skills, method: venv)` and `skills:lint` 7 pass / 0 fail).
+  - Files: `src/skills/core/brp-docs/SKILL.md`, `src/skills/core/brp-docs/references/`.
+
+- [x] 2026-08-22 — **Skills:** Adopted into the `brp` test lane the seams gate, red-before-green
+      with vertical slicing, the three test anti-patterns, and the boundaries-only mocking policy
+      (mattpocock diff section 2).
+  - Result: `brp-test.md` gained the pre-agreed seams gate (workflow step 2 now confirms seams with
+    the user), the vertical-slicing rule, the three anti-patterns with their tells, the
+    boundaries-only mocking rule, and test-names-as-specification.
+  - Evidence: `pnpm run check` exit 0.
+  - Files: `src/skills/orchestrator/brp/references/brp-test.md`.
+
+- [x] 2026-08-22 — **Skills:** Adopted into the `brp` debug/fix lanes the red-loop gate, the
+      feedback-loop ladder, minimisation, falsifiable hypotheses with a user checkpoint, tagged
+      debug logs, and the regression-seam judgment (mattpocock diff section 3).
+  - Result: new `references/feedback-loop-ladder.md` (10-rung ladder, loop quality bar,
+    non-deterministic protocol, no-loop escalation); `brp-debug.md` gained the red-loop gate, a
+    minimisation step, the 3-5 ranked falsifiable hypotheses rule with prediction and user
+    checkpoint, and tagged `[DEBUG-...]` logs; `brp-fix.md`'s regression-test rule now requires a
+    correct seam and documents seam absence as the finding; the investigation template gained
+    feedback-loop and minimisation sections plus a prediction field.
+  - Evidence: `pnpm run check` exit 0.
+  - Files: `src/skills/orchestrator/brp/references/feedback-loop-ladder.md`, `brp-debug.md`,
+    `brp-fix.md`, `debug-investigation-template.md`.
+
+- [x] 2026-08-22 — **Skills:** Refilled `brp-todo-work` and `brp-todo-create` from the prompt files
+      they were lossy compressions of (`~/p/Prompts/todo-workflows/`).
+  - Result: `brp-todo-work` SKILL.md restored the lost operating contract (context recovery before
+    asking, the ask-only-when list, metered-operation discovery and disabled-workflow rule, the
+    no-authority prohibition list), the incremental history-index consultation rules, the working
+    matrix fields, the per-task loop (testable completion condition, diff review for scope creep),
+    already-complete/superseded/blocked handling, durable checkpoints with commit granularity, the
+    delegated-result contract, and the never-mark-complete-to-finish rule. `brp-todo-create`
+    restored the do-not-stop rule, preserve-unrelated rule, the category anchors, and the
+    final-verification checklist. Caps, approval gate, cross-project routing and cheapest-capacity
+    routing (BRP additions absent from the prompts) were kept.
+  - Evidence: `pnpm run check` exit 0; `TODO_FORMATS_SYNC_TEST` still green (shared
+    `todo-formats.md` untouched).
+  - Files: `src/skills/core/brp-todo-work/SKILL.md`, `src/skills/core/brp-todo-create/SKILL.md`.
+
+- [x] 2026-08-22 — **Skills:** Adopted into `brp-refactor`/`brp-plan`/`brp-code-quality` the
+      mattpocock section-4 architecture moves (hot-spot scoping, deletion test, candidate report
+      with strength badges and hard stop, design-it-twice, ADR consultation).
+  - Result: new `references/refactor-candidates.md` (locked vocabulary, friction heuristics,
+    deletion test, card contract, ADR handling, temp-dir report discipline, lane routing);
+    `brp-refactor.md` gained scope-before-scan and the candidate-report stop; `brp-plan.md` gained
+    ADR consultation and design-it-twice; `brp-code-quality` audit now leads with git hot spots. The
+    two named conflicts resolved in the change: the atomic-file rule stays a file-layout rule (depth
+    declared an interface property), and interface-changing deepening routes to the plan lane so the
+    refactor lane stays behavior-preserving.
+  - Evidence: `pnpm run check` exit 0.
+  - Files: `src/skills/orchestrator/brp/references/refactor-candidates.md`, `brp-refactor.md`,
+    `brp-plan.md`, `src/skills/core/brp-code-quality/SKILL.md`.
+
+- [x] 2026-08-22 — **Skills:** Measured invoked token cost of all 14 skills and recorded it with
+      method and re-measure recipe.
+  - Result: `docs/skill-token-costs.md` — gpt-tokenizer BPE, invoked SKILL.md vs on-demand
+    references split, Pocock 345-token bar. Range 336 (brp-rust-quality) to 1,980 (brp-todo-work,
+    deliberate). No skill within an order of magnitude of the bar.
+  - Evidence: measurement script output in-session; `pnpm run check` exit 0.
+
+- [x] 2026-08-22 — **Supply chain:** `npm pack --dry-run` publish gate adopted into `brp-release`
+      (closes the standalone reminder item by making it part of the workflow that publishes).
+  - Evidence: `pnpm run check` exit 0. Files: `src/skills/core/brp-release/SKILL.md`.
+
+- [x] 2026-08-22 — **Learning loop:** Reviewed the `library:describe` description proposals.
+  - Result: the real pattern is missing Spanish trigger phrases. In-repo fixes applied: `brain`
+    gained ES ingest triggers, `brp-code-quality` gained "sé super estricto" / "mete la baseline
+    busirocket" (deliberately not "endurece el proyecto", which belongs to `project-hardening`).
+    `brp-todo-create` and `brp-traffic-client` phrases contain explicit slash invocations — no edit.
+    Library-repo skills (codex, orca-cli, frontend-design) filed cross-project in
+    `~/p/rocket-agents-library/TODO.md`.
+  - Evidence: `pnpm run library:describe` report in-session; `pnpm run check` exit 0 after the
+    description edits (activation-boundary validation included).
+
+- [x] 2026-08-22 — **Supply chain:** `sync-ai` wholesale-mirroring audit closed; successor scripts
+      audited and one critical finding filed.
+  - Result: `sync-ai` is retired (`dotfiles/bootstrap.sh:40` deletes it). Successors: `sync-claude`
+    mirrors an explicit safe allowlist; `sync-conversations` uses only the redacting exporter.
+    CRITICAL: `sync-active-neo` ships any recently-active `~/p` repo to the neo VPS and
+    `~/p/brain` + `~/p/vault` (live credentials inline) are not in its SKIP list — both confirmed
+    present on neo (`/root/p/brain`, `/root/p/vault`). Filed with smallest fix in
+    `~/p/dotfiles/TODO.md` (new file); secondary finding there too (`claude-mcp-merge.py` can carry
+    MCP `env` values).
+  - Evidence: `ssh neo 'ls -d ~/p/brain ~/p/vault'` returned both paths, 2026-08-22.
+
+- [x] 2026-08-22 — **Supply chain:** Variation-selector/zero-width scan run over the published-repo
+      checkouts (this repo's `isHiddenUnicode` ranges reimplemented over `git ls-files`).
+  - Result: `baseline` clean (500 files). All 19 flags elsewhere benign and context-verified: emoji
+    VS16 (U+FE0F) in `RocketUpdater` shell echo strings (4) and archived `agents-skills` markdown
+    (4); linguistically required ZWNJ/ZWJ in `Attendize` vendored Persian/Sinhala locale data plus
+    one ZWSP in a Dutch translation string (11). No payload characters. RocketUpdater hygiene note
+    filed in `~/p/RocketUpdater/TODO.md` (new file, also carries its `.serena` item);
+    `agents-skills` is archived, `Attendize` is a vendored fork — no action.
+  - Evidence: scan output in-session, per-file code points; context lines grepped for each class.
+
+- [x] 2026-08-22 — **Supply chain:** CI publish-token audit completed for 15 of the 16 flagged repos
+      (`poirocket` has no local checkout; residual item filed).
+  - Result: OIDC Trusted Publishing already in place: baseline, mempalace (npm), staffbase-cli,
+    staffbase-utils, staffbase-drawer, zerohedge-mcp. Ephemeral `GITHUB_TOKEN` only: dj-rocket
+    (tauri release), mempalace docker-publish (GHCR), vexa-insight-dashboard (all actions
+    SHA-pinned). No publish workflow: helm-cron, helm-drupal, helm-solr, poitools, verticagtm. Only
+    long-lived registry token found: `NPM_TOKEN` in staffbase-shoutouts — step-scoped env for
+    `@favish` installs and BuildKit secret mount in the docker build (correct patterns); residual
+    scope/rotation item filed in `~/p/staffbase-shoutouts/TODO.md`. Non-registry deploy secrets
+    (Supabase, Anthropic, DB) in Mains.World/thewealthadvisor are out of this item's scope.
+  - Evidence: workflow greps in-session (`secrets.*` per repo, publish mechanics of each
+    release/publish workflow).
+
+- [x] 2026-08-22 — **Supply chain:** neo VPS credential-exposure remediation (follow-up to the
+      `sync-active-neo` finding filed earlier today).
+  - Result: with user approval, `brain` and `vault` added to the SKIP list in
+    `~/p/dotfiles/bin/sync-active-neo` (edit uncommitted in dotfiles), and the mirrored copies
+    deleted on neo. Neo's agent CLIs (claude/codex/gemini) and their auth stay — user confirmed
+    active use on that host; neo's `~/.gemini` carries no `mcp_config.json`. Credential rotation
+    itself explicitly deferred by the user the same day; `portatil` cleanup pending (host
+    unreachable). Both residuals tracked in the still-blocked rotation item.
+  - Evidence: `ssh neo 'rm -rf /root/p/brain /root/p/vault'` followed by `ls` returning "No existe
+    el archivo o directorio" for both paths; pre-delete `du` showed 460M + 423M;
+    `lsof +D /root/p/brain` empty before deletion.

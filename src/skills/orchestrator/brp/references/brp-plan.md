@@ -11,6 +11,11 @@ implemented immediately, active debugging, or final review after code is already
 - Never skip discovery; read the current code before proposing abstractions.
 - Plans must include validation commands.
 - Prefer minimal diffs. Avoid changing files unrelated to the goal.
+- Consult existing ADRs (`docs/adr/`) during discovery; a plan that contradicts one must say so
+  inline and justify reopening the decision.
+- Design it twice: when the plan turns on a new or changed interface, design it at least two
+  radically different ways and compare on depth, locality, and seam placement
+  (`refactor-candidates.md`, same directory, defines these terms) before committing to one.
 
 ## Workflow
 

@@ -16,6 +16,10 @@ allowed-tools: Read, Grep, Glob, Edit, Write, Bash
   -> patch.
 - One immutable tag per release. Never move, delete, or reuse an existing tag. If the computed tag
   name already exists, stop and report instead of auto-incrementing past it.
+- When the release publishes a package to a registry, run `npm pack --dry-run` (or the package
+  manager's equivalent) first and read the file list: source maps with `sourcesContent`, env files,
+  or private docs in the tarball block the publish until excluded. A published tarball ships
+  whatever the file list shows, permanently.
 
 ## Workflow
 

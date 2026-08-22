@@ -9,13 +9,25 @@ Use this template when a debugging task needs a clear narrative and evidence tra
 - Reproduction path:
 - First failing signal:
 
+## Feedback loop
+
+- Loop command (red-capable, already run):
+- Its (redacted) output:
+
+## Minimisation
+
+- Elements cut (inputs, callers, config, data, steps) and the re-run result after each:
+- Remaining load-bearing elements:
+
 ## Hypotheses
 
 1. Hypothesis:
    - Why it is plausible:
+   - Prediction ("if X is the cause, changing Y makes the bug disappear"):
    - Cheapest validating check:
 2. Hypothesis:
    - Why it is plausible:
+   - Prediction:
    - Cheapest validating check:
 
 ## Isolation
